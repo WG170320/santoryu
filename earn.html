@@ -15,16 +15,17 @@
     --bg:#07090C; --surf:#11151B; --surf2:#161B22; --line:#222a34;
     --txt:#EDF1F5; --txt2:#8A95A3; --danger:#FF5E6C; --amber:#F5B445; --green:#34D399;
   }
-  *{box-sizing:border-box; margin:0; padding:0; -webkit-font-smoothing:antialiased; -webkit-tap-highlight-color:transparent;}
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-font-smoothing:antialiased; -webkit-tap-highlight-color:transparent;
+    -webkit-user-select:none; user-select:none; -webkit-touch-callout:none;}
   html,body{background:var(--bg);}
   body{font-family:'Inter',sans-serif; color:var(--txt); padding:14px 14px 34px; max-width:440px; margin:0 auto;
     background:radial-gradient(120% 36% at 50% -4%, rgba(77,166,255,.06), transparent 60%), var(--bg);}
   .hide{display:none !important;}
 
-  /* diamonds: GOLD = points, BLUE = MLBB diamonds */
-  .dia{display:inline-block; transform:rotate(45deg); border-radius:2px; vertical-align:middle;}
-  .dia.gold{background:linear-gradient(135deg,var(--gold-hi),var(--gold-deep)); box-shadow:0 0 6px rgba(232,180,74,.4);}
-  .dia.blue{background:linear-gradient(135deg,var(--blue-hi),var(--blue-deep)); box-shadow:0 0 6px rgba(77,166,255,.45);}
+  /* diamonds = REAL provided asset (diamond.webp). BLUE = MLBB (withdraw), GOLD = points (tinted) */
+  .dia{display:inline-block; vertical-align:middle; background:url('diamond.webp') center/contain no-repeat;}
+  .dia.gold{filter:sepia(1) saturate(4.2) hue-rotate(2deg) brightness(1.08) drop-shadow(0 0 3px rgba(232,180,74,.45));}
+  .dia.blue{filter:drop-shadow(0 0 3px rgba(77,166,255,.5));}
 
   /* header (now in HTML) */
   .head{display:flex; align-items:center; justify-content:space-between; padding:4px 2px 0; margin-bottom:15px;}
@@ -104,6 +105,7 @@
   .code{flex:1; font-family:'Chakra Petch'; font-weight:700; font-size:15px; letter-spacing:1px; color:var(--emerald); background:#0d1117; border:1px dashed rgba(45,212,167,.4); border-radius:9px; padding:10px 12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
   .icb{width:42px;height:42px;flex:0 0 auto;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;transition:transform .12s;}
   .icb:active{transform:scale(.9);}
+  .icb svg{width:19px;height:19px;}
   .icb.copy{background:rgba(232,180,74,.14); border:1px solid rgba(232,180,74,.4);}
   .icb.copy svg{stroke:var(--gold);}
   .share2{display:flex; gap:8px; margin-top:9px;}
@@ -283,7 +285,7 @@ function render(){
     <div class="eyebrow">${g.firstOnly?'FIRST WITHDRAWAL REWARD':'NEXT WITHDRAWAL GOAL'}</div>
     <div class="reward"><div class="num">${g.mlbb}</div><div class="rlabel"><span class="a">MLBB</span><span class="b">DIAMONDS</span></div></div>
     <div class="sub">${g.firstOnly?'One-time starter — cash out straight to your account':'Cash out straight to your MLBB account'}</div>
-    ${gemSVG('blue')}
+    <div class="emblem dia blue"></div>
     <div class="prog"><div class="prow"><div class="l">PROGRESS</div><div class="r">${a.balance.toLocaleString()} / ${g.cost.toLocaleString()}</div></div>
       <div class="track"><div class="fill" data-w="${frac}"></div></div></div>
     <div class="cta ${reached&&!a.earnBanned?'':'off'}" id="hcta"><span class="dia ${reached?'blue':''}" style="width:14px;height:14px;${reached?'':'display:none'}"></span><span>${a.earnBanned?'EARNING DISABLED':reached?'WITHDRAW NOW':'COLLECT '+remaining.toLocaleString()+' MORE'}</span></div>
@@ -311,7 +313,7 @@ function render(){
   const dCard=$(`<div class="card"><div class="rowflex"><div class="di" style="background:rgba(45,212,167,.14)">${IC.gift}</div>
     <div class="gleft"><div class="n">Daily check-in</div><div class="d" id="dd">${dAvail?('Claim +'+c.dailyBonus+' free points today'):(s.dailyKnown?'Come back tomorrow for more':'Come back daily for free points')}</div></div>
     <button class="act ${dAvail?'on':'off'}" id="db">${dAvail?'CLAIM':'CLAIMED'}</button></div></div>`);
-  if(dAvail) dCard.querySelector('#db').onclick=async e=>{e.target.textContent='…'; const r=await call('claimDaily',c.dailyBonus); if(r.ok){gainFx(c.dailyBonus,'gold'); toast('Daily bonus claimed!','good');} requestState();};
+  if(dAvail) dCard.querySelector('#db').onclick=async e=>{e.target.textContent='…'; const r=await call('claimDaily',c.dailyBonus); if(r.ok) gainFx(c.dailyBonus,'gold'); requestState();};
   else if(s.dailyKnown) startCountdown(dCard.querySelector('#dd'),s.dailyMs);
   app.appendChild(dCard);
 
@@ -322,7 +324,7 @@ function render(){
     <div class="gleft"><div class="n">Invite ${c.missionGoal} friends</div><div class="d">${done} / ${c.missionGoal} joined — earn ${c.missionBonus} points</div></div>
     <button class="act ${mReady?'on':'off'}" id="mb">${mReady?'CLAIM':done+'/'+c.missionGoal}</button></div>
     <div class="track" style="margin-top:11px"><div class="fill" data-w="${Math.round(done/c.missionGoal*100)}"></div></div></div>`);
-  if(mReady) mCard.querySelector('#mb').onclick=async e=>{e.target.textContent='…'; const r=await call('claimMission',c.missionBonus,a.referralCount); if(r.ok){gainFx(c.missionBonus,'gold'); toast('Mission complete!','good');} requestState();};
+  if(mReady) mCard.querySelector('#mb').onclick=async e=>{e.target.textContent='…'; const r=await call('claimMission',c.missionBonus,a.referralCount); if(r.ok) gainFx(c.missionBonus,'gold'); requestState();};
   app.appendChild(mCard);
 
   // invite (code + copy + share code + share link + apply code)
@@ -340,7 +342,7 @@ function render(){
   if(!a.referred){ const ab=iv.querySelector('#apb'); ab.onclick=async()=>{
     const v=iv.querySelector('#apc').value.trim().toUpperCase(); if(!v){toast('Enter a code','bad'); return;}
     ab.textContent='…'; const r=await call('applyReferral',v);
-    if(r.ok){ gainFx(c.inviteeBonus,'gold'); toast('Code applied! +'+c.inviteeBonus+' points','good'); }
+    if(r.ok) gainFx(c.inviteeBonus,'gold');
     else toast(refErr(r.error),'bad'); requestState();
   };}
   app.appendChild(iv);
@@ -389,9 +391,8 @@ function render(){
 
 async function doTask(t){
   if(t.link&&t.link!=='#') window.Android.openLink(t.link);
-  toast('Finish the task, then come back','good');
   const r=await call('claimTask',t.id,t.reward);
-  if(r.ok){ gainFx(t.reward,'gold'); toast('+'+t.reward+' points earned!','good'); }
+  if(r.ok) gainFx(t.reward,'gold');
   else toast('Complete the task first','bad');
   requestState();
 }
