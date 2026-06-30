@@ -80,6 +80,12 @@
   .tier .n{font-family:'Teko'; font-weight:600; font-size:23px; line-height:.8;}
   .tier .u{font-size:8px; letter-spacing:1px; color:var(--txt2); margin-top:2px;}
   .tier .c{margin-top:7px; font-family:'Rajdhani'; font-weight:700; font-size:12px; color:var(--gold); border-top:1px solid var(--line); padding-top:6px; display:flex; align-items:center; justify-content:center; gap:4px;}
+  .tier .twd{margin-top:8px; width:100%; border:none; border-radius:9px; padding:6px 0; font-family:'Chakra Petch'; font-weight:700; font-size:9.5px; letter-spacing:.4px; text-transform:uppercase; cursor:pointer;}
+  .tier .twd.go{background:linear-gradient(180deg,#3BE0B6,#1FB892); color:#06231b; box-shadow:0 3px 11px rgba(45,212,167,.30);}
+  .tier .twd.go:active{transform:translateY(1px);}
+  .tier .twd.off{background:rgba(255,255,255,.05); color:var(--txt2); cursor:default;}
+  .tier .twd.done{background:transparent; color:var(--txt2); border:1px dashed var(--line); cursor:default;}
+  .tier.used{opacity:.55; cursor:default;}
 
   .card{background:var(--surf); border:1px solid var(--line); border-radius:15px; padding:14px;}
   .rowflex{display:flex; align-items:center; gap:12px;}
@@ -308,6 +314,27 @@
   #loading{position:fixed; inset:0; display:flex; flex-direction:column; gap:14px; align-items:center; justify-content:center; color:var(--txt2); font-family:'Chakra Petch'; letter-spacing:4px; font-size:11px;}
   #loading .spin{width:38px;height:38px;border-radius:50%;border:3px solid rgba(95,230,255,.15);border-top-color:var(--cyan);animation:spin .8s linear infinite;}
   @keyframes spin{to{transform:rotate(360deg);}}
+  /* winner claim (celebration) */
+  .winwrap{padding:6px 18px 44px; text-align:center;}
+  .wintrophy{position:relative; width:172px; height:172px; margin:8px auto 2px;}
+  .wintrophy img{width:100%; height:100%; object-fit:contain; position:relative; z-index:2; filter:drop-shadow(0 12px 30px rgba(95,160,255,.5));}
+  .winglow{position:absolute; inset:-22%; background:radial-gradient(circle, rgba(95,160,255,.38), transparent 62%); z-index:1; animation:winpulse 2.4s ease-in-out infinite;}
+  @keyframes winpulse{0%,100%{transform:scale(.88);opacity:.65}50%{transform:scale(1.12);opacity:1}}
+  .wincongrats{font-family:'Teko'; font-size:42px; font-weight:600; letter-spacing:3px; background:linear-gradient(90deg,#FFE9B0,#FFC83D,#F5B445); -webkit-background-clip:text; background-clip:text; color:transparent; line-height:.9; margin-top:6px;}
+  .winsub{color:var(--txt2); font-size:13px; margin-top:3px;}
+  .winprize{display:flex; align-items:center; justify-content:center; gap:9px; margin:18px 0 20px;}
+  .winprize .wpn{font-family:'Teko'; font-size:48px; font-weight:600; color:#9BD4FF; line-height:.8;}
+  .winprize .wpl{font-size:11px; letter-spacing:1.5px; color:var(--txt2); text-align:left; line-height:1.2;}
+  .winform{max-width:340px; margin:0 auto; text-align:left;}
+  .winform label{display:block; font-size:11px; letter-spacing:.5px; color:var(--txt2); text-transform:uppercase; margin:12px 0 5px;}
+  .winform input{width:100%; background:#0e141b; border:1px solid var(--line); border-radius:11px; color:var(--txt); padding:13px; font:inherit;}
+  .winclaim{width:100%; margin-top:18px; border:none; border-radius:13px; padding:15px; font-family:'Chakra Petch'; font-weight:700; font-size:14px; letter-spacing:1px; background:linear-gradient(180deg,#FFD980,#F5B445); color:#3a2600; cursor:pointer; box-shadow:0 8px 24px rgba(245,180,69,.35);}
+  .winclaim:active{transform:translateY(1px);}
+  .winnote{font-size:11px; color:var(--txt2); text-align:center; margin-top:12px; line-height:1.45;}
+  .winok{text-align:center; padding:14px 0;}
+  .winokc{width:66px;height:66px;border-radius:50%;background:linear-gradient(135deg,#3BE0B6,#1FB892);color:#06231b;font-size:36px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;}
+  .winokt{font-family:'Teko';font-size:32px;color:#fff;line-height:.9;}
+  .winoks{color:var(--txt2);font-size:13px;margin:7px 0 4px;line-height:1.45;}
   /* floating withdraw proof (live fulfilled payouts) */
   .ppop{position:fixed; left:12px; bottom:16px; z-index:55; display:flex; align-items:center; gap:9px;
     background:rgba(15,21,29,.97); border:1px solid rgba(95,160,255,.30); border-radius:42px;
@@ -375,7 +402,7 @@ function gemSVG(kind){
 const isNative=!!window.Android;
 let REQ=0; const pending={};
 window.__earnResult=(id,obj)=>{ const r=pending[id]; if(r){delete pending[id]; r(obj);} };
-window.__earnState=(s)=>{ STATE=s; render(); };
+window.__earnState=(s)=>{ STATE=s; render(); if(typeof maybeWinner==='function') maybeWinner(); };
 function call(m,...a){ return new Promise(res=>{ const id='r'+(++REQ); pending[id]=res; window.Android[m](id,...a); }); }
 function requestState(){ if(isNative) window.Android.requestState(); else mockState(); }
 
@@ -472,11 +499,15 @@ function render(){
   const tg=$(`<div class="tiers"></div>`);
   s.tiers.slice().sort((x,y)=>x.cost-y.cost).forEach(t=>{
     const used=t.firstOnly&&a.firstWithdrawUsed,can=a.balance>=t.cost&&!used&&!a.earnBanned;
+    const wbtn = used ? `<div class="twd done">Used</div>`
+      : `<button class="twd ${can?'go':'off'}">Withdraw</button>`;
     const el=$(`<div class="tier ${t.firstOnly&&!used?'lock':''} ${used?'used':''}">
       <span class="dia blue tg"></span><div class="n">${t.mlbb}</div><div class="u">MLBB</div>
-      <div class="c">${used?'USED':'<span class="dia gold" style="width:9px;height:9px"></span>'+t.cost.toLocaleString()}</div></div>`);
-    if(can) el.onclick=()=>openWithdraw(t);
-    else if(!used) el.onclick=()=>toast('Collect '+(t.cost-a.balance).toLocaleString()+' more points','bad');
+      <div class="c">${used?'—':'<span class="dia gold" style="width:9px;height:9px"></span>'+t.cost.toLocaleString()}</div>
+      ${wbtn}</div>`);
+    const trg=el.querySelector('.twd');
+    if(can) trg.onclick=()=>openWithdraw(t);
+    else if(!used) trg.onclick=()=>toast('Collect '+(t.cost-a.balance).toLocaleString()+' more points','bad');
     tg.appendChild(el);
   });
   app.appendChild(tg);
@@ -674,7 +705,45 @@ function openInvited(){
 
 //=== tournament ==================================================================
 let TOURN=null, tournBody=null, tcdT=null;
-window.__tournamentState=(s)=>{ TOURN=s; updateBanner(); if(tournBody) renderTournament(); };
+window.__tournamentState=(s)=>{ TOURN=s; updateBanner(); if(tournBody) renderTournament(); maybeWinner(); };
+
+//=== winner claim (champion gets a celebration claim dialog → prize as blue MLBB diamonds) ===
+const TCLAIM_URL='https://asia-southeast1-diamond-bang-92125.cloudfunctions.net/tournamentClaim';
+let winnerShown=false;
+function maybeWinner(){
+  if(winnerShown) return;
+  const ev = TOURN && TOURN.event; if(!ev || !STATE) return;
+  if(ev.winnerUid && ev.winnerUid===STATE.uid && !ev.winnerClaimed){ winnerShown=true; openWinnerClaim(ev); }
+}
+function wcErr(e){return({no_gameid:'Enter your MLBB Game ID.',not_winner:'This prize is not for this account.',already_claimed:'You already claimed this prize.',no_prize:'No prize set yet.',no_uid:'Reopen the app and try again.'})[e]||'Could not claim — try again.';}
+function openWinnerClaim(ev){
+  const prize=(+ev.winnerPrize||+ev.prizePool||0).toLocaleString();
+  const pg=$(`<div class="page"><div class="pgh"><div class="pgback">${IC.back}</div><h2>You won!</h2></div>
+    <div class="winwrap">
+      <div class="wintrophy"><div class="winglow"></div><img src="trophy.png" alt="" onerror="this.style.display='none'"></div>
+      <div class="wincongrats">CHAMPION</div>
+      <div class="winsub">You topped the ${esc(ev.title||'tournament')}</div>
+      <div class="winprize"><span class="dia blue" style="width:30px;height:30px"></span><span class="wpn">${prize}</span><span class="wpl">MLBB<br>DIAMONDS</span></div>
+      <div class="winform">
+        <label>MLBB Game ID</label><input id="wgid" inputmode="numeric" placeholder="e.g. 123456789">
+        <label>Server ID</label><input id="wsrv" inputmode="numeric" placeholder="e.g. 1234">
+        <button class="winclaim" id="wclaim">CLAIM MY PRIZE</button>
+        <div class="winnote">We'll send the diamonds straight to your MLBB account after a quick review.</div>
+      </div>
+    </div></div>`);
+  pg.querySelector('.pgback').onclick=()=>pg.remove();
+  pg.querySelector('#wclaim').onclick=async()=>{
+    const gid=pg.querySelector('#wgid').value.trim(), srv=pg.querySelector('#wsrv').value.trim();
+    if(!gid){ toast('Enter your MLBB Game ID','bad'); return; }
+    const b=pg.querySelector('#wclaim'); b.textContent='CLAIMING…'; b.disabled=true;
+    try{
+      const r=await fetch(TCLAIM_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid:STATE.uid,gameId:gid,server:srv})}).then(x=>x.json());
+      if(r.ok){ pg.querySelector('.winform').innerHTML=`<div class="winok"><div class="winokc">✓</div><div class="winokt">Prize claimed!</div><div class="winoks">Your <b>${prize}</b> MLBB Diamonds are on the way to your account.</div><button class="winclaim" onclick="this.closest('.page').remove()">Done</button></div>`; }
+      else { b.textContent='CLAIM MY PRIZE'; b.disabled=false; toast(wcErr(r.error),'bad'); }
+    }catch(e){ b.textContent='CLAIM MY PRIZE'; b.disabled=false; toast('Network error — try again','bad'); }
+  };
+  document.body.appendChild(pg);
+}
 function fmtViews(n){ n=+n||0; if(n>=1e6)return (n/1e6).toFixed(n>=1e7?0:1).replace(/\.0$/,'')+'M'; if(n>=1e3)return (n/1e3).toFixed(n>=1e5?0:1).replace(/\.0$/,'')+'K'; return ''+n; }
 function msLeft(ts){ return Math.max(0,(+ts||0)-Date.now()); }
 function prizeHTML(ev){const n=(+ev.prizePool||0).toLocaleString();return `<span class="dia blue" style="width:.72em;height:.72em;display:inline-block;vertical-align:-.04em;margin-right:.14em"></span>${n}<span class="ppd">MLBB DIAMONDS</span>`;}
