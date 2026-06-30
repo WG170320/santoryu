@@ -425,7 +425,7 @@ function requestState(){ if(isNative) window.Android.requestState(); else mockSt
 
 let MOCK={ uid:"dev-demo", code:"SANT-AB12-CD34", isAdmin:false,
   config:{perInvite:5,inviteeBonus:5,welcomeBonus:5,dailyBonus:15,missionGoal:5,missionBonus:50,missionHours:24},
-  tiers:[{mlbb:22,cost:80,firstOnly:true},{mlbb:112,cost:250,firstOnly:false},{mlbb:223,cost:500,firstOnly:false},{mlbb:336,cost:700,firstOnly:false},{mlbb:570,cost:1000,firstOnly:false},{mlbb:1163,cost:2000,firstOnly:false}],
+  tiers:[{mlbb:22,cost:80,firstOnly:true},{mlbb:112,cost:250,firstOnly:false},{mlbb:223,cost:470,firstOnly:false},{mlbb:336,cost:670,firstOnly:false},{mlbb:570,cost:1080,firstOnly:false},{mlbb:1163,cost:2050,firstOnly:false}],
   tasks:[{id:"download_cliptok",title:"Download ClipTok",desc:"Install our partner app — Video & Photo Saver.",link:"https://play.google.com/store/apps/details?id=com.warlito.clipto",logo:"",reward:10,claimed:false},{id:"rate_5star",title:"Rate us 5 stars",desc:"Write an honest review on Google Play.",link:"https://play.google.com/store/apps/details?id=com.warlito.clipto",logo:"",reward:5,claimed:false}],
   account:{balance:340,earned:560,referralCount:3,firstWithdrawUsed:true,earnBanned:false,welcomeClaimed:true,referred:false,lastDailyDay:0,missionStart:0,missionBaseline:0,name:"Kairi",avatarUrl:"https://kappa.lol/7Xnnlc"},
   history:[{mlbb:22,cost:80,status:"fulfilled",ts:Date.now()-86400000,refunded:false},{mlbb:112,cost:250,status:"pending",ts:Date.now()-3600000,refunded:false}],
@@ -475,6 +475,9 @@ const ago=ts=>{const d=Math.floor((Date.now()-ts)/1000); if(d<60)return'just now
 const dateStr=ts=>new Date(ts).toLocaleDateString(undefined,{month:'short',day:'numeric'});
 function activeTiers(s){ return s.tiers.filter(t=>!(t.firstOnly&&s.account.firstWithdrawUsed)).slice().sort((a,b)=>a.cost-b.cost); }
 function goalTier(s){ const at=activeTiers(s),b=s.account.balance; return at.find(t=>t.firstOnly)||at.find(t=>b<t.cost)||at[at.length-1]; }
+// Ang GOAL ay yung tier na PINILI ng user (WSEL) — kaya pwede nilang palitan ang withdrawal
+// goal anytime para makita ang progress. Default = susunod na tier na ipinapaipon (goalTier).
+function ensureSel(s){ const at=activeTiers(s); if(!at.length) return null; if(WSEL==null||!at.find(t=>t.cost===WSEL)) WSEL=goalTier(s).cost; return at.find(t=>t.cost===WSEL)||at[0]; }
 function taskIcon(t){
   if(t.id.includes('cliptok')||(t.link||'').includes('com.warlito.clipto')&&t.id.includes('download')) return `<img src="${CLIPTOK_LOGO}" alt="">`;
   if(t.logo) return `<img src="${esc(t.logo)}" alt="">`;
@@ -489,10 +492,9 @@ function isReview(t){ return t.id.includes('rate')||/review|star/i.test(t.title)
 let WSEL=null;
 function withdrawPanel(s){
   const a=s.account;
-  const avail=s.tiers.slice().filter(t=>!(t.firstOnly&&a.firstWithdrawUsed)).sort((x,y)=>x.cost-y.cost);
+  const avail=activeTiers(s);
   if(!avail.length) return $(`<div class="empty">No withdrawal tiers available right now.</div>`);
-  if(WSEL==null || !avail.find(t=>t.cost===WSEL)){ const aff=avail.slice().reverse().find(t=>a.balance>=t.cost); WSEL=(aff||avail[0]).cost; }
-  const sel=avail.find(t=>t.cost===WSEL)||avail[0];
+  const sel=ensureSel(s);  // kaparehong WSEL ng hero goal — naka-sync ang progress sa taas
   const can=a.balance>=sel.cost && !a.earnBanned;
   const wrap=$(`<div class="wd"></div>`);
   const grid=$(`<div class="tiers wsel"></div>`);
@@ -537,12 +539,12 @@ function render(){
     <div class="pf-stat"><div class="pf-sv">${(a.earned||0).toLocaleString()}</div><div class="pf-sl">TOTAL EARNED</div></div>
   </div>`));
 
-  // hero (BLUE)
-  const g=goalTier(s),reached=a.balance>=g.cost,remaining=Math.max(0,g.cost-a.balance),frac=Math.min(100,Math.round(a.balance/g.cost*100));
+  // hero (BLUE) — ang goal = PINILING tier (WSEL). Nagbabago kapag may pinili sa grid sa baba.
+  const g=ensureSel(s)||goalTier(s),reached=a.balance>=g.cost,remaining=Math.max(0,g.cost-a.balance),frac=Math.min(100,Math.round(a.balance/g.cost*100));
   const hero=$(`<div class="hero">
-    <div class="eyebrow">${g.firstOnly?'FIRST WITHDRAWAL REWARD':'NEXT WITHDRAWAL GOAL'}</div>
+    <div class="eyebrow">${g.firstOnly?'FIRST WITHDRAWAL REWARD':'YOUR WITHDRAWAL GOAL'}</div>
     <div class="reward"><div class="num">${g.mlbb}</div><div class="rlabel"><span class="a">MLBB</span><span class="b">DIAMONDS</span></div></div>
-    <div class="sub">${g.firstOnly?'One-time starter — cash out straight to your account':'Cash out straight to your MLBB account'}</div>
+    <div class="sub">${g.firstOnly?'One-time starter — cash out straight to your account':'Pick a target below — save up for a bigger reward'}</div>
     <div class="emblem dia blue"></div>
     <div class="prog"><div class="prow"><div class="l">PROGRESS</div><div class="r">${a.balance.toLocaleString()} / ${g.cost.toLocaleString()}</div></div>
       <div class="track"><div class="fill" data-w="${frac}"></div></div></div>
@@ -551,8 +553,8 @@ function render(){
   if(reached&&!a.earnBanned) hero.querySelector('#hcta').onclick=()=>openWithdraw(g);
   app.appendChild(hero);
 
-  // WITHDRAW — ISANG button + selector (pumili kung aling amount)
-  app.appendChild($(`<div class="sh"><div class="t">WITHDRAW</div><div class="x blue">pick an amount</div></div>`));
+  // WITHDRAW — Codashop grid: piliin ang amount = goal mo na rin (makikita sa progress sa taas)
+  app.appendChild($(`<div class="sh"><div class="t">WITHDRAW</div><div class="x blue">tap to set your goal</div></div>`));
   app.appendChild(withdrawPanel(s));
 
   // tournament banner (LIVE EVENT) — bukas ang buong page on tap
