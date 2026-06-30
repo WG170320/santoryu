@@ -184,6 +184,40 @@
   #app>*{animation:rise .42s ease both;}
   #app>*:nth-child(3){animation-delay:.04s;} #app>*:nth-child(5){animation-delay:.08s;} #app>*:nth-child(7){animation-delay:.12s;} #app>*:nth-child(9){animation-delay:.16s;}
   @media (prefers-reduced-motion:reduce){*{animation:none !important;}}
+  /* ── TOURNAMENT ── */
+  .tbanner{position:relative; overflow:hidden; border-radius:18px; padding:16px 16px 15px; cursor:pointer;
+    background:radial-gradient(90% 130% at 92% 6%, rgba(255,45,85,.34), transparent 60%), linear-gradient(125deg,#2a0f1f,#0b0712 62%);
+    border:1px solid rgba(255,45,85,.45); box-shadow:0 12px 32px -14px rgba(255,45,85,.5);}
+  .tbanner:active{transform:scale(.99);}
+  .tbanner .lbl{font-family:'Chakra Petch'; font-weight:700; font-size:10px; letter-spacing:3px; color:#FF7591; display:flex; align-items:center; gap:7px;}
+  .tbanner .live{width:7px;height:7px;border-radius:50%;background:#FF2D55;box-shadow:0 0 9px #FF2D55;animation:blink 1.4s infinite;}
+  @keyframes blink{50%{opacity:.25;}}
+  .tbanner h3{font-family:'Chakra Petch'; font-weight:700; font-size:18px; margin:7px 0 1px;}
+  .tbanner .ppl{font-size:10px;letter-spacing:2px;color:var(--txt2);font-weight:600;}
+  .tbanner .pp{font-family:'Teko'; font-weight:700; font-size:38px; line-height:.85; color:#FFE08A; text-shadow:0 0 18px rgba(232,180,74,.5);}
+  .tbanner .go{position:absolute;right:16px;bottom:15px;display:inline-flex;align-items:center;gap:6px;font-family:'Rajdhani';font-weight:700;font-size:13px;letter-spacing:1px;color:#25F4EE;}
+  .tphero{border-radius:18px;padding:18px;margin-bottom:6px;background:radial-gradient(90% 120% at 90% 6%, rgba(255,45,85,.3), transparent 60%),linear-gradient(140deg,#2a0f1f,#0a0810);border:1px solid rgba(255,45,85,.38);}
+  .tphero h3{font-family:'Chakra Petch';font-weight:700;font-size:20px;}
+  .tphero .desc{font-size:12px;color:var(--txt2);margin-top:4px;line-height:1.45;}
+  .tphero .pp{font-family:'Teko';font-weight:700;font-size:54px;line-height:.85;color:#FFE08A;text-shadow:0 0 22px rgba(232,180,74,.5);margin-top:10px;}
+  .tphero .ppl{font-size:10px;letter-spacing:2px;color:#FF7591;font-weight:700;}
+  .tphero .cd{margin-top:8px;font-family:'Rajdhani';font-weight:700;color:#25F4EE;font-size:14px;}
+  .lbrow{display:flex;align-items:center;gap:11px;padding:10px 4px;border-bottom:1px solid rgba(34,42,52,.55);}
+  .lbrow.me{background:rgba(37,244,238,.07);border:1px solid rgba(37,244,238,.25);border-radius:11px;margin:4px 0;}
+  .lbrow .rk{width:24px;text-align:center;font-family:'Teko';font-weight:700;font-size:21px;color:var(--txt2);flex:0 0 auto;}
+  .lbrow .rk.g{color:#FFD700;} .lbrow .rk.s{color:#C0C8D4;} .lbrow .rk.b{color:#E08A4A;}
+  .lbrow .av{width:38px;height:38px;border-radius:50%;background:#1a1f27;object-fit:cover;flex:0 0 auto;border:1px solid var(--line);}
+  .lbrow .who{flex:1;min-width:0;}
+  .lbrow .who .h{font-family:'Rajdhani';font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .lbrow .who .t2{font-size:11px;color:var(--txt2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .lbrow .views{font-family:'Teko';font-weight:700;font-size:22px;color:#25F4EE;flex:0 0 auto;}
+  .lbrow .views small{font-size:9px;color:var(--txt2);letter-spacing:1px;display:block;text-align:right;margin-top:-3px;}
+  .joinbox input{width:100%;background:#0d1117;border:1px solid var(--line);border-radius:11px;padding:12px;color:var(--txt);font-size:13px;font-family:'Inter';}
+  .joinbox input:focus{outline:none;border-color:#25F4EE;}
+  .joinbtn{margin-top:10px;width:100%;height:48px;border-radius:13px;border:none;cursor:pointer;font-family:'Chakra Petch';font-weight:700;letter-spacing:2px;color:#08161a;background:linear-gradient(110deg,#25F4EE,#FF2D55);box-shadow:0 8px 20px -6px rgba(255,45,85,.5);}
+  .joinbtn:active{transform:scale(.98);} .joinbtn:disabled{opacity:.5;}
+  .myentry{border:1px solid rgba(37,244,238,.3);background:rgba(37,244,238,.06);border-radius:13px;padding:14px;display:flex;align-items:center;gap:12px;}
+
   #loading{position:fixed; inset:0; display:flex; align-items:center; justify-content:center; color:var(--txt2); font-family:'Chakra Petch'; letter-spacing:4px; font-size:12px;}
 </style>
 </head>
@@ -248,7 +282,16 @@ if(!isNative){ window.Android={
   claimMission:(id,b)=>{MOCK.account.balance+=b; setTimeout(()=>window.__earnResult(id,{ok:true}),300);},
   claimWelcome:(id)=>setTimeout(()=>window.__earnResult(id,{ok:true}),200),
   copy:t=>toast("Copied: "+t,'good'), share:t=>console.log("share",t), openLink:u=>console.log("link",u), toast:m=>toast(m),
+  tournamentState:()=>setTimeout(()=>window.__tournamentState(JSON.parse(JSON.stringify(MOCK_T))),80),
+  tournamentJoin:(id,u)=>{ MOCK_T.myEntry={views:1234,tiktokUser:"you",videoUrl:u,title:"Your clip"}; MOCK_T.myRank=4; MOCK_T.count++; setTimeout(()=>window.__earnResult(id,{ok:true,views:1234}),400); },
 };}
+let MOCK_T={ ok:true, event:{id:"evt1",title:"TikTok Highlight Cup",prize:"₱5,000",prizePool:5000,desc:"Post your best MLBB clip on TikTok. Most views wins the pool!",status:"open",endTs:Date.now()+9*86400000},
+  count:3, myRank:null, myEntry:null,
+  entries:[
+    {rank:1,name:"Aki",tiktokUser:"akiplays",tiktokAvatar:"",views:1290000,title:"Insane Fanny 1v5",videoUrl:"#",mine:false},
+    {rank:2,name:"Rey",tiktokUser:"reyttv",tiktokAvatar:"",views:842000,title:"Gusion combo tutorial",videoUrl:"#",mine:false},
+    {rank:3,name:"Mika",tiktokUser:"mikagg",tiktokAvatar:"",views:233000,title:"Late game carry",videoUrl:"#",mine:false},
+  ]};
 
 //=== custom toast + reward gain ===================================================
 function toast(msg,kind){
@@ -322,6 +365,17 @@ function render(){
     tg.appendChild(el);
   });
   app.appendChild(tg);
+
+  // tournament banner (LIVE EVENT) — bukas ang buong page on tap
+  app.appendChild($(`<div class="sh"><div class="t">LIVE EVENT</div></div>`));
+  const tb=$(`<div class="tbanner" id="tbanner">
+    <div class="lbl"><span class="live"></span> TIKTOK TOURNAMENT</div>
+    <h3 id="tbTitle">TikTok Highlight Cup</h3>
+    <div class="ppl">PRIZE POOL</div><div class="pp" id="tbPrize">—</div>
+    <div class="go">JOIN ›</div></div>`);
+  tb.onclick=openTournament;
+  app.appendChild(tb);
+  updateBanner();
 
   // daily (GOLD points)
   const dAvail=s.dailyKnown&&s.dailyAvailable;
@@ -432,6 +486,79 @@ function openInvited(){
   });
 }
 
+//=== tournament ==================================================================
+let TOURN=null, tournBody=null, tcdT=null;
+window.__tournamentState=(s)=>{ TOURN=s; updateBanner(); if(tournBody) renderTournament(); };
+function fmtViews(n){ n=+n||0; if(n>=1e6)return (n/1e6).toFixed(n>=1e7?0:1).replace(/\.0$/,'')+'M'; if(n>=1e3)return (n/1e3).toFixed(n>=1e5?0:1).replace(/\.0$/,'')+'K'; return ''+n; }
+function msLeft(ts){ return Math.max(0,(+ts||0)-Date.now()); }
+function updateBanner(){
+  const t=document.getElementById('tbPrize'), ti=document.getElementById('tbTitle');
+  if(!t) return;
+  if(!TOURN||!TOURN.event){ t.textContent='Coming soon'; return; }
+  t.textContent=TOURN.event.prize||('₱'+(+TOURN.event.prizePool||0).toLocaleString());
+  if(ti&&TOURN.event.title) ti.textContent=TOURN.event.title;
+}
+function openTournament(){
+  if(!(window.Android&&window.Android.tournamentState)){ toast('Update the app to join tournaments','bad'); return; }
+  const pg=$(`<div class="page"><div class="pgh"><div class="pgback">${IC.back}</div><h2>Tournament</h2></div><div id="tbody"><div class="empty">Loading…</div></div></div>`);
+  pg.querySelector('.pgback').onclick=()=>{ tournBody=null; if(tcdT)clearInterval(tcdT); pg.remove(); };
+  document.body.appendChild(pg);
+  tournBody=pg.querySelector('#tbody');
+  window.Android.tournamentState();
+  if(TOURN) renderTournament();
+}
+function renderTournament(){
+  if(!tournBody) return; const s=TOURN; if(!s) return;
+  tournBody.innerHTML=''; const ev=s.event;
+  if(!ev){ tournBody.appendChild($(`<div class="empty">No active event right now.<br>Check back soon for the next tournament.</div>`)); return; }
+  tournBody.appendChild($(`<div class="tphero"><h3>${esc(ev.title||'Tournament')}</h3>
+    <div class="desc">${esc(ev.desc||'')}</div>
+    <div class="ppl" style="margin-top:10px">PRIZE POOL</div><div class="pp">${esc(ev.prize||('₱'+(+ev.prizePool||0).toLocaleString()))}</div>
+    <div class="cd" id="tcd"></div></div>`));
+  if(ev.endTs) tCountdown(tournBody.querySelector('#tcd'), ev.endTs);
+  if(s.myEntry){
+    tournBody.appendChild($(`<div class="sh"><div class="t">YOUR ENTRY</div><div class="x" style="color:#25F4EE">RANK #${s.myRank||'-'}</div></div>`));
+    const me=$(`<div class="myentry"><div class="views" style="font-size:30px;color:#25F4EE;font-family:Teko;font-weight:700">${fmtViews(s.myEntry.views)}<small style="display:block;font-size:9px;color:var(--txt2);letter-spacing:1px">VIEWS</small></div>
+      <div class="who" style="flex:1;min-width:0"><div class="h" style="font-family:Rajdhani;font-weight:700;font-size:15px">@${esc(s.myEntry.tiktokUser||'you')}</div><div class="t2" style="font-size:11px;color:var(--txt2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(s.myEntry.title||'Your submission')}</div></div>
+      <button class="btn" style="background:rgba(37,244,238,.14);color:#25F4EE;border:1px solid rgba(37,244,238,.4)">OPEN</button></div>`);
+    me.querySelector('button').onclick=()=>window.Android.openLink(s.myEntry.videoUrl);
+    tournBody.appendChild(me);
+  } else if(ev.status==='open'){
+    tournBody.appendChild($(`<div class="sh"><div class="t">JOIN · 1 VIDEO PER EVENT</div></div>`));
+    const jb=$(`<div class="card joinbox"><input id="tvurl" placeholder="Paste your TikTok video link">
+      <button class="joinbtn" id="tjoin">SUBMIT MY ENTRY</button>
+      <div style="font-size:10.5px;color:var(--txt2);margin-top:9px;line-height:1.4">We read your views &amp; TikTok profile automatically. 1 account per device.</div></div>`);
+    jb.querySelector('#tjoin').onclick=async()=>{
+      const u=jb.querySelector('#tvurl').value.trim(); if(!u){ toast('Paste your TikTok link','bad'); return; }
+      const b=jb.querySelector('#tjoin'); b.textContent='SUBMITTING…'; b.disabled=true;
+      const r=await call('tournamentJoin',u);
+      if(r.ok){ toast('Entry submitted!','good'); window.Android.tournamentState(); }
+      else { b.textContent='SUBMIT MY ENTRY'; b.disabled=false; toast(tjErr(r.error),'bad'); }
+    };
+    tournBody.appendChild(jb);
+  }
+  tournBody.appendChild($(`<div class="sh"><div class="t">LEADERBOARD</div><div class="x">${s.count||0} entries</div></div>`));
+  if(!s.entries||!s.entries.length){ tournBody.appendChild($(`<div class="empty">No entries yet — be the first!</div>`)); return; }
+  const lb=$(`<div class="card"></div>`);
+  s.entries.forEach(e=>{
+    const rkc=e.rank===1?'g':e.rank===2?'s':e.rank===3?'b':'';
+    const row=$(`<div class="lbrow ${e.mine?'me':''}"><div class="rk ${rkc}">${e.rank}</div>
+      ${e.tiktokAvatar?`<img class="av" src="${esc(e.tiktokAvatar)}" referrerpolicy="no-referrer">`:'<div class="av"></div>'}
+      <div class="who"><div class="h">@${esc(e.tiktokUser||e.name)}</div><div class="t2">${esc(e.title||'')}</div></div>
+      <div class="views">${fmtViews(e.views)}<small>VIEWS</small></div></div>`);
+    if(e.videoUrl) row.onclick=()=>window.Android.openLink(e.videoUrl);
+    lb.appendChild(row);
+  });
+  tournBody.appendChild(lb);
+}
+function tjErr(e){return({closed:'The event is closed.',device_used:'This device already joined (1 per device).',already_joined:'You already submitted your video.',bad_video:'Could not read that TikTok link — double-check it.',missing:'Paste your TikTok link.'})[e]||'Could not join. Try again.';}
+function tCountdown(el,endTs){ if(tcdT)clearInterval(tcdT);
+  function tick(){ const ms=msLeft(endTs); if(ms<=0){ el.textContent='Event ended'; clearInterval(tcdT); return; }
+    const d=Math.floor(ms/86400000),h=Math.floor(ms%86400000/3600000),m=Math.floor(ms%3600000/60000);
+    el.textContent='Ends in '+(d>0?d+'d ':'')+h+'h '+m+'m'; }
+  tick(); tcdT=setInterval(tick,30000);
+}
+
 //=== withdraw modal ===============================================================
 function openWithdraw(tier){
   const ov=$(`<div class="ov"><div class="modal">
@@ -489,6 +616,8 @@ function startCountdown(el,ms){
 }
 
 requestState();
+// kunin din ang tournament event para mapunan ang prize sa banner
+setTimeout(()=>{ try{ window.Android.tournamentState(); }catch(e){} }, 300);
 </script>
 </body>
 </html>
