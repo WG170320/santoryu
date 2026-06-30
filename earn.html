@@ -45,11 +45,11 @@
     background:linear-gradient(100deg, rgba(8,11,16,.94) 26%, rgba(8,11,16,.55) 58%, rgba(8,11,16,.25) 100%), url('hero-with.jpg') center/cover #080b10;
     border:1px solid rgba(77,166,255,.40); box-shadow:0 14px 40px -14px rgba(77,166,255,.34), inset 0 1px 0 rgba(255,255,255,.08);}
   .eyebrow{font-family:'Chakra Petch'; font-weight:700; font-size:10.5px; letter-spacing:3px; color:var(--cyan); text-shadow:0 0 12px rgba(95,230,255,.5);}
-  .reward{display:flex; align-items:baseline; gap:9px; margin-top:2px;}
-  .num{font-family:'Teko'; font-weight:700; font-size:74px; line-height:.85; color:var(--blue-hi); text-shadow:0 2px 16px rgba(77,166,255,.45);}
-  .rlabel{line-height:1; padding-bottom:5px; font-family:'Rajdhani';}
-  .rlabel .a{font-weight:700; font-size:22px; letter-spacing:1px; display:block;}
-  .rlabel .b{font-weight:600; font-size:15px; letter-spacing:5px; color:var(--txt2); display:block;}
+  .reward{display:flex; align-items:center; gap:10px; margin-top:2px;}
+  .num{font-family:'Teko'; font-weight:700; font-size:72px; line-height:.8; color:var(--blue-hi); text-shadow:0 2px 16px rgba(77,166,255,.45);}
+  .rlabel{font-family:'Rajdhani'; line-height:1.05;}
+  .rlabel .a{font-weight:700; font-size:23px; letter-spacing:1px; display:block;}
+  .rlabel .b{font-weight:600; font-size:14px; letter-spacing:4.5px; color:var(--txt2); display:block; margin-top:1px;}
   .sub{font-size:11px; color:var(--txt2); margin-top:10px; font-weight:500; max-width:185px; line-height:1.4;}
   .emblem{display:none;}
   @keyframes floaty{0%,100%{transform:translateY(-44%);}50%{transform:translateY(-37%);}}
@@ -271,6 +271,21 @@
   .rule2 .ck{color:var(--emerald);font-weight:800;flex:0 0 auto;}
   .tutclose{margin-top:13px;flex:0 0 auto;width:100%;height:44px;border-radius:12px;border:none;cursor:pointer;font-family:'Chakra Petch';font-weight:700;letter-spacing:2px;color:#04121f;background:linear-gradient(110deg,#25F4EE,#FF2D55);}
   .tutclose:active{transform:scale(.98);}
+  .infotext{font-size:13px;line-height:1.55;color:var(--txt2);padding-right:4px;}
+  /* mission card (premium) */
+  .mission{background:radial-gradient(120% 100% at 100% 0%, rgba(232,180,74,.12), transparent 60%), var(--surf);border-color:rgba(232,180,74,.28);}
+  .mission-ic{background:rgba(232,180,74,.16) !important;}
+  .mreward{font-family:'Rajdhani';font-weight:700;font-size:16px;color:var(--gold);display:flex;align-items:center;gap:5px;flex:0 0 auto;}
+  .mfoot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:11px;}
+  .mprog{font-family:'Rajdhani';font-weight:600;font-size:12px;color:var(--txt2);}
+  /* share single button */
+  .sbtn.shareone{width:100%;margin-top:9px;}
+  /* legal footer */
+  .legal{display:flex;align-items:center;justify-content:center;gap:8px;margin:22px 0 4px;flex-wrap:wrap;}
+  .lgl{background:none;border:none;cursor:pointer;font-family:'Inter';font-size:11.5px;color:var(--txt2);padding:4px 2px;}
+  .lgl:active{opacity:.6;}
+  .lgl.danger{color:var(--danger);opacity:.85;}
+  .lgd{color:var(--line);font-size:11px;}
 
   #loading{position:fixed; inset:0; display:flex; align-items:center; justify-content:center; color:var(--txt2); font-family:'Chakra Petch'; letter-spacing:4px; font-size:12px;}
 </style>
@@ -452,13 +467,21 @@ function render(){
   else if(s.dailyKnown) startCountdown(dCard.querySelector('#dd'),s.dailyMs);
   app.appendChild(dCard);
 
-  // mission
+  appendTasks(app,s);
+
+  // mission (premium card)
   const done=Math.min(c.missionGoal,Math.max(0,a.referralCount-a.missionBaseline)),mReady=done>=c.missionGoal&&!a.earnBanned;
-  app.appendChild($(`<div class="sh"><div class="t">REFERRAL MISSION</div><div class="x"><span class="dia gold" style="width:9px;height:9px"></span> +${c.missionBonus}</div></div>`));
-  const mCard=$(`<div class="card"><div class="rowflex"><div class="di" style="background:rgba(232,180,74,.14)">${II('ic-mission')}</div>
-    <div class="gleft"><div class="n">Invite ${c.missionGoal} friends</div><div class="d">${done} / ${c.missionGoal} joined — earn ${c.missionBonus} points</div></div>
-    <button class="act ${mReady?'on':'off'}" id="mb">${mReady?'CLAIM':done+'/'+c.missionGoal}</button></div>
-    <div class="track" style="margin-top:11px"><div class="fill" data-w="${Math.round(done/c.missionGoal*100)}"></div></div></div>`);
+  app.appendChild($(`<div class="sh"><div class="t">REFERRAL MISSION</div></div>`));
+  const mCard=$(`<div class="card mission">
+    <div class="rowflex">
+      <div class="di mission-ic">${II('ic-mission')}</div>
+      <div class="gleft"><div class="n">Invite ${c.missionGoal} friends</div><div class="d">Reach the goal to claim a big bonus</div></div>
+      <div class="mreward"><span class="dia gold" style="width:13px;height:13px"></span>+${c.missionBonus}</div>
+    </div>
+    <div class="track" style="margin-top:13px"><div class="fill" data-w="${Math.round(done/c.missionGoal*100)}"></div></div>
+    <div class="mfoot"><span class="mprog">${done} / ${c.missionGoal} friends joined</span>
+      <button class="act ${mReady?'on':'off'}" id="mb">${mReady?'CLAIM BONUS':'KEEP INVITING'}</button></div>
+  </div>`);
   if(mReady) mCard.querySelector('#mb').onclick=async e=>{e.target.textContent='…'; const r=await call('claimMission',c.missionBonus,a.referralCount); if(r.ok) gainFx(c.missionBonus,'gold'); requestState();};
   app.appendChild(mCard);
 
@@ -467,15 +490,13 @@ function render(){
   const link='https://santoryutoolkit.com/?ref='+encodeURIComponent(s.code);
   const iv=$(`<div class="card inv">
     <div class="row1"><div class="code">${esc(s.code)}</div><button class="icb copy" id="cpy">${II('ic-copy')}</button></div>
-    <div class="share2"><button class="sbtn code" id="shc">${II('ic-share')}<span>Share code</span></button>
-      <button class="sbtn link" id="shl">${IC.link}<span>Share link</span></button></div>
+    <button class="sbtn code shareone" id="shc">${II('ic-share')}<span>Share my invite code</span></button>
     ${a.referred
       ? `<div class="appliedbox"><span class="ckc">✓</span><div class="apl"><div class="apt">FRIEND CODE APPLIED</div><div class="apc2">${esc(a.referredByCode||'—')}</div></div><span class="lock">🔒</span></div>`
       : `<div class="applywrap"><div class="applylbl">Got a friend's code? Apply it for a bonus.</div><div class="applybox"><input id="apc" placeholder="Enter a friend's code" maxlength="20"><button id="apb">APPLY</button></div></div>`}
   </div>`);
   iv.querySelector('#cpy').onclick=()=>{window.Android.copy(s.code); toast('Code copied!','good');};
   iv.querySelector('#shc').onclick=()=>window.Android.share('Join Santoryu Toolkit and get FREE MLBB diamonds! Use my code '+s.code+' — '+link);
-  iv.querySelector('#shl').onclick=()=>window.Android.share(link);
   if(!a.referred){ const ab=iv.querySelector('#apb'); ab.onclick=async()=>{
     const v=iv.querySelector('#apc').value.trim().toUpperCase(); if(!v){toast('Enter a code','bad'); return;}
     ab.textContent='…'; const r=await call('applyReferral',v);
@@ -494,25 +515,95 @@ function render(){
   navc.appendChild(r1); navc.appendChild(r2);
   app.appendChild(navc);
 
-  // tasks
-  if(s.tasks&&s.tasks.length){
-    app.appendChild($(`<div class="sh"><div class="t">TASKS</div></div>`));
-    const tc=$(`<div class="card"></div>`);
-    s.tasks.forEach(t=>{
-      const row=$(`<div class="task rowflex" style="padding:11px 0;border-bottom:1px solid rgba(34,42,52,.6)">
-        <div class="di" style="background:rgba(95,160,255,.12)">${taskIcon(t)}</div>
-        <div class="gleft"><div class="n">${esc(t.title)}</div><div class="d">${esc(t.desc)}</div></div>
-        <button class="act ${t.claimed?'off':'on'}">${t.claimed?'DONE':'<span class="dia gold" style="width:8px;height:8px"></span> +'+t.reward}</button></div>`);
-      if(!t.claimed) row.querySelector('button').onclick=()=> isReview(t)?openReview(t):doTask(t);
-      tc.appendChild(row);
-    });
-    tc.lastChild.style.borderBottom='none';
-    app.appendChild(tc);
-  }
+  // legal footer (Terms / Privacy / Delete account)
+  const ft=$(`<div class="legal">
+    <button class="lgl" id="lglTerms">Terms of Use</button><span class="lgd">·</span>
+    <button class="lgl" id="lglPriv">Data Policy</button><span class="lgd">·</span>
+    <button class="lgl danger" id="lglDel">Delete account</button>
+  </div>`);
+  ft.querySelector('#lglTerms').onclick=()=>openInfo('Terms of Use',TERMS_TEXT(c.perInvite));
+  ft.querySelector('#lglPriv').onclick=()=>openInfo('Data Policy',PRIVACY_TEXT);
+  ft.querySelector('#lglDel').onclick=openDelete;
+  app.appendChild(ft);
 
   // animate progress fills after layout
   requestAnimationFrame(()=>document.querySelectorAll('.fill[data-w]').forEach(f=>f.style.width=f.dataset.w+'%'));
 }
+
+function appendTasks(app,s){
+  if(!(s.tasks&&s.tasks.length)) return;
+  app.appendChild($(`<div class="sh"><div class="t">TASKS</div></div>`));
+  const tc=$(`<div class="card"></div>`);
+  s.tasks.forEach(t=>{
+    const row=$(`<div class="task rowflex" style="padding:11px 0;border-bottom:1px solid rgba(34,42,52,.6)">
+      <div class="di" style="background:rgba(95,160,255,.12)">${taskIcon(t)}</div>
+      <div class="gleft"><div class="n">${esc(t.title)}</div><div class="d">${esc(t.desc)}</div></div>
+      <button class="act ${t.claimed?'off':'on'}">${t.claimed?'DONE':'<span class="dia gold" style="width:8px;height:8px"></span> +'+t.reward}</button></div>`);
+    if(!t.claimed) row.querySelector('button').onclick=()=> isReview(t)?openReview(t):doTask(t);
+    tc.appendChild(row);
+  });
+  tc.lastChild.style.borderBottom='none';
+  app.appendChild(tc);
+}
+
+//=== legal (Terms / Data Policy / Delete account) ================================
+const TERMS_TEXT=(perInvite)=>`Welcome to the Santoryu Diamond rewards program.
+
+1. Diamonds are loyalty points earned by inviting friends with your code (${perInvite} per valid invite). They have no cash value and cannot be transferred or sold.
+
+2. A referral is credited only after we confirm the invite is genuine.
+
+3. Invites must be real friends. Fake, automated, duplicate, or abusive activity is not allowed and will void the affected diamonds.
+
+4. Withdrawals: rewards (MLBB Diamonds) are delivered manually to the Mobile Legends account you provide; processing may take time.
+
+5. We may adjust diamond rates, withdrawal tiers, or reject any request we believe is not legitimate. Balances obtained through abuse may be removed without notice.
+
+6. This program is a community perk, provided "as is", and is not affiliated with or endorsed by Moonton / Mobile Legends.
+
+By using the Earn tab you agree to these terms.`;
+const PRIVACY_TEXT=`Your privacy matters. Here is exactly what we do.
+
+WHAT WE COLLECT
+- An anonymous device ID (not linked to your name).
+- Your chosen display name and avatar.
+- Anonymous technical signals, used only to keep rewards fair and stop cheating.
+- ONLY when you withdraw: your Mobile Legends Game ID and Server, so we can send your reward.
+
+WHAT WE DO NOT COLLECT
+- No email, no password, no real name.
+- No phone number, no location.
+- No payment or card details, ever.
+
+HOW WE USE IT
+- To run the invite and withdrawal system and to send your reward.
+- To keep the rewards fair and stop cheating.
+
+We never sell your data. You can delete your data anytime from the Earn tab.
+
+This app is independent and not affiliated with Moonton or Mobile Legends.`;
+function openInfo(title,text){
+  const ov=$(`<div class="ov"><div class="modal tutmodal">
+    <h3>${esc(title)}</h3>
+    <div class="tutscroll infotext">${esc(text).replace(/\n/g,'<br>')}</div>
+    <button class="tutclose">CLOSE</button>
+  </div></div>`);
+  document.body.appendChild(ov);
+  ov.querySelector('.tutclose').onclick=()=>ov.remove();
+  ov.onclick=e=>{ if(e.target===ov) ov.remove(); };
+}
+function openDelete(){
+  const ov=$(`<div class="ov"><div class="modal">
+    <h3 style="color:var(--danger)">Delete account?</h3>
+    <p>This permanently removes your profile, diamonds, and data from our servers. This cannot be undone.</p>
+    <div class="mrow"><button class="btn ghost" id="dx">Cancel</button><button class="btn" id="dok" style="background:var(--danger);color:#fff">Delete</button></div>
+  </div></div>`);
+  document.body.appendChild(ov);
+  ov.querySelector('#dx').onclick=()=>ov.remove();
+  ov.querySelector('#dok').onclick=()=>{ ov.querySelector('#dok').textContent='Deleting…'; window.Android.deleteAccount(); };
+  ov.onclick=e=>{ if(e.target===ov) ov.remove(); };
+}
+window.__accountDeleted=()=>{ document.querySelectorAll('.ov').forEach(o=>o.remove()); toast('Your account and data were deleted','good'); requestState(); };
 
 async function doTask(t){
   if(t.link&&t.link!=='#') window.Android.openLink(t.link);
