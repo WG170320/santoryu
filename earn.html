@@ -272,6 +272,11 @@
   .tutclose{margin-top:13px;flex:0 0 auto;width:100%;height:44px;border-radius:12px;border:none;cursor:pointer;font-family:'Chakra Petch';font-weight:700;letter-spacing:2px;color:#04121f;background:linear-gradient(110deg,#25F4EE,#FF2D55);}
   .tutclose:active{transform:scale(.98);}
   .infotext{font-size:13px;line-height:1.55;color:var(--txt2);padding-right:4px;}
+  /* bottom-sheet dialog (robust on any viewport — hindi ma-cut) */
+  .ov.sheetov{align-items:flex-end; padding:0;}
+  .modal.sheet{width:100%; max-width:none; border-radius:22px 22px 0 0; max-height:86vh; padding:8px 16px 22px; animation:sheetup .26s cubic-bezier(.2,.9,.3,1) both; transform:none;}
+  @keyframes sheetup{from{transform:translateY(100%);} to{transform:translateY(0);}}
+  .sheeth{width:38px;height:4px;border-radius:2px;background:var(--line);margin:2px auto 12px;flex:0 0 auto;}
   /* mission card (premium) */
   .mission{background:radial-gradient(120% 100% at 100% 0%, rgba(232,180,74,.12), transparent 60%), var(--surf);border-color:rgba(232,180,74,.28);}
   .mission-ic{background:rgba(232,180,74,.16) !important;}
@@ -585,7 +590,8 @@ We never sell your data. You can delete your data anytime from the Earn tab.
 
 This app is independent and not affiliated with Moonton or Mobile Legends.`;
 function openInfo(title,text){
-  const ov=$(`<div class="ov"><div class="modal tutmodal">
+  const ov=$(`<div class="ov sheetov"><div class="modal tutmodal sheet">
+    <div class="sheeth"></div>
     <h3>${esc(title)}</h3>
     <div class="tutscroll infotext">${esc(text).replace(/\n/g,'<br>')}</div>
     <button class="tutclose">CLOSE</button>
@@ -727,7 +733,8 @@ function renderTournament(){
 function openTournRules(ev){
   const steps=(ev.steps||[]).map((s,i)=>`<div class="step"><div class="num">${i+1}</div><div class="stx">${esc(s)}</div></div>`).join('');
   const rules=(ev.rules||[]).map(r=>`<div class="rule2"><span class="ck">✓</span><span>${esc(r)}</span></div>`).join('');
-  const ov=$(`<div class="ov"><div class="modal tutmodal">
+  const ov=$(`<div class="ov sheetov"><div class="modal tutmodal sheet">
+    <div class="sheeth"></div>
     <h3>How to Join</h3>
     <div class="tutscroll">
       <div class="task"><div class="lbl2">THIS WEEK'S TASK</div><div class="v2">${esc(ev.task||'Weekly video task')}</div></div>
