@@ -314,6 +314,18 @@
   #loading{position:fixed; inset:0; display:flex; flex-direction:column; gap:14px; align-items:center; justify-content:center; color:var(--txt2); font-family:'Chakra Petch'; letter-spacing:4px; font-size:11px;}
   #loading .spin{width:38px;height:38px;border-radius:50%;border:3px solid rgba(95,230,255,.15);border-top-color:var(--cyan);animation:spin .8s linear infinite;}
   @keyframes spin{to{transform:rotate(360deg);}}
+  /* profile card */
+  .profile{display:flex; align-items:center; gap:13px; background:var(--surf); border:1px solid var(--line); border-radius:16px; padding:12px 15px; margin-bottom:14px;}
+  .pf-av{width:50px; height:50px; border-radius:50%; object-fit:cover; flex:none; border:2px solid rgba(232,180,74,.5); background:linear-gradient(135deg,#27405e,#16222f);}
+  .pf-ini{display:flex; align-items:center; justify-content:center; font-family:'Teko'; font-size:27px; color:#FFD980;}
+  .pf-mid{flex:1; min-width:0;}
+  .pf-name{font-family:'Chakra Petch'; font-weight:700; font-size:16px; color:#fff; display:flex; align-items:center; gap:7px;}
+  .pf-badge{font-size:8.5px; letter-spacing:.5px; background:linear-gradient(180deg,#FFD980,#F5B445); color:#3a2600; padding:2px 6px; border-radius:5px; font-weight:800;}
+  .pf-sub{font-size:11.5px; color:var(--txt2); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .pf-sub b{color:var(--gold-hi); letter-spacing:.5px;}
+  .pf-stat{text-align:center; flex:none; padding-left:13px; border-left:1px solid var(--line);}
+  .pf-sv{font-family:'Teko'; font-size:25px; color:#9BD4FF; line-height:.85;}
+  .pf-sl{font-size:8px; letter-spacing:1px; color:var(--txt2); margin-top:3px;}
   /* winner claim (celebration) */
   .winwrap{padding:6px 18px 44px; text-align:center;}
   .wintrophy{position:relative; width:172px; height:172px; margin:8px auto 2px;}
@@ -410,7 +422,7 @@ let MOCK={ uid:"dev-demo", code:"SANT-AB12-CD34", isAdmin:false,
   config:{perInvite:5,inviteeBonus:5,welcomeBonus:5,dailyBonus:15,missionGoal:5,missionBonus:50,missionHours:24},
   tiers:[{mlbb:22,cost:80,firstOnly:true},{mlbb:112,cost:250,firstOnly:false},{mlbb:223,cost:500,firstOnly:false},{mlbb:336,cost:700,firstOnly:false},{mlbb:570,cost:1000,firstOnly:false},{mlbb:1163,cost:2000,firstOnly:false}],
   tasks:[{id:"download_cliptok",title:"Download ClipTok",desc:"Install our partner app — Video & Photo Saver.",link:"https://play.google.com/store/apps/details?id=com.warlito.clipto",logo:"",reward:10,claimed:false},{id:"rate_5star",title:"Rate us 5 stars",desc:"Write an honest review on Google Play.",link:"https://play.google.com/store/apps/details?id=com.warlito.clipto",logo:"",reward:5,claimed:false}],
-  account:{balance:340,earned:560,referralCount:3,firstWithdrawUsed:true,earnBanned:false,welcomeClaimed:true,referred:false,lastDailyDay:0,missionStart:0,missionBaseline:0,name:"You"},
+  account:{balance:340,earned:560,referralCount:3,firstWithdrawUsed:true,earnBanned:false,welcomeClaimed:true,referred:false,lastDailyDay:0,missionStart:0,missionBaseline:0,name:"Kairi",avatarUrl:"https://kappa.lol/7Xnnlc"},
   history:[{mlbb:22,cost:80,status:"fulfilled",ts:Date.now()-86400000,refunded:false},{mlbb:112,cost:250,status:"pending",ts:Date.now()-3600000,refunded:false}],
   invited:[{name:"Justin",ts:Date.now()-7200000},{name:"Vince",ts:Date.now()-90000000},{name:"Maher",ts:Date.now()-180000000}],
   dailyAvailable:true, dailyKnown:true, dailyMs:0 };
@@ -478,6 +490,18 @@ function render(){
     <div class="brand"><div class="logo"><span class="dia gold" style="width:16px;height:16px"></span></div>
       <div><h1>Earn</h1><small>SANTORYU REWARDS</small></div></div>
     <div class="balpill"><span class="dia gold" style="width:15px;height:15px"></span><span class="v">${a.balance.toLocaleString()}</span></div>
+  </div>`));
+
+  // profile card (sino ka — avatar, pangalan, invite code, total earned)
+  const pfav = a.avatarUrl ? `<img class="pf-av" src="${esc(a.avatarUrl)}" alt="" onerror="this.removeAttribute('src');this.classList.add('pf-ini');this.textContent='${esc((a.name||'U').slice(0,1).toUpperCase())}'">`
+    : `<div class="pf-av pf-ini">${esc((a.name||'U').slice(0,1).toUpperCase())}</div>`;
+  app.appendChild($(`<div class="profile">
+    ${pfav}
+    <div class="pf-mid">
+      <div class="pf-name">${esc(a.name||'Player')}${s.isAdmin?'<span class="pf-badge">ADMIN</span>':''}</div>
+      <div class="pf-sub">Invite code · <b>${esc(s.code||'—')}</b></div>
+    </div>
+    <div class="pf-stat"><div class="pf-sv">${(a.earned||0).toLocaleString()}</div><div class="pf-sl">TOTAL EARNED</div></div>
   </div>`));
 
   // hero (BLUE)
