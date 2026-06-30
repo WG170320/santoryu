@@ -23,9 +23,9 @@
   .hide{display:none !important;}
 
   /* diamonds = REAL provided asset (diamond.webp). BLUE = MLBB (withdraw), GOLD = points (tinted) */
-  .dia{display:inline-block; vertical-align:middle; background:url('diamond.webp') center/contain no-repeat;}
-  .dia.gold{filter:sepia(1) saturate(4.2) hue-rotate(2deg) brightness(1.08);}
-  .dia.blue{filter:none;}
+  .dia{display:inline-block; vertical-align:middle; background-position:center; background-repeat:no-repeat; background-size:contain;}
+  .dia.blue{background-image:url('gem-blue.png');}
+  .dia.gold{background-image:url('gem-gold.png');}
 
   /* header (now in HTML) */
   .head{display:flex; align-items:center; justify-content:space-between; padding:4px 2px 0; margin-bottom:15px;}
