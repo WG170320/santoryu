@@ -812,11 +812,13 @@ function openWinnerClaim(ev){
       <div class="winform">
         <label>MLBB Game ID</label><input id="wgid" inputmode="numeric" placeholder="e.g. 123456789">
         <label>Server ID</label><input id="wsrv" inputmode="numeric" placeholder="e.g. 1234">
+        <div id="wmlchk" style="min-height:18px;margin:6px 2px 8px"></div>
         <button class="winclaim" id="wclaim">CLAIM MY PRIZE</button>
         <div class="winnote">We'll send the diamonds straight to your MLBB account after a quick review.</div>
       </div>
     </div></div>`);
   pg.querySelector('.pgback').onclick=()=>closePage(pg);
+  wireMlbb(pg.querySelector('#wgid'),pg.querySelector('#wsrv'),pg.querySelector('#wmlchk'));
   pg.querySelector('#wclaim').onclick=async()=>{
     const gid=pg.querySelector('#wgid').value.trim(), srv=pg.querySelector('#wsrv').value.trim();
     if(!gid){ toast('Enter your MLBB Game ID','bad'); return; }
@@ -922,15 +924,40 @@ function tCountdown(el,endTs){ if(tcdT)clearInterval(tcdT);
 }
 
 //=== withdraw modal ===============================================================
+//=== MLBB account verify (ID + server -> in-game name) — para sigurado ang user + admin ===
+const MLBB_CHECK_URL='https://asia-southeast1-diamond-bang-92125.cloudfunctions.net/mlbbCheck';
+function mlbbVerify(id,server){ return fetch(MLBB_CHECK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,zone:server})}).then(r=>r.json()).catch(()=>({ok:false,error:'network'})); }
+// I-wire ang dalawang input (id + server) sa isang output element. Auto-check (debounced)
+// kapag valid ang format. Itinatago ang verified nick sa outEl.dataset.ign.
+function wireMlbb(idEl,srvEl,outEl){
+  let t=null,last='';
+  const run=()=>{
+    const id=(idEl.value||'').trim(),srv=(srvEl.value||'').trim();
+    outEl.dataset.ign='';
+    if(!/^\d{5,12}$/.test(id)||!/^\d{1,6}$/.test(srv)){ outEl.innerHTML=''; last=''; return; }
+    const key=id+'_'+srv; if(key===last) return; last=key;
+    outEl.innerHTML='<span style="color:var(--txt2);font-size:13px">Checking account…</span>';
+    mlbbVerify(id,srv).then(r=>{
+      if((idEl.value.trim()+'_'+srvEl.value.trim())!==key) return; // stale
+      if(r&&r.ok&&r.nick){ outEl.dataset.ign=r.nick;
+        outEl.innerHTML='<span style="display:inline-flex;align-items:center;gap:6px;color:#34d399;font-weight:700;font-size:13.5px"><span style="font-weight:900">✓</span>'+esc(r.nick)+'</span>'; }
+      else { outEl.innerHTML='<span style="color:#f2a33c;font-size:13px">Account not found — i-check ang Game ID at Server</span>'; }
+    });
+  };
+  const deb=()=>{ if(t)clearTimeout(t); t=setTimeout(run,500); };
+  idEl.addEventListener('input',deb); srvEl.addEventListener('input',deb);
+}
 function openWithdraw(tier){
   const ov=$(`<div class="ov"><div class="modal">
     <h3>Withdraw ${tier.mlbb} MLBB Diamonds</h3>
     <p>Costs <b style="color:var(--gold-hi)">${tier.cost.toLocaleString()} points</b>. Topped up to your MLBB account after admin review.</p>
     <label>GAME ID</label><input id="gid" inputmode="numeric" placeholder="e.g. 123456789">
     <label>SERVER ID</label><input id="srv" inputmode="numeric" placeholder="e.g. 1234">
+    <div id="mlchk" style="min-height:18px;margin:6px 2px 2px"></div>
     <div class="err" id="we"></div>
     <div class="mrow"><button class="btn ghost" id="wx">Cancel</button><button class="btn go" id="wok">Withdraw</button></div></div></div>`);
   document.body.appendChild(ov);
+  wireMlbb(ov.querySelector('#gid'),ov.querySelector('#srv'),ov.querySelector('#mlchk'));
   ov.querySelector('#wx').onclick=()=>ov.remove();
   ov.querySelector('#wok').onclick=async()=>{
     const gid=ov.querySelector('#gid').value.trim(),srv=ov.querySelector('#srv').value.trim(),e=ov.querySelector('#we');
