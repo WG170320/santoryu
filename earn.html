@@ -88,6 +88,7 @@
   .di{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex:0 0 auto; overflow:hidden;}
   .di svg{width:21px;height:21px;}
   .di img{width:100%;height:100%;object-fit:cover;}
+  .icimg{width:28px;height:28px;object-fit:contain;display:block;filter:drop-shadow(0 2px 4px rgba(0,0,0,.4));}
   .gleft{flex:1; min-width:0;}
   .gleft .n{font-family:'Rajdhani'; font-weight:700; font-size:16px; line-height:1.15;}
   .gleft .d{font-size:11px; color:var(--txt2); margin-top:1px;}
@@ -212,6 +213,12 @@
   .lbrow .who .t2{font-size:11px;color:var(--txt2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .lbrow .views{font-family:'Teko';font-weight:700;font-size:22px;color:#25F4EE;flex:0 0 auto;}
   .lbrow .views small{font-size:9px;color:var(--txt2);letter-spacing:1px;display:block;text-align:right;margin-top:-3px;}
+  .avwrap{position:relative;width:44px;height:44px;flex:0 0 auto;}
+  .avwrap .av{width:36px;height:36px;position:absolute;top:4px;left:4px;border:none;}
+  .avwrap .ring{position:absolute;inset:-4px;width:52px;height:52px;pointer-events:none;}
+  .avwrap .ring.s{filter:saturate(.25) brightness(1.25);}
+  .avwrap .ring.b{filter:sepia(.6) hue-rotate(-18deg) saturate(1.4);}
+  .avwrap .crown{position:absolute;top:-15px;left:50%;transform:translateX(-50%);width:24px;height:24px;z-index:3;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5));}
   .joinbox input{width:100%;background:#0d1117;border:1px solid var(--line);border-radius:11px;padding:12px;color:var(--txt);font-size:13px;font-family:'Inter';}
   .joinbox input:focus{outline:none;border-color:#25F4EE;}
   .joinbtn{margin-top:10px;width:100%;height:48px;border-radius:13px;border:none;cursor:pointer;font-family:'Chakra Petch';font-weight:700;letter-spacing:2px;color:#08161a;background:linear-gradient(110deg,#25F4EE,#FF2D55);box-shadow:0 8px 20px -6px rgba(255,45,85,.5);}
@@ -241,6 +248,8 @@ const IC={
   hist:'<svg viewBox="0 0 24 24" fill="none" stroke="#5FA0FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l3 2"/></svg>',
   people:'<svg viewBox="0 0 24 24" fill="none" stroke="#2DD4A7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><path d="M16 5.2a3 3 0 0 1 0 5.6M18 19a5.5 5.5 0 0 0-3-4.9"/></svg>',
 };
+// premium Higgsfield icon assets (glossy 3D, transparent)
+const II=n=>'<img class="icimg" src="'+n+'.png" alt="">';
 function gemSVG(kind){
   const c = kind==='blue'
     ? {a:'#CFE9FF',b:'#9BD4FF',c:'#4DA6FF',d:'#1E63B0',e:'#8FD0FF',f:'#2E7Fd1'}
@@ -319,9 +328,9 @@ function goalTier(s){ const at=activeTiers(s),b=s.account.balance; return at.fin
 function taskIcon(t){
   if(t.id.includes('cliptok')||(t.link||'').includes('com.warlito.clipto')&&t.id.includes('download')) return `<img src="${CLIPTOK_LOGO}" alt="">`;
   if(t.logo) return `<img src="${esc(t.logo)}" alt="">`;
-  if(t.id.includes('rate')||/review|star/i.test(t.title)) return IC.star;
+  if(t.id.includes('rate')||/review|star/i.test(t.title)) return II('ic-rate');
   if(/video|watch/i.test(t.title)) return IC.play;
-  return IC.gift;
+  return II('ic-daily');
 }
 function isReview(t){ return t.id.includes('rate')||/review|star/i.test(t.title); }
 
@@ -380,7 +389,7 @@ function render(){
   // daily (GOLD points)
   const dAvail=s.dailyKnown&&s.dailyAvailable;
   app.appendChild($(`<div class="sh"><div class="t">DAILY BONUS</div></div>`));
-  const dCard=$(`<div class="card"><div class="rowflex"><div class="di" style="background:rgba(45,212,167,.14)">${IC.gift}</div>
+  const dCard=$(`<div class="card"><div class="rowflex"><div class="di" style="background:rgba(45,212,167,.14)">${II('ic-daily')}</div>
     <div class="gleft"><div class="n">Daily check-in</div><div class="d" id="dd">${dAvail?('Claim +'+c.dailyBonus+' free points today'):(s.dailyKnown?'Come back tomorrow for more':'Come back daily for free points')}</div></div>
     <button class="act ${dAvail?'on':'off'}" id="db">${dAvail?'CLAIM':'CLAIMED'}</button></div></div>`);
   if(dAvail) dCard.querySelector('#db').onclick=async e=>{e.target.textContent='…'; const r=await call('claimDaily',c.dailyBonus); if(r.ok) gainFx(c.dailyBonus,'gold'); requestState();};
@@ -390,7 +399,7 @@ function render(){
   // mission
   const done=Math.min(c.missionGoal,Math.max(0,a.referralCount-a.missionBaseline)),mReady=done>=c.missionGoal&&!a.earnBanned;
   app.appendChild($(`<div class="sh"><div class="t">REFERRAL MISSION</div><div class="x"><span class="dia gold" style="width:9px;height:9px"></span> +${c.missionBonus}</div></div>`));
-  const mCard=$(`<div class="card"><div class="rowflex"><div class="di" style="background:rgba(232,180,74,.14)">${IC.flame}</div>
+  const mCard=$(`<div class="card"><div class="rowflex"><div class="di" style="background:rgba(232,180,74,.14)">${II('ic-mission')}</div>
     <div class="gleft"><div class="n">Invite ${c.missionGoal} friends</div><div class="d">${done} / ${c.missionGoal} joined — earn ${c.missionBonus} points</div></div>
     <button class="act ${mReady?'on':'off'}" id="mb">${mReady?'CLAIM':done+'/'+c.missionGoal}</button></div>
     <div class="track" style="margin-top:11px"><div class="fill" data-w="${Math.round(done/c.missionGoal*100)}"></div></div></div>`);
@@ -401,8 +410,8 @@ function render(){
   app.appendChild($(`<div class="sh"><div class="t">INVITE FRIENDS</div><div class="x">+${c.perInvite} per friend</div></div>`));
   const link='https://santoryutoolkit.com/?ref='+encodeURIComponent(s.code);
   const iv=$(`<div class="card inv">
-    <div class="row1"><div class="code">${esc(s.code)}</div><button class="icb copy" id="cpy">${IC.copy}</button></div>
-    <div class="share2"><button class="sbtn code" id="shc">${IC.share}<span>Share code</span></button>
+    <div class="row1"><div class="code">${esc(s.code)}</div><button class="icb copy" id="cpy">${II('ic-copy')}</button></div>
+    <div class="share2"><button class="sbtn code" id="shc">${II('ic-share')}<span>Share code</span></button>
       <button class="sbtn link" id="shl">${IC.link}<span>Share link</span></button></div>
     ${a.referred?'':`<div class="applybox"><input id="apc" placeholder="Enter a friend's code" maxlength="20"><button id="apb">APPLY</button></div>`}
   </div>`);
@@ -420,9 +429,9 @@ function render(){
   // history + invited → sariling pages (mas magaan ang main, mas mabilis)
   app.appendChild($(`<div class="sh"><div class="t">YOUR ACTIVITY</div></div>`));
   const navc=$(`<div class="card"></div>`);
-  const r1=$(`<div class="navrow"><div class="di" style="width:38px;height:38px;background:rgba(95,160,255,.12)">${IC.hist}</div><div class="gl"><div class="n">Withdrawal history</div><div class="s">${(s.history||[]).length} total</div></div><div class="ch">›</div></div>`);
+  const r1=$(`<div class="navrow"><div class="di" style="width:38px;height:38px;background:rgba(95,160,255,.12)">${II('ic-history')}</div><div class="gl"><div class="n">Withdrawal history</div><div class="s">${(s.history||[]).length} total</div></div><div class="ch">›</div></div>`);
   r1.onclick=openHistory;
-  const r2=$(`<div class="navrow"><div class="di" style="width:38px;height:38px;background:rgba(45,212,167,.12)">${IC.people}</div><div class="gl"><div class="n">Friends you invited</div><div class="s">${(s.invited||[]).length} joined</div></div><div class="ch">›</div></div>`);
+  const r2=$(`<div class="navrow"><div class="di" style="width:38px;height:38px;background:rgba(45,212,167,.12)">${II('ic-friends')}</div><div class="gl"><div class="n">Friends you invited</div><div class="s">${(s.invited||[]).length} joined</div></div><div class="ch">›</div></div>`);
   r2.onclick=openInvited;
   navc.appendChild(r1); navc.appendChild(r2);
   app.appendChild(navc);
@@ -542,8 +551,10 @@ function renderTournament(){
   const lb=$(`<div class="card"></div>`);
   s.entries.forEach(e=>{
     const rkc=e.rank===1?'g':e.rank===2?'s':e.rank===3?'b':'';
-    const row=$(`<div class="lbrow ${e.mine?'me':''}"><div class="rk ${rkc}">${e.rank}</div>
-      ${e.tiktokAvatar?`<img class="av" src="${esc(e.tiktokAvatar)}" referrerpolicy="no-referrer">`:'<div class="av"></div>'}
+    const top=e.rank<=3, ringCls=e.rank===2?'s':e.rank===3?'b':'';
+    const avInner=e.tiktokAvatar?`<img class="av" src="${esc(e.tiktokAvatar)}" referrerpolicy="no-referrer">`:'<div class="av" style="border-radius:50%;background:#1a1f27"></div>';
+    const avBlock=top?`<div class="avwrap">${avInner}<img class="ring ${ringCls}" src="ring-frame.png" alt="">${e.rank===1?'<img class="crown" src="ic-crown.png" alt="">':''}</div>`:avInner;
+    const row=$(`<div class="lbrow ${e.mine?'me':''}"><div class="rk ${rkc}">${e.rank}</div>${avBlock}
       <div class="who"><div class="h">@${esc(e.tiktokUser||e.name)}</div><div class="t2">${esc(e.title||'')}</div></div>
       <div class="views">${fmtViews(e.views)}<small>VIEWS</small></div></div>`);
     if(e.videoUrl) row.onclick=()=>window.Android.openLink(e.videoUrl);
