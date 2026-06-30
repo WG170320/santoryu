@@ -334,6 +334,10 @@
   .pf-stat{text-align:center; flex:none; padding-left:13px; border-left:1px solid var(--line);}
   .pf-sv{font-family:'Teko'; font-size:25px; color:#9BD4FF; line-height:.85;}
   .pf-sl{font-size:8px; letter-spacing:1px; color:var(--txt2); margin-top:3px;}
+  /* invited friend avatar */
+  .fav{position:relative; width:38px; height:38px; border-radius:50%; flex:0 0 auto; overflow:hidden;}
+  .fini{display:flex; align-items:center; justify-content:center; background:rgba(45,212,167,.14); color:var(--emerald); font-family:'Rajdhani'; font-weight:700; font-size:17px;}
+  .fav img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border-radius:50%;}
   /* winner claim (celebration) */
   .winwrap{padding:6px 18px 44px; text-align:center;}
   .wintrophy{position:relative; width:172px; height:172px; margin:8px auto 2px;}
@@ -508,7 +512,7 @@ function withdrawPanel(s){
     const el=$(`<div class="tier sgrid ${t.cost===WSEL?'sel':''} ${ok?'':'poor'}">
       ${t.cost===WSEL?'<div class="selck">✓</div>':''}
       <span class="dia blue tg"></span><div class="n">${t.mlbb}</div><div class="u">MLBB</div>
-      <div class="c"><span class="dia gold" style="width:9px;height:9px"></span>${t.cost.toLocaleString()}</div></div>`);
+      <div class="c"><span class="dia gold" style="width:14px;height:14px"></span>${t.cost.toLocaleString()}</div></div>`);
     el.onclick=()=>{ WSEL=t.cost; render(); };
     grid.appendChild(el);
   });
@@ -653,7 +657,7 @@ function appendTasks(app,s){
   s.tasks.forEach(t=>{
     const right=t.claimed
       ? `<span class="tdone">✓ Done</span>`
-      : `<button class="tclaim"><span class="dia gold" style="width:9px;height:9px"></span>+${t.reward}</button>`;
+      : `<button class="tclaim"><span class="dia gold" style="width:14px;height:14px"></span>+${t.reward}</button>`;
     const row=$(`<div class="taskrow"><div class="ti">${taskIcon(t)}</div>
       <div class="gleft"><div class="n">${esc(t.title)}</div><div class="d">${esc(t.desc)}</div></div>${right}</div>`);
     if(!t.claimed) row.querySelector('.tclaim').onclick=()=> isReview(t)?openReview(t):doTask(t);
@@ -756,9 +760,9 @@ function openInvited(){
     b.appendChild($(`<div class="sh" style="margin-top:0"><div class="t">${inv.length} JOINED · +${per} EACH</div></div>`));
     if(!inv.length){ b.appendChild($(`<div class="empty">No invites yet.<br>Share your code to earn ${per} points per friend.</div>`)); return; }
     const c=$(`<div class="card"></div>`);
-    inv.forEach(f=>c.appendChild($(`<div class="litem"><div class="di" style="width:36px;height:36px;background:rgba(45,212,167,.14);font-family:'Rajdhani';font-weight:700;color:var(--emerald)">${esc((f.name||'?')[0].toUpperCase())}</div>
+    inv.forEach(f=>c.appendChild($(`<div class="litem"><div class="fav fini">${esc((f.name||'?')[0].toUpperCase())}${f.avatarUrl?`<img src="${esc(f.avatarUrl)}" alt="" onerror="this.remove()">`:''}</div>
       <div class="gleft"><div class="nm">${esc(f.name||'Player')}</div><div class="sm">joined ${ago(f.ts)}</div></div>
-      <span class="badge"><span class="dia gold" style="width:10px;height:10px"></span><b>+${per}</b></span></div>`)));
+      <span class="badge"><span class="dia gold" style="width:13px;height:13px"></span><b>+${per}</b></span></div>`)));
     b.appendChild(c);
   });
 }
@@ -888,7 +892,7 @@ function openTournRules(ev){
       <div class="shdr">EVENT RULES</div>${rules}`;
   });
 }
-function tjErr(e){return({closed:'The event is closed.',device_used:'This device already joined (1 per device).',already_joined:'You already submitted your video.',bad_video:'Could not read that TikTok link — double-check it.',too_long:'Video must be under 10 minutes long.',old_video:'Post a NEW video for this event — old clips are not allowed.',missing:'Paste your TikTok link.'})[e]||'Could not join. Try again.';}
+function tjErr(e){return({closed:'The event is closed.',device_used:'This device already joined (1 per device).',already_joined:'You already submitted your video.',bad_video:'Could not read that TikTok link — double-check it.',too_long:'Video must be under 10 minutes long.',old_video:'Post a NEW video for this event — old clips are not allowed.',no_hashtag:'Add #santoryutoolkit in your video caption, then submit.',missing:'Paste your TikTok link.'})[e]||'Could not join. Try again.';}
 function tCountdown(el,endTs){ if(tcdT)clearInterval(tcdT);
   function tick(){ const ms=msLeft(endTs); if(ms<=0){ el.textContent='Event ended'; clearInterval(tcdT); return; }
     const d=Math.floor(ms/86400000),h=Math.floor(ms%86400000/3600000),m=Math.floor(ms%3600000/60000);
