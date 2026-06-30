@@ -723,13 +723,21 @@ async function doTask(t){
 }
 
 //=== sub-pages (history / invited) ===============================================
-// Smooth na pag-sara ng kahit anong .page (slide-out bago alisin).
-function closePage(el, after){ if(!el||el._closing) return; el._closing=true; el.classList.add('closing'); setTimeout(()=>{ el.remove(); if(after) after(); },200); }
+// ── Page stack + smooth back ─────────────────────────────────────────────────
+// Bawat .page = isang history entry (pushState). Kaya pareho — ang back ARROW at ang
+// HARDWARE/gesture back ng phone — dumadaan sa popstate at SMOOTH na nagsa-slide out.
+// (Native side: BackHandler → webView.goBack() kapag may bukas na page.)
+let PSTACK=[];
+function animClose(el, after){ if(!el||el._closing) return; el._closing=true; el.classList.add('closing'); setTimeout(()=>{ el.remove(); if(after) after(); },200); }
+function registerPage(el, after){ PSTACK.push({el, after}); try{ history.pushState({ep:PSTACK.length},''); }catch(e){} }
+window.addEventListener('popstate', ()=>{ const p=PSTACK.pop(); if(p) animClose(p.el, p.after); });
+// Back arrow → dumaan sa history para naka-sync sa hardware back (parehong smooth na daanan).
+function closePage(el){ const top=PSTACK[PSTACK.length-1]; if(top && top.el===el){ history.back(); } else animClose(el); }
 function openPage(title, build){
   const pg=$(`<div class="page"><div class="pgh"><div class="pgback">${IC.back}</div><h2>${esc(title)}</h2></div></div>`);
   pg.querySelector('.pgback').onclick=()=>closePage(pg);
   const body=document.createElement('div'); build(body); pg.appendChild(body);
-  document.body.appendChild(pg);
+  document.body.appendChild(pg); registerPage(pg);
 }
 function openHistory(){
   openPage('Withdrawal History', b=>{
@@ -790,11 +798,11 @@ function openWinnerClaim(ev){
     const b=pg.querySelector('#wclaim'); b.textContent='CLAIMING…'; b.disabled=true;
     try{
       const r=await fetch(TCLAIM_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid:STATE.uid,gameId:gid,server:srv})}).then(x=>x.json());
-      if(r.ok){ pg.querySelector('.winform').innerHTML=`<div class="winok"><div class="winokc">✓</div><div class="winokt">Prize claimed!</div><div class="winoks">Your <b>${prize}</b> MLBB Diamonds are on the way to your account.</div><button class="winclaim" onclick="this.closest('.page').remove()">Done</button></div>`; }
+      if(r.ok){ pg.querySelector('.winform').innerHTML=`<div class="winok"><div class="winokc">✓</div><div class="winokt">Prize claimed!</div><div class="winoks">Your <b>${prize}</b> MLBB Diamonds are on the way to your account.</div><button class="winclaim" onclick="history.back()">Done</button></div>`; }
       else { b.textContent='CLAIM MY PRIZE'; b.disabled=false; toast(wcErr(r.error),'bad'); }
     }catch(e){ b.textContent='CLAIM MY PRIZE'; b.disabled=false; toast('Network error — try again','bad'); }
   };
-  document.body.appendChild(pg);
+  document.body.appendChild(pg); registerPage(pg);
 }
 function fmtViews(n){ n=+n||0; if(n>=1e6)return (n/1e6).toFixed(n>=1e7?0:1).replace(/\.0$/,'')+'M'; if(n>=1e3)return (n/1e3).toFixed(n>=1e5?0:1).replace(/\.0$/,'')+'K'; return ''+n; }
 function msLeft(ts){ return Math.max(0,(+ts||0)-Date.now()); }
@@ -809,8 +817,8 @@ function updateBanner(){
 function openTournament(){
   if(!(window.Android&&window.Android.tournamentState)){ toast('Update the app to join tournaments','bad'); return; }
   const pg=$(`<div class="page"><div class="pgh"><div class="pgback">${IC.back}</div><h2>Tournament</h2></div><div id="tbody"><div class="empty">Loading…</div></div></div>`);
-  pg.querySelector('.pgback').onclick=()=>closePage(pg, ()=>{ tournBody=null; if(tcdT)clearInterval(tcdT); });
-  document.body.appendChild(pg);
+  pg.querySelector('.pgback').onclick=()=>closePage(pg);
+  document.body.appendChild(pg); registerPage(pg, ()=>{ tournBody=null; if(tcdT)clearInterval(tcdT); });
   tournBody=pg.querySelector('#tbody');
   window.Android.tournamentState();
   if(TOURN) renderTournament();
@@ -880,7 +888,7 @@ function openTournRules(ev){
       <div class="shdr">EVENT RULES</div>${rules}`;
   });
 }
-function tjErr(e){return({closed:'The event is closed.',device_used:'This device already joined (1 per device).',already_joined:'You already submitted your video.',bad_video:'Could not read that TikTok link — double-check it.',too_long:'Video must be under 10 minutes long.',missing:'Paste your TikTok link.'})[e]||'Could not join. Try again.';}
+function tjErr(e){return({closed:'The event is closed.',device_used:'This device already joined (1 per device).',already_joined:'You already submitted your video.',bad_video:'Could not read that TikTok link — double-check it.',too_long:'Video must be under 10 minutes long.',old_video:'Post a NEW video for this event — old clips are not allowed.',missing:'Paste your TikTok link.'})[e]||'Could not join. Try again.';}
 function tCountdown(el,endTs){ if(tcdT)clearInterval(tcdT);
   function tick(){ const ms=msLeft(endTs); if(ms<=0){ el.textContent='Event ended'; clearInterval(tcdT); return; }
     const d=Math.floor(ms/86400000),h=Math.floor(ms%86400000/3600000),m=Math.floor(ms%3600000/60000);
