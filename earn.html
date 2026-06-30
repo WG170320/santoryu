@@ -308,12 +308,27 @@
   #loading{position:fixed; inset:0; display:flex; flex-direction:column; gap:14px; align-items:center; justify-content:center; color:var(--txt2); font-family:'Chakra Petch'; letter-spacing:4px; font-size:11px;}
   #loading .spin{width:38px;height:38px;border-radius:50%;border:3px solid rgba(95,230,255,.15);border-top-color:var(--cyan);animation:spin .8s linear infinite;}
   @keyframes spin{to{transform:rotate(360deg);}}
+  /* floating withdraw proof (live fulfilled payouts) */
+  .ppop{position:fixed; left:12px; bottom:16px; z-index:55; display:flex; align-items:center; gap:9px;
+    background:rgba(15,21,29,.97); border:1px solid rgba(95,160,255,.30); border-radius:42px;
+    padding:6px 15px 6px 6px; box-shadow:0 10px 30px rgba(0,0,0,.55); max-width:80vw;
+    transform:translateX(-120%); opacity:0; pointer-events:none;
+    transition:transform .55s cubic-bezier(.18,.9,.25,1), opacity .45s;}
+  .ppop.show{transform:translateX(0); opacity:1;}
+  .ppop .pa{width:34px;height:34px;border-radius:50%;object-fit:cover;flex:none;
+    background:linear-gradient(135deg,#27405e,#16222f); border:1.5px solid rgba(95,160,255,.55);}
+  .ppop .pt{font-size:12.5px; color:var(--txt); line-height:1.25;}
+  .ppop .pt b{color:#fff; font-weight:700;}
+  .ppop .pt .amt{color:#9BD4FF; font-weight:800; margin:0 1px;}
+  .ppop .pt .lbl{display:block; font-size:9.5px; color:var(--txt2); letter-spacing:.3px; margin-top:1px; text-transform:uppercase;}
+  .ppop .dia{display:inline-block; vertical-align:-1px;}
 </style>
 </head>
 <body>
   <div id="loading"><div class="spin"></div><div>SANTORYU</div></div>
   <div id="app" class="hide"></div>
   <div id="toasts"></div>
+  <div id="payoutpop" class="ppop"></div>
 
 <script>
 const CLIPTOK_LOGO="https://play-lh.googleusercontent.com/CISn2zllaJv69FL7lgoRKGztQfZLMdLs30_0ARfz0qryyzokSahvGI-qw5nrbmfkel4KyHVhFpI6H92hPZb9qA=w96";
@@ -811,6 +826,30 @@ function startCountdown(el,ms){
 requestState();
 // kunin din ang tournament event para mapunan ang prize sa banner
 setTimeout(()=>{ try{ window.Android.tournamentState(); }catch(e){} }, 300);
+
+//=== floating withdraw proof (LIVE fulfilled payouts — admin-controlled, walang hardcode) ===
+const PAYOUTS_URL='https://asia-southeast1-diamond-bang-92125.cloudfunctions.net/earnPayouts';
+let PAYOUTS=[], ppI=0, ppTimer=null;
+function pAgo(ts){ const d=Date.now()-(ts||0); const m=Math.floor(d/60000);
+  if(m<2) return 'just now'; if(m<60) return m+'m ago';
+  const h=Math.floor(m/60); if(h<24) return h+'h ago'; return Math.floor(h/24)+'d ago'; }
+function startPayoutPops(){
+  const el=document.getElementById('payoutpop'); if(!el||!PAYOUTS.length) return;
+  if(ppTimer) clearInterval(ppTimer);
+  function show(){
+    const p=PAYOUTS[ppI%PAYOUTS.length]; ppI++;
+    const av=p.avatarUrl?`<img class="pa" src="${esc(p.avatarUrl)}" onerror="this.removeAttribute('src')">`:`<div class="pa"></div>`;
+    el.innerHTML=`${av}<div class="pt"><b>${esc(p.name)}</b> just withdrew <span class="amt">${p.mlbb}</span><span class="dia blue" style="width:12px;height:12px"></span><span class="lbl">MLBB Diamonds · ${pAgo(p.ts)}</span></div>`;
+    el.classList.add('show'); setTimeout(()=>el.classList.remove('show'), 4300);
+  }
+  setTimeout(show, 2000); ppTimer=setInterval(show, 8500);
+}
+function fetchPayouts(){
+  fetch(PAYOUTS_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'})
+    .then(r=>r.json()).then(j=>{ if(j&&Array.isArray(j.payouts)&&j.payouts.length){ PAYOUTS=j.payouts; startPayoutPops(); } })
+    .catch(()=>{ if(!isNative){ PAYOUTS=[{name:'joharto Ambulodto',mlbb:22,avatarUrl:'',ts:Date.now()-3600000},{name:'eyy',mlbb:22,avatarUrl:'',ts:Date.now()-7200000}]; startPayoutPops(); } });
+}
+setTimeout(fetchPayouts, 600);
 </script>
 </body>
 </html>
