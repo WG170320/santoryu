@@ -319,9 +319,24 @@
   .lgl.danger{color:var(--danger);opacity:.85;}
   .lgd{color:var(--line);font-size:11px;}
 
-  #loading{position:fixed; inset:0; display:flex; flex-direction:column; gap:14px; align-items:center; justify-content:center; color:var(--txt2); font-family:'Chakra Petch'; letter-spacing:4px; font-size:11px;}
-  #loading .spin{width:38px;height:38px;border-radius:50%;border:3px solid rgba(95,230,255,.15);border-top-color:var(--cyan);animation:spin .8s linear infinite;}
+  /* cold-start SKELETON — kasing-layout ng tunay na content para seamless ang swap (walang spinner jump) */
+  #loading{position:fixed; inset:0; background:var(--bg); padding:14px 14px 34px; max-width:440px; margin:0 auto; overflow:hidden;}
   @keyframes spin{to{transform:rotate(360deg);}}
+  .sk{position:relative; overflow:hidden; background:var(--surf);}
+  .sk::after{content:''; position:absolute; inset:0; transform:translateX(-100%);
+    background:linear-gradient(90deg, transparent, rgba(255,255,255,.045), transparent); animation:shimmer 1.5s ease-in-out infinite;}
+  @keyframes shimmer{100%{transform:translateX(100%);}}
+  .sk-head{display:flex; align-items:center; gap:11px; margin-bottom:14px;}
+  .sk-logo{width:42px; height:42px; border-radius:12px; flex:none;}
+  .sk-hg{flex:1; display:flex; flex-direction:column; gap:7px;}
+  .sk-l1{width:64px; height:14px; border-radius:5px;}
+  .sk-l2{width:108px; height:9px; border-radius:5px;}
+  .sk-pill{width:78px; height:34px; border-radius:40px; flex:none;}
+  .sk-profile{width:100%; height:74px; border-radius:16px; margin-bottom:14px;}
+  .sk-hero{width:100%; height:208px; border-radius:18px; margin-bottom:18px;}
+  .sk-sh{width:130px; height:12px; border-radius:6px; margin:0 0 12px 2px;}
+  .sk-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:8px;}
+  .sk-tier{height:118px; border-radius:13px;}
   /* profile card */
   .profile{display:flex; align-items:center; gap:13px; background:var(--surf); border:1px solid var(--line); border-radius:16px; padding:12px 15px; margin-bottom:14px;}
   .pf-av{width:50px; height:50px; border-radius:50%; object-fit:cover; flex:none; border:2px solid rgba(232,180,74,.5); background:linear-gradient(135deg,#27405e,#16222f);}
@@ -376,7 +391,13 @@
 </style>
 </head>
 <body>
-  <div id="loading"><div class="spin"></div><div>SANTORYU</div></div>
+  <div id="loading">
+    <div class="sk-head"><div class="sk sk-logo"></div><div class="sk-hg"><div class="sk sk-l1"></div><div class="sk sk-l2"></div></div><div class="sk sk-pill"></div></div>
+    <div class="sk sk-profile"></div>
+    <div class="sk sk-hero"></div>
+    <div class="sk sk-sh"></div>
+    <div class="sk-grid"><div class="sk sk-tier"></div><div class="sk sk-tier"></div><div class="sk sk-tier"></div><div class="sk sk-tier"></div><div class="sk sk-tier"></div><div class="sk sk-tier"></div></div>
+  </div>
   <div id="app" class="hide"></div>
   <div id="toasts"></div>
   <div id="payoutpop" class="ppop"></div>
