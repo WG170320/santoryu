@@ -80,26 +80,14 @@
   .tier .n{font-family:'Teko'; font-weight:600; font-size:23px; line-height:.8;}
   .tier .u{font-size:8px; letter-spacing:1px; color:var(--txt2); margin-top:2px;}
   .tier .c{margin-top:7px; font-family:'Rajdhani'; font-weight:700; font-size:12px; color:var(--gold); border-top:1px solid var(--line); padding-top:6px; display:flex; align-items:center; justify-content:center; gap:4px;}
-  /* withdraw selector + single button */
+  /* withdraw — Codashop-style selectable grid + single button */
   .wd{margin-bottom:4px;}
-  .wdsel{display:flex; align-items:center; gap:12px; background:var(--surf); border:1px solid var(--line); border-radius:14px; padding:13px 15px; cursor:pointer; transition:border-color .2s;}
-  .wdsel.open{border-color:rgba(77,166,255,.55);}
-  .wdselmid{flex:1; min-width:0;}
-  .wdselmid b{display:block; font-family:'Chakra Petch'; font-weight:700; font-size:15px; color:#fff;}
-  .wdselmid span{font-size:11.5px; color:var(--txt2);}
-  .wdchev{font-size:15px; color:var(--txt2); transition:transform .2s;}
-  .wdsel.open .wdchev{transform:rotate(180deg);}
-  .wdlist{margin-top:8px; background:var(--surf); border:1px solid var(--line); border-radius:14px; overflow:hidden;}
-  .wdopt{display:flex; align-items:center; gap:11px; padding:12px 15px; cursor:pointer; border-bottom:1px solid var(--line); transition:background .15s;}
-  .wdopt:last-child{border-bottom:none;}
-  .wdopt:active{background:rgba(255,255,255,.04);}
-  .wdopt.on{background:rgba(77,166,255,.10);}
-  .wdoptmid{flex:1; min-width:0;}
-  .wdoptmid b{display:block; font-family:'Chakra Petch'; font-weight:700; font-size:14px; color:#fff;}
-  .wdoptmid span{font-size:10.5px; color:var(--txt2);}
-  .wdoptcost{font-family:'Rajdhani'; font-weight:700; font-size:13px; color:var(--gold); display:flex; align-items:center; gap:4px; white-space:nowrap;}
-  .wdoptcost.short{color:var(--txt2); font-size:11px;}
-  .wdbtn{width:100%; margin-top:12px; border:none; border-radius:14px; padding:16px; font-family:'Chakra Petch'; font-weight:700; font-size:13.5px; letter-spacing:.8px; cursor:pointer;}
+  .tiers.wsel{grid-template-columns:repeat(3,1fr);}
+  .tier.sgrid{position:relative; cursor:pointer; padding:13px 4px 11px;}
+  .tier.sgrid.sel{border-color:#4DA6FF; background:linear-gradient(180deg,rgba(77,166,255,.14),var(--surf)); box-shadow:0 0 0 1.5px rgba(77,166,255,.55), 0 8px 20px rgba(77,166,255,.18);}
+  .tier.sgrid.poor{opacity:.45;}
+  .tier .selck{position:absolute; top:6px; right:7px; width:17px; height:17px; border-radius:50%; background:#4DA6FF; color:#06223f; font-size:11px; font-weight:800; display:flex; align-items:center; justify-content:center;}
+  .wdbtn{width:100%; margin-top:13px; border:none; border-radius:14px; padding:16px; font-family:'Chakra Petch'; font-weight:700; font-size:13.5px; letter-spacing:.8px; cursor:pointer;}
   .wdbtn.go{background:linear-gradient(180deg,#3BE0B6,#1FB892); color:#06231b; box-shadow:0 8px 22px rgba(45,212,167,.32);}
   .wdbtn.go:active{transform:translateY(1px);}
   .wdbtn.off{background:rgba(255,255,255,.05); color:var(--txt2); cursor:default;}
@@ -496,8 +484,9 @@ function taskIcon(t){
 }
 function isReview(t){ return t.id.includes('rate')||/review|star/i.test(t.title); }
 
-// withdrawal selector + single button. WSEL = napiling tier cost (persisted across re-renders).
-let WSEL=null, WOPEN=false;
+// withdrawal — Codashop style: lahat ng amount NAKALABAS na cards, tap para piliin (highlight),
+// tapos ISANG button sa baba. WSEL = napiling tier cost (persisted across re-renders).
+let WSEL=null;
 function withdrawPanel(s){
   const a=s.account;
   const avail=s.tiers.slice().filter(t=>!(t.firstOnly&&a.firstWithdrawUsed)).sort((x,y)=>x.cost-y.cost);
@@ -505,27 +494,23 @@ function withdrawPanel(s){
   if(WSEL==null || !avail.find(t=>t.cost===WSEL)){ const aff=avail.slice().reverse().find(t=>a.balance>=t.cost); WSEL=(aff||avail[0]).cost; }
   const sel=avail.find(t=>t.cost===WSEL)||avail[0];
   const can=a.balance>=sel.cost && !a.earnBanned;
-  const opts=avail.map(t=>{const ok=a.balance>=t.cost; return `<div class="wdopt ${t.cost===WSEL?'on':''}" data-cost="${t.cost}">
-      <span class="dia blue" style="width:20px;height:20px"></span>
-      <div class="wdoptmid"><b>${t.mlbb} MLBB</b><span>Diamonds</span></div>
-      <div class="wdoptcost ${ok?'':'short'}"><span class="dia gold" style="width:11px;height:11px"></span>${t.cost.toLocaleString()}${ok?'':' · need more'}</div>
-    </div>`;}).join('');
-  const el=$(`<div class="wd">
-    <div class="wdsel ${WOPEN?'open':''}" id="wdsel">
-      <span class="dia blue" style="width:26px;height:26px"></span>
-      <div class="wdselmid"><b>${sel.mlbb} MLBB Diamonds</b><span><span class="dia gold" style="width:10px;height:10px;vertical-align:-1px"></span> ${sel.cost.toLocaleString()} points</span></div>
-      <div class="wdchev">▾</div>
-    </div>
-    <div class="wdlist ${WOPEN?'':'hide'}" id="wdlist">${opts}</div>
-    <button class="wdbtn ${can?'go':'off'}" id="wdbtn">${a.earnBanned?'EARNING DISABLED':can?('WITHDRAW '+sel.mlbb+' MLBB DIAMONDS'):('COLLECT '+(sel.cost-a.balance).toLocaleString()+' MORE POINTS')}</button>
-  </div>`);
-  const list=el.querySelector('#wdlist');
-  el.querySelector('#wdsel').onclick=()=>{ WOPEN=!WOPEN; list.classList.toggle('hide',!WOPEN); el.querySelector('#wdsel').classList.toggle('open',WOPEN); };
-  list.querySelectorAll('.wdopt').forEach(o=>o.onclick=()=>{ WSEL=+o.dataset.cost; WOPEN=false; render(); });
-  const btn=el.querySelector('#wdbtn');
+  const wrap=$(`<div class="wd"></div>`);
+  const grid=$(`<div class="tiers wsel"></div>`);
+  avail.forEach(t=>{
+    const ok=a.balance>=t.cost;
+    const el=$(`<div class="tier sgrid ${t.cost===WSEL?'sel':''} ${ok?'':'poor'}">
+      ${t.cost===WSEL?'<div class="selck">✓</div>':''}
+      <span class="dia blue tg"></span><div class="n">${t.mlbb}</div><div class="u">MLBB</div>
+      <div class="c"><span class="dia gold" style="width:9px;height:9px"></span>${t.cost.toLocaleString()}</div></div>`);
+    el.onclick=()=>{ WSEL=t.cost; render(); };
+    grid.appendChild(el);
+  });
+  wrap.appendChild(grid);
+  const btn=$(`<button class="wdbtn ${can?'go':'off'}">${a.earnBanned?'EARNING DISABLED':can?('WITHDRAW '+sel.mlbb+' MLBB DIAMONDS'):('COLLECT '+(sel.cost-a.balance).toLocaleString()+' MORE POINTS')}</button>`);
   if(can) btn.onclick=()=>openWithdraw(sel);
   else if(!a.earnBanned) btn.onclick=()=>toast('Collect '+(sel.cost-a.balance).toLocaleString()+' more points','bad');
-  return el;
+  wrap.appendChild(btn);
+  return wrap;
 }
 function render(){
   const s=STATE; if(!s) return;
