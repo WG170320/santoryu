@@ -39,7 +39,7 @@
   .rlabel .a{font-weight:700; font-size:22px; letter-spacing:1px; display:block;}
   .rlabel .b{font-weight:600; font-size:15px; letter-spacing:5px; color:var(--txt2); display:block;}
   .sub{font-size:11px; color:var(--txt2); margin-top:10px; font-weight:500; max-width:190px; line-height:1.4;}
-  .emblem{position:absolute; right:14px; top:46%; transform:translateY(-52%); width:118px; height:118px; filter:drop-shadow(0 0 24px rgba(255,200,90,.5));}
+  .emblem{position:absolute; right:12px; top:30%; transform:translateY(-40%); width:104px; height:104px; filter:drop-shadow(0 0 24px rgba(255,200,90,.5));}
   .prog{margin-top:14px;}
   .prow{display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:6px;}
   .prow .l{font-family:'Chakra Petch'; font-weight:600; font-size:9.5px; letter-spacing:3px; color:var(--txt2);}
@@ -178,8 +178,8 @@ function render(){
   const app=document.getElementById('app'); app.classList.remove('hide'); app.innerHTML='';
   const a=s.account, c=s.config;
 
-  // header
-  app.appendChild($(`<div class="top"><h1>Earn</h1><div class="pill"><span class="gem-s"></span><b>${a.balance}</b></div></div>`));
+  // (Walang web header — ginagamit ang native app bar na "Earn Diamonds" + balance, para
+  // hindi doble. Design ng hero pababa = web, mababago anytime nang walang app update.)
 
   // hero
   const g=goalTier(s), reached=a.balance>=g.cost, remaining=Math.max(0,g.cost-a.balance), frac=Math.min(100,Math.round(a.balance/g.cost*100));
