@@ -68,9 +68,9 @@
   .cta span{font-family:'Chakra Petch'; font-weight:700; font-size:14px; letter-spacing:3px; color:#04121f;}
   .cta.off span{color:var(--txt2); letter-spacing:1px;}
 
-  .sh{display:flex; align-items:center; justify-content:space-between; gap:10px; margin:22px 2px 11px;}
-  .sh .t{font-family:'Chakra Petch'; font-weight:700; font-size:12px; letter-spacing:2px; color:var(--txt2); white-space:nowrap; flex:0 1 auto;}
-  .sh .x{font-size:11px; color:var(--gold); font-weight:600;}
+  .sh{display:block; margin:22px 2px 11px; overflow:hidden;}
+  .sh .t{font-family:'Chakra Petch'; font-weight:700; font-size:12px; letter-spacing:2px; color:var(--txt2); float:left;}
+  .sh .x{font-size:11px; color:var(--gold); font-weight:600; float:right;}
   .sh .x.blue{color:var(--cyan);}
 
   .tiers{display:grid; grid-template-columns:repeat(4,1fr); gap:8px;}
@@ -391,6 +391,8 @@ function render(){
 
   // animate progress fills after layout
   requestAnimationFrame(()=>document.querySelectorAll('.fill[data-w]').forEach(f=>f.style.width=f.dataset.w+'%'));
+  // DIAG: computed header sizes (para makita sa logcat kung CSS o rasterization ang glitch)
+  setTimeout(()=>document.querySelectorAll('.sh .t').forEach(e=>console.log('HDR "'+e.textContent+'" size='+getComputedStyle(e).fontSize+' w='+Math.round(e.getBoundingClientRect().width))),400);
 }
 
 async function doTask(t){
