@@ -287,11 +287,13 @@
   .lgl.danger{color:var(--danger);opacity:.85;}
   .lgd{color:var(--line);font-size:11px;}
 
-  #loading{position:fixed; inset:0; display:flex; align-items:center; justify-content:center; color:var(--txt2); font-family:'Chakra Petch'; letter-spacing:4px; font-size:12px;}
+  #loading{position:fixed; inset:0; display:flex; flex-direction:column; gap:14px; align-items:center; justify-content:center; color:var(--txt2); font-family:'Chakra Petch'; letter-spacing:4px; font-size:11px;}
+  #loading .spin{width:38px;height:38px;border-radius:50%;border:3px solid rgba(95,230,255,.15);border-top-color:var(--cyan);animation:spin .8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
 </style>
 </head>
 <body>
-  <div id="loading">LOADING…</div>
+  <div id="loading"><div class="spin"></div><div>SANTORYU</div></div>
   <div id="app" class="hide"></div>
   <div id="toasts"></div>
 
