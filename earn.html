@@ -391,8 +391,6 @@ function render(){
 
   // animate progress fills after layout
   requestAnimationFrame(()=>document.querySelectorAll('.fill[data-w]').forEach(f=>f.style.width=f.dataset.w+'%'));
-  // DIAG: computed header sizes (para makita sa logcat kung CSS o rasterization ang glitch)
-  setTimeout(()=>document.querySelectorAll('.sh .t').forEach(e=>console.log('HDR "'+e.textContent+'" size='+getComputedStyle(e).fontSize+' w='+Math.round(e.getBoundingClientRect().width))),400);
 }
 
 async function doTask(t){
