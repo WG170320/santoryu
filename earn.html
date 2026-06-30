@@ -109,7 +109,15 @@
   .sbtn.code{background:linear-gradient(180deg,var(--emerald),#1aa583); color:#04140f;}
   .sbtn.link{background:rgba(95,230,255,.12); border:1px solid rgba(95,230,255,.35); color:var(--cyan);}
   .sbtn svg{width:15px;height:15px;}
-  .applybox{display:flex; gap:8px; margin-top:11px; padding-top:11px; border-top:1px solid var(--line);}
+  .applywrap{margin-top:11px; padding-top:12px; border-top:1px solid var(--line);}
+  .applylbl{font-size:11px; color:var(--txt2); margin-bottom:8px;}
+  .applybox{display:flex; gap:8px;}
+  .appliedbox{display:flex; align-items:center; gap:11px; margin-top:11px; padding-top:12px; border-top:1px solid var(--line);}
+  .appliedbox .ckc{width:25px;height:25px;border-radius:50%;background:var(--emerald);color:#04140f;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex:0 0 auto;}
+  .appliedbox .apl{flex:1;min-width:0;}
+  .appliedbox .apt{font-size:10px;letter-spacing:1.5px;color:var(--emerald);font-weight:700;font-family:'Chakra Petch';}
+  .appliedbox .apc2{font-family:'Chakra Petch';font-weight:700;font-size:15px;letter-spacing:1px;color:var(--txt);margin-top:2px;}
+  .appliedbox .lock{font-size:14px;opacity:.5;flex:0 0 auto;}
   .applybox input{flex:1; background:#0d1117; border:1px solid var(--line); border-radius:9px; padding:10px 12px; color:var(--txt); font-size:13px; font-family:'Chakra Petch'; letter-spacing:1px; text-transform:uppercase;}
   .applybox input:focus{outline:none; border-color:var(--emerald);}
   .applybox button{background:rgba(45,212,167,.15); border:1px solid rgba(45,212,167,.4); color:var(--emerald); font-family:'Rajdhani'; font-weight:700; padding:0 16px; border-radius:9px; cursor:pointer;}
@@ -461,7 +469,9 @@ function render(){
     <div class="row1"><div class="code">${esc(s.code)}</div><button class="icb copy" id="cpy">${II('ic-copy')}</button></div>
     <div class="share2"><button class="sbtn code" id="shc">${II('ic-share')}<span>Share code</span></button>
       <button class="sbtn link" id="shl">${IC.link}<span>Share link</span></button></div>
-    ${a.referred?'':`<div class="applybox"><input id="apc" placeholder="Enter a friend's code" maxlength="20"><button id="apb">APPLY</button></div>`}
+    ${a.referred
+      ? `<div class="appliedbox"><span class="ckc">✓</span><div class="apl"><div class="apt">FRIEND CODE APPLIED</div><div class="apc2">${esc(a.referredByCode||'—')}</div></div><span class="lock">🔒</span></div>`
+      : `<div class="applywrap"><div class="applylbl">Got a friend's code? Apply it for a bonus.</div><div class="applybox"><input id="apc" placeholder="Enter a friend's code" maxlength="20"><button id="apb">APPLY</button></div></div>`}
   </div>`);
   iv.querySelector('#cpy').onclick=()=>{window.Android.copy(s.code); toast('Code copied!','good');};
   iv.querySelector('#shc').onclick=()=>window.Android.share('Join Santoryu Toolkit and get FREE MLBB diamonds! Use my code '+s.code+' — '+link);
