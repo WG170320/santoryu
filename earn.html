@@ -249,17 +249,19 @@
   .rulesbtn .rbt{font-family:'Rajdhani';font-weight:700;font-size:15px;color:var(--txt);}
   .rulesbtn .rbs{font-size:11px;color:var(--cyan);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .rulesbtn .rbgo{font-family:'Rajdhani';font-weight:700;font-size:12px;letter-spacing:1px;color:var(--cyan);flex:0 0 auto;}
-  .tutmodal{max-width:360px;text-align:left;max-height:84vh;overflow-y:auto;animation:none;transform:none;}
-  .tutmodal .task{background:rgba(95,230,255,.1);border:1px solid rgba(95,230,255,.3);border-radius:11px;padding:11px 12px;margin:6px 0 4px;}
+  .tutmodal{max-width:350px;text-align:left;max-height:88vh;display:flex;flex-direction:column;padding:16px;animation:none;transform:none;}
+  .tutmodal h3{margin-bottom:8px;flex:0 0 auto;}
+  .tutscroll{overflow-y:auto;flex:1 1 auto;-webkit-overflow-scrolling:touch;}
+  .tutmodal .task{background:rgba(95,230,255,.1);border:1px solid rgba(95,230,255,.3);border-radius:10px;padding:9px 11px;margin-bottom:2px;}
   .tutmodal .task .lbl2{font-family:'Chakra Petch';font-weight:700;font-size:9px;letter-spacing:2px;color:var(--cyan);}
-  .tutmodal .task .v2{font-family:'Rajdhani';font-weight:700;font-size:15px;margin-top:2px;color:var(--txt);}
-  .tutmodal h4{font-family:'Chakra Petch';font-weight:700;font-size:10px;letter-spacing:2px;color:var(--txt2);margin:15px 0 9px;}
-  .step{display:flex;gap:11px;margin-bottom:11px;}
-  .step .num{width:25px;height:25px;border-radius:50%;background:linear-gradient(135deg,#25F4EE,#1E63B0);color:#04121f;font-family:'Rajdhani';font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
-  .step .stx{font-size:13px;color:var(--txt);line-height:1.45;padding-top:2px;}
-  .rule2{display:flex;gap:9px;margin-bottom:8px;font-size:12.5px;color:var(--txt2);line-height:1.4;}
+  .tutmodal .task .v2{font-family:'Rajdhani';font-weight:700;font-size:14px;margin-top:2px;color:var(--txt);line-height:1.2;}
+  .tutmodal h4{font-family:'Chakra Petch';font-weight:700;font-size:10px;letter-spacing:2px;color:var(--txt2);margin:12px 0 7px;}
+  .step{display:flex;gap:10px;margin-bottom:7px;align-items:flex-start;}
+  .step .num{width:21px;height:21px;border-radius:50%;background:linear-gradient(135deg,#25F4EE,#1E63B0);color:#04121f;font-family:'Rajdhani';font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
+  .step .stx{font-size:12.5px;color:var(--txt);line-height:1.3;padding-top:2px;}
+  .rule2{display:flex;gap:8px;margin-bottom:5px;font-size:12px;color:var(--txt2);line-height:1.3;}
   .rule2 .ck{color:var(--emerald);font-weight:800;flex:0 0 auto;}
-  .tutclose{margin-top:16px;width:100%;height:46px;border-radius:12px;border:none;cursor:pointer;font-family:'Chakra Petch';font-weight:700;letter-spacing:2px;color:#04121f;background:linear-gradient(110deg,#25F4EE,#FF2D55);}
+  .tutclose{margin-top:13px;flex:0 0 auto;width:100%;height:44px;border-radius:12px;border:none;cursor:pointer;font-family:'Chakra Petch';font-weight:700;letter-spacing:2px;color:#04121f;background:linear-gradient(110deg,#25F4EE,#FF2D55);}
   .tutclose:active{transform:scale(.98);}
 
   #loading{position:fixed; inset:0; display:flex; align-items:center; justify-content:center; color:var(--txt2); font-family:'Chakra Petch'; letter-spacing:4px; font-size:12px;}
@@ -624,9 +626,11 @@ function openTournRules(ev){
   const rules=(ev.rules||[]).map(r=>`<div class="rule2"><span class="ck">✓</span><span>${esc(r)}</span></div>`).join('');
   const ov=$(`<div class="ov"><div class="modal tutmodal">
     <h3>How to Join</h3>
-    <div class="task"><div class="lbl2">THIS WEEK'S TASK</div><div class="v2">${esc(ev.task||'Weekly video task')}</div></div>
-    <h4>STEP-BY-STEP</h4>${steps}
-    <h4>EVENT RULES</h4>${rules}
+    <div class="tutscroll">
+      <div class="task"><div class="lbl2">THIS WEEK'S TASK</div><div class="v2">${esc(ev.task||'Weekly video task')}</div></div>
+      <h4>STEP-BY-STEP</h4>${steps}
+      <h4>EVENT RULES</h4>${rules}
+    </div>
     <button class="tutclose">GOT IT</button>
   </div></div>`);
   document.body.appendChild(ov);
