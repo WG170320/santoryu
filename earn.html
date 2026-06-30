@@ -10,302 +10,448 @@
 <style>
   :root{
     --gold:#E8B44A; --gold-hi:#FFE08A; --gold-deep:#A9781F;
-    --emerald:#2DD4A7; --cyan:#5FE6FF;
+    --blue:#4DA6FF; --blue-hi:#9BD4FF; --blue-deep:#1E63B0; --cyan:#5FE6FF;
+    --emerald:#2DD4A7;
     --bg:#07090C; --surf:#11151B; --surf2:#161B22; --line:#222a34;
-    --txt:#EDF1F5; --txt2:#8A95A3; --danger:#FF5E6C;
+    --txt:#EDF1F5; --txt2:#8A95A3; --danger:#FF5E6C; --amber:#F5B445; --green:#34D399;
   }
   *{box-sizing:border-box; margin:0; padding:0; -webkit-font-smoothing:antialiased; -webkit-tap-highlight-color:transparent;}
   html,body{background:var(--bg);}
-  body{font-family:'Inter',sans-serif; color:var(--txt); padding:16px 14px 30px; max-width:430px; margin:0 auto;
-    background:radial-gradient(120% 40% at 50% -6%, rgba(45,212,167,.05), transparent 60%), var(--bg);}
+  body{font-family:'Inter',sans-serif; color:var(--txt); padding:14px 14px 34px; max-width:440px; margin:0 auto;
+    background:radial-gradient(120% 36% at 50% -4%, rgba(77,166,255,.06), transparent 60%), var(--bg);}
   .hide{display:none !important;}
 
-  .top{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;}
-  .top h1{font-family:'Chakra Petch'; font-weight:700; font-size:23px; letter-spacing:.5px;}
-  .pill{display:flex; align-items:center; gap:7px; background:var(--surf2); border:1px solid rgba(232,180,74,.32); padding:6px 13px; border-radius:30px;}
-  .pill b{font-family:'Rajdhani'; font-weight:700; font-size:16px;}
-  .gem-s{width:13px;height:13px;transform:rotate(45deg);border-radius:2px;background:linear-gradient(135deg,var(--gold-hi),var(--gold-deep));}
+  /* diamonds: GOLD = points, BLUE = MLBB diamonds */
+  .dia{display:inline-block; transform:rotate(45deg); border-radius:2px; vertical-align:middle;}
+  .dia.gold{background:linear-gradient(135deg,var(--gold-hi),var(--gold-deep)); box-shadow:0 0 6px rgba(232,180,74,.4);}
+  .dia.blue{background:linear-gradient(135deg,var(--blue-hi),var(--blue-deep)); box-shadow:0 0 6px rgba(77,166,255,.45);}
 
+  /* header (now in HTML) */
+  .head{display:flex; align-items:center; justify-content:space-between; padding:4px 2px 0; margin-bottom:15px;}
+  .brand{display:flex; align-items:center; gap:10px;}
+  .brand .logo{width:34px;height:34px;border-radius:10px; display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(150deg,#1c2128,#0c0f14); border:1px solid rgba(232,180,74,.4); box-shadow:0 4px 14px -4px rgba(232,180,74,.4);}
+  .brand h1{font-family:'Chakra Petch'; font-weight:700; font-size:21px; letter-spacing:.5px; line-height:1;}
+  .brand small{display:block; font-family:'Rajdhani'; font-weight:600; font-size:10px; letter-spacing:3px; color:var(--txt2); margin-top:2px;}
+  .balpill{display:flex; align-items:center; gap:8px; background:linear-gradient(180deg,rgba(232,180,74,.14),rgba(232,180,74,.05));
+    border:1px solid rgba(232,180,74,.4); padding:8px 14px; border-radius:30px; box-shadow:0 4px 14px -6px rgba(232,180,74,.5); transition:transform .2s;}
+  .balpill.bump{animation:bump .5s ease;}
+  @keyframes bump{0%,100%{transform:scale(1);}35%{transform:scale(1.16);}}
+  .balpill .v{font-family:'Rajdhani'; font-weight:700; font-size:18px; color:var(--gold-hi);}
+
+  /* HERO (BLUE = MLBB diamonds) */
   .hero{position:relative; border-radius:22px; overflow:hidden; padding:18px;
-    background:radial-gradient(70% 90% at 82% 50%, rgba(255,210,120,.30), transparent 62%),
-      radial-gradient(55% 70% at 88% 16%, rgba(95,230,255,.10), transparent 70%),
-      linear-gradient(160deg,#1a1d23,#0a0c10 72%);
-    border:1px solid rgba(232,180,74,.38); box-shadow:0 14px 40px -14px rgba(232,180,74,.30), inset 0 1px 0 rgba(255,255,255,.08);}
-  .eyebrow{font-family:'Chakra Petch'; font-weight:700; font-size:10.5px; letter-spacing:3px; color:var(--gold); text-shadow:0 0 12px rgba(232,180,74,.5);}
+    background:radial-gradient(72% 92% at 82% 50%, rgba(95,200,255,.30), transparent 62%),
+      radial-gradient(55% 70% at 88% 16%, rgba(155,212,255,.12), transparent 70%),
+      linear-gradient(160deg,#16202b,#080b10 72%);
+    border:1px solid rgba(77,166,255,.40); box-shadow:0 14px 40px -14px rgba(77,166,255,.34), inset 0 1px 0 rgba(255,255,255,.08);}
+  .eyebrow{font-family:'Chakra Petch'; font-weight:700; font-size:10.5px; letter-spacing:3px; color:var(--cyan); text-shadow:0 0 12px rgba(95,230,255,.5);}
   .reward{display:flex; align-items:baseline; gap:9px; margin-top:2px;}
   .num{font-family:'Teko'; font-weight:700; font-size:74px; line-height:.85;
-    background:linear-gradient(180deg,var(--gold-hi),var(--gold) 55%,var(--gold-deep)); -webkit-background-clip:text; background-clip:text; color:transparent; filter:drop-shadow(0 2px 14px rgba(232,180,74,.5));}
+    background:linear-gradient(180deg,var(--blue-hi),var(--blue) 55%,var(--blue-deep)); -webkit-background-clip:text; background-clip:text; color:transparent; filter:drop-shadow(0 2px 14px rgba(77,166,255,.55));}
   .rlabel{line-height:1; padding-bottom:5px; font-family:'Rajdhani';}
   .rlabel .a{font-weight:700; font-size:22px; letter-spacing:1px; display:block;}
   .rlabel .b{font-weight:600; font-size:15px; letter-spacing:5px; color:var(--txt2); display:block;}
-  .sub{font-size:11px; color:var(--txt2); margin-top:10px; font-weight:500; max-width:190px; line-height:1.4;}
-  .emblem{position:absolute; right:12px; top:30%; width:104px; height:104px; will-change:transform,filter; animation:floaty 4.5s ease-in-out infinite;}
-  @keyframes floaty{
-    0%,100%{transform:translateY(-44%); filter:drop-shadow(0 0 18px rgba(255,200,90,.42));}
-    50%{transform:translateY(-36%); filter:drop-shadow(0 0 30px rgba(255,200,90,.72));}
-  }
+  .sub{font-size:11px; color:var(--txt2); margin-top:10px; font-weight:500; max-width:185px; line-height:1.4;}
+  .emblem{position:absolute; right:12px; top:30%; width:108px; height:108px; will-change:transform,filter; animation:floaty 4.5s ease-in-out infinite;}
+  @keyframes floaty{0%,100%{transform:translateY(-44%); filter:drop-shadow(0 0 18px rgba(95,200,255,.45));}50%{transform:translateY(-36%); filter:drop-shadow(0 0 32px rgba(95,200,255,.78));}}
   .prog{margin-top:14px;}
   .prow{display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:6px;}
   .prow .l{font-family:'Chakra Petch'; font-weight:600; font-size:9.5px; letter-spacing:3px; color:var(--txt2);}
-  .prow .r{font-family:'Rajdhani'; font-weight:700; font-size:14px; color:var(--gold);}
+  .prow .r{font-family:'Rajdhani'; font-weight:700; font-size:14px; color:var(--cyan);}
   .track{height:10px; border-radius:6px; background:rgba(255,255,255,.07); box-shadow:inset 0 1px 2px rgba(0,0,0,.5); overflow:hidden;}
-  .fill{position:relative; height:100%; border-radius:6px; background:linear-gradient(90deg,var(--emerald),var(--gold)); box-shadow:0 0 11px rgba(232,180,74,.7); transition:width .8s cubic-bezier(.2,.8,.2,1); overflow:hidden;}
-  .fill::after{content:""; position:absolute; top:0; left:-40%; width:40%; height:100%;
-    background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent); animation:sweep 2.4s ease-in-out infinite;}
+  .fill{position:relative; height:100%; border-radius:6px; background:linear-gradient(90deg,var(--emerald),var(--cyan)); box-shadow:0 0 11px rgba(95,230,255,.7); width:0; transition:width 1s cubic-bezier(.2,.8,.2,1); overflow:hidden;}
+  .fill::after{content:""; position:absolute; top:0; left:-40%; width:40%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent); animation:sweep 2.4s ease-in-out infinite;}
   @keyframes sweep{0%{left:-40%;}60%,100%{left:120%;}}
-  @keyframes pulse{0%,100%{box-shadow:0 7px 18px -4px rgba(232,180,74,.5), inset 0 1px 0 rgba(255,255,255,.5);}50%{box-shadow:0 7px 26px 0 rgba(232,180,74,.85), inset 0 1px 0 rgba(255,255,255,.6);}}
-  @keyframes rise{0%{opacity:0; transform:translateY(10px);}100%{opacity:1; transform:translateY(0);}}
-  #app>*{animation:rise .45s ease both;}
-  #app>*:nth-child(2){animation-delay:.04s;} #app>*:nth-child(4){animation-delay:.08s;}
-  #app>*:nth-child(6){animation-delay:.12s;} #app>*:nth-child(8){animation-delay:.16s;}
-  @media (prefers-reduced-motion:reduce){*{animation:none !important;}}
-  .cta{margin-top:15px; height:46px; border-radius:13px; border:1px solid rgba(255,224,138,.65); display:flex; align-items:center; justify-content:center; gap:9px; cursor:pointer;
-    background:linear-gradient(180deg,var(--gold-hi),var(--gold) 45%,var(--gold-deep)); box-shadow:0 7px 18px -4px rgba(232,180,74,.5), inset 0 1px 0 rgba(255,255,255,.5);
-    animation:pulse 2.2s ease-in-out infinite;}
+  .cta{margin-top:15px; height:46px; border-radius:13px; border:1px solid rgba(155,212,255,.6); display:flex; align-items:center; justify-content:center; gap:9px; cursor:pointer;
+    background:linear-gradient(180deg,var(--blue-hi),var(--blue) 45%,var(--blue-deep)); box-shadow:0 7px 18px -4px rgba(77,166,255,.5), inset 0 1px 0 rgba(255,255,255,.5); animation:pulseB 2.2s ease-in-out infinite;}
   .cta:active{transform:scale(.98);}
   .cta.off{background:var(--surf2); border-color:var(--line); box-shadow:none; cursor:default; animation:none;}
-  .cta span{font-family:'Chakra Petch'; font-weight:700; font-size:14px; letter-spacing:3px; color:#1a1205;}
+  @keyframes pulseB{0%,100%{box-shadow:0 7px 18px -4px rgba(77,166,255,.5), inset 0 1px 0 rgba(255,255,255,.5);}50%{box-shadow:0 7px 26px 0 rgba(77,166,255,.85), inset 0 1px 0 rgba(255,255,255,.6);}}
+  .cta span{font-family:'Chakra Petch'; font-weight:700; font-size:14px; letter-spacing:3px; color:#04121f;}
   .cta.off span{color:var(--txt2); letter-spacing:1px;}
-  .cta .g{width:14px;height:14px;transform:rotate(45deg);border-radius:2px;background:#1a1205;}
-  .cta.off .g{display:none;}
 
   .sh{display:flex; align-items:center; justify-content:space-between; margin:22px 2px 11px;}
   .sh .t{font-family:'Chakra Petch'; font-weight:600; font-size:11px; letter-spacing:3px; color:var(--txt2);}
   .sh .x{font-size:11px; color:var(--gold); font-weight:600;}
+  .sh .x.blue{color:var(--cyan);}
 
   .tiers{display:grid; grid-template-columns:repeat(4,1fr); gap:8px;}
-  .tier{background:var(--surf); border:1px solid var(--line); border-radius:13px; padding:11px 4px 9px; text-align:center; cursor:pointer; transition:transform .12s, border-color .2s;}
-  .tier:active{transform:scale(.96);}
-  .tier.lock{border-color:rgba(232,180,74,.5); background:linear-gradient(180deg,rgba(232,180,74,.08),var(--surf));}
+  .tier{background:var(--surf); border:1px solid var(--line); border-radius:13px; padding:11px 4px 9px; text-align:center; cursor:pointer; transition:transform .12s,border-color .2s;}
+  .tier:active{transform:scale(.95);}
+  .tier.lock{border-color:rgba(77,166,255,.5); background:linear-gradient(180deg,rgba(77,166,255,.10),var(--surf));}
   .tier.used{opacity:.4; cursor:default;}
-  .tier .tg{width:24px;height:24px;margin:0 auto 6px; transform:rotate(45deg); border-radius:4px; background:linear-gradient(135deg,var(--gold-hi),var(--gold-deep)); box-shadow:0 0 10px rgba(232,180,74,.35);}
+  .tier .tg{width:24px;height:24px;margin:0 auto 6px;}
   .tier .n{font-family:'Teko'; font-weight:600; font-size:23px; line-height:.8;}
   .tier .u{font-size:8px; letter-spacing:1px; color:var(--txt2); margin-top:2px;}
-  .tier .c{margin-top:7px; font-family:'Rajdhani'; font-weight:700; font-size:12px; color:var(--gold); border-top:1px solid var(--line); padding-top:6px;}
+  .tier .c{margin-top:7px; font-family:'Rajdhani'; font-weight:700; font-size:12px; color:var(--gold); border-top:1px solid var(--line); padding-top:6px; display:flex; align-items:center; justify-content:center; gap:4px;}
 
   .card{background:var(--surf); border:1px solid var(--line); border-radius:15px; padding:14px;}
   .rowflex{display:flex; align-items:center; gap:12px;}
-  .di{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;font-size:18px;}
-  .gleft{flex:1;}
-  .gleft .n{font-family:'Rajdhani'; font-weight:700; font-size:16px; line-height:1.1;}
+  .di{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex:0 0 auto; overflow:hidden;}
+  .di svg{width:21px;height:21px;}
+  .di img{width:100%;height:100%;object-fit:cover;}
+  .gleft{flex:1; min-width:0;}
+  .gleft .n{font-family:'Rajdhani'; font-weight:700; font-size:16px; line-height:1.15;}
   .gleft .d{font-size:11px; color:var(--txt2); margin-top:1px;}
-  .act{font-family:'Rajdhani'; font-weight:700; font-size:13px; letter-spacing:.5px; padding:9px 16px; border-radius:10px; cursor:pointer; white-space:nowrap; border:none;}
+  .act{font-family:'Rajdhani'; font-weight:700; font-size:13px; letter-spacing:.5px; padding:9px 16px; border-radius:10px; cursor:pointer; white-space:nowrap; border:none; transition:transform .12s;}
+  .act:active{transform:scale(.94);}
   .act.on{background:linear-gradient(90deg,var(--emerald),var(--gold)); color:#04140f;}
   .act.off{background:var(--surf2); color:var(--txt2); cursor:default;}
 
-  .inv{display:flex; align-items:center; gap:9px; margin-top:2px;}
-  .code{flex:1; font-family:'Chakra Petch'; font-weight:700; font-size:15px; letter-spacing:1px; color:var(--emerald); background:#0d1117; border:1px dashed rgba(45,212,167,.4); border-radius:9px; padding:9px 11px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
-  .btn{font-family:'Rajdhani'; font-weight:700; font-size:12px; letter-spacing:1px; padding:9px 13px; border-radius:9px; cursor:pointer; white-space:nowrap; border:none;}
-  .btn.copy{background:rgba(232,180,74,.14); border:1px solid rgba(232,180,74,.4); color:var(--gold);}
-  .btn.share{background:linear-gradient(180deg,var(--emerald),#1aa583); color:#04140f;}
+  /* invite: code + copy + share + share link + apply code */
+  .inv .row1{display:flex; align-items:center; gap:8px;}
+  .code{flex:1; font-family:'Chakra Petch'; font-weight:700; font-size:15px; letter-spacing:1px; color:var(--emerald); background:#0d1117; border:1px dashed rgba(45,212,167,.4); border-radius:9px; padding:10px 12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .icb{width:42px;height:42px;flex:0 0 auto;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;transition:transform .12s;}
+  .icb:active{transform:scale(.9);}
+  .icb.copy{background:rgba(232,180,74,.14); border:1px solid rgba(232,180,74,.4);}
+  .icb.copy svg{stroke:var(--gold);}
+  .share2{display:flex; gap:8px; margin-top:9px;}
+  .sbtn{flex:1; display:flex; align-items:center; justify-content:center; gap:7px; font-family:'Rajdhani'; font-weight:700; font-size:13px; letter-spacing:.5px; padding:11px; border-radius:10px; border:none; cursor:pointer; transition:transform .12s;}
+  .sbtn:active{transform:scale(.96);}
+  .sbtn.code{background:linear-gradient(180deg,var(--emerald),#1aa583); color:#04140f;}
+  .sbtn.link{background:rgba(95,230,255,.12); border:1px solid rgba(95,230,255,.35); color:var(--cyan);}
+  .sbtn svg{width:15px;height:15px;}
+  .applybox{display:flex; gap:8px; margin-top:11px; padding-top:11px; border-top:1px solid var(--line);}
+  .applybox input{flex:1; background:#0d1117; border:1px solid var(--line); border-radius:9px; padding:10px 12px; color:var(--txt); font-size:13px; font-family:'Chakra Petch'; letter-spacing:1px; text-transform:uppercase;}
+  .applybox input:focus{outline:none; border-color:var(--emerald);}
+  .applybox button{background:rgba(45,212,167,.15); border:1px solid rgba(45,212,167,.4); color:var(--emerald); font-family:'Rajdhani'; font-weight:700; padding:0 16px; border-radius:9px; cursor:pointer;}
 
-  .task{display:flex; align-items:center; gap:12px; padding:12px 2px; border-bottom:1px solid rgba(34,42,52,.7);}
-  .task:last-child{border-bottom:none;}
+  /* lists: history + invited */
+  .litem{display:flex; align-items:center; gap:11px; padding:11px 2px; border-bottom:1px solid rgba(34,42,52,.6);}
+  .litem:last-child{border-bottom:none;}
+  .litem .nm{flex:1; font-family:'Rajdhani'; font-weight:600; font-size:14px;}
+  .litem .sm{font-size:11px; color:var(--txt2);}
+  .stat{font-family:'Rajdhani'; font-weight:700; font-size:11px; letter-spacing:1px; padding:4px 9px; border-radius:7px;}
+  .stat.pending{background:rgba(245,180,69,.14); color:var(--amber);}
+  .stat.fulfilled{background:rgba(52,211,153,.14); color:var(--green);}
+  .stat.rejected{background:rgba(255,94,108,.14); color:var(--danger);}
+  .empty{text-align:center; color:var(--txt2); font-size:12px; padding:16px 0;}
+
   .badge{display:flex; align-items:center; gap:5px; background:rgba(232,180,74,.12); padding:6px 10px; border-radius:9px; border:1px solid rgba(232,180,74,.2);}
   .badge b{font-family:'Rajdhani'; font-weight:700; font-size:12px; color:var(--gold);}
-  .badge .g{width:9px;height:9px;transform:rotate(45deg);border-radius:1px;background:var(--gold);}
 
-  /* withdraw modal */
-  .ov{position:fixed; inset:0; background:rgba(0,0,0,.72); display:flex; align-items:center; justify-content:center; padding:24px; z-index:10;}
-  .modal{width:100%; max-width:340px; background:linear-gradient(160deg,var(--surf2),var(--bg)); border:1px solid rgba(232,180,74,.35); border-radius:20px; padding:20px;}
+  /* modal */
+  .ov{position:fixed; inset:0; background:rgba(0,0,0,.74); display:flex; align-items:center; justify-content:center; padding:24px; z-index:30; animation:fade .2s ease;}
+  @keyframes fade{from{opacity:0;}to{opacity:1;}}
+  .modal{width:100%; max-width:340px; background:linear-gradient(160deg,var(--surf2),var(--bg)); border:1px solid rgba(95,200,255,.32); border-radius:20px; padding:20px; animation:pop .3s cubic-bezier(.2,1.3,.4,1);}
+  @keyframes pop{from{opacity:0; transform:scale(.85);}to{opacity:1; transform:scale(1);}}
   .modal h3{font-family:'Chakra Petch'; font-weight:700; font-size:17px; margin-bottom:3px;}
-  .modal p{font-size:12px; color:var(--txt2); margin-bottom:14px;}
-  .modal label{font-size:10px; letter-spacing:2px; color:var(--txt2); font-weight:600; display:block; margin:10px 2px 5px;}
-  .modal input{width:100%; background:#0d1117; border:1px solid var(--line); border-radius:10px; padding:11px 12px; color:var(--txt); font-size:14px; font-family:'Inter';}
-  .modal input:focus{outline:none; border-color:var(--gold);}
+  .modal p{font-size:12px; color:var(--txt2); margin-bottom:6px; line-height:1.45;}
+  .modal label{font-size:10px; letter-spacing:2px; color:var(--txt2); font-weight:600; display:block; margin:12px 2px 5px;}
+  .modal input,.modal textarea{width:100%; background:#0d1117; border:1px solid var(--line); border-radius:10px; padding:11px 12px; color:var(--txt); font-size:14px; font-family:'Inter'; resize:none;}
+  .modal input:focus,.modal textarea:focus{outline:none; border-color:var(--cyan);}
   .mrow{display:flex; gap:10px; margin-top:18px;}
-  .mrow .btn{flex:1; text-align:center; padding:12px; font-size:13px;}
+  .mrow .btn{flex:1; text-align:center; padding:12px; font-size:13px; font-family:'Rajdhani'; font-weight:700; border-radius:11px; border:none; cursor:pointer; letter-spacing:.5px;}
   .btn.ghost{background:var(--surf2); color:var(--txt2);}
-  .btn.go{background:linear-gradient(180deg,var(--gold-hi),var(--gold-deep)); color:#1a1205;}
+  .btn.go{background:linear-gradient(180deg,var(--blue-hi),var(--blue-deep)); color:#04121f;}
+  .btn.go:disabled{opacity:.45;}
   .err{color:var(--danger); font-size:12px; margin-top:10px; min-height:14px;}
 
-  #loading{position:fixed; inset:0; display:flex; align-items:center; justify-content:center; color:var(--txt2); font-family:'Chakra Petch'; letter-spacing:3px; font-size:12px;}
+  /* custom toast */
+  #toasts{position:fixed; left:0; right:0; bottom:26px; display:flex; flex-direction:column; align-items:center; gap:8px; z-index:50; pointer-events:none;}
+  .ctoast{display:flex; align-items:center; gap:9px; background:rgba(18,22,28,.96); border:1px solid var(--line); color:var(--txt);
+    font-family:'Rajdhani'; font-weight:600; font-size:14px; padding:11px 16px; border-radius:13px; box-shadow:0 10px 30px rgba(0,0,0,.5); backdrop-filter:blur(8px); animation:tin .3s cubic-bezier(.2,1.3,.4,1);}
+  .ctoast.good{border-color:rgba(45,212,167,.5);} .ctoast.bad{border-color:rgba(255,94,108,.5);}
+  .ctoast .ic{width:20px;height:20px;display:flex;align-items:center;justify-content:center;border-radius:50%;flex:0 0 auto;font-size:12px;font-weight:800;}
+  .ctoast.good .ic{background:rgba(45,212,167,.2); color:var(--emerald);} .ctoast.bad .ic{background:rgba(255,94,108,.2); color:var(--danger);}
+  @keyframes tin{from{opacity:0; transform:translateY(16px);}to{opacity:1; transform:translateY(0);}}
+  .ctoast.out{animation:tout .3s ease forwards;}
+  @keyframes tout{to{opacity:0; transform:translateY(16px);}}
+
+  /* reward gain float */
+  .gain{position:fixed; left:50%; top:30%; transform:translateX(-50%); z-index:40; display:flex; align-items:center; gap:8px;
+    font-family:'Teko'; font-weight:700; font-size:54px; color:var(--gold-hi); text-shadow:0 0 22px rgba(232,180,74,.8); pointer-events:none; animation:gain 1.1s ease-out forwards;}
+  .gain .dia{width:30px;height:30px;}
+  @keyframes gain{0%{opacity:0; transform:translateX(-50%) scale(.5) translateY(20px);}25%{opacity:1; transform:translateX(-50%) scale(1.1) translateY(0);}70%{opacity:1;}100%{opacity:0; transform:translateX(-50%) scale(1) translateY(-60px);}}
+
+  @keyframes rise{from{opacity:0; transform:translateY(10px);}to{opacity:1; transform:translateY(0);}}
+  #app>*{animation:rise .42s ease both;}
+  #app>*:nth-child(3){animation-delay:.04s;} #app>*:nth-child(5){animation-delay:.08s;} #app>*:nth-child(7){animation-delay:.12s;} #app>*:nth-child(9){animation-delay:.16s;}
+  @media (prefers-reduced-motion:reduce){*{animation:none !important;}}
+  #loading{position:fixed; inset:0; display:flex; align-items:center; justify-content:center; color:var(--txt2); font-family:'Chakra Petch'; letter-spacing:4px; font-size:12px;}
 </style>
 </head>
 <body>
   <div id="loading">LOADING…</div>
   <div id="app" class="hide"></div>
-
-  <!-- gem template -->
-  <svg id="gemTpl" class="hide" viewBox="0 0 140 140"><defs>
-    <linearGradient id="f1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#E8B44A"/></linearGradient>
-    <linearGradient id="f2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F6CB6A"/><stop offset="1" stop-color="#B5821F"/></linearGradient>
-    <linearGradient id="f3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E8B44A"/><stop offset="1" stop-color="#8A5E12"/></linearGradient>
-    <linearGradient id="f4" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFD980"/><stop offset="1" stop-color="#C9962E"/></linearGradient></defs>
-    <polygon points="70,8 38,46 102,46" fill="url(#f1)"/><polygon points="22,52 70,8 38,46" fill="url(#f4)"/>
-    <polygon points="118,52 70,8 102,46" fill="url(#f2)"/><polygon points="22,52 38,46 102,46 118,52 70,64" fill="url(#f1)"/>
-    <polygon points="22,52 70,64 70,132" fill="url(#f2)"/><polygon points="118,52 70,64 70,132" fill="url(#f3)"/>
-    <polygon points="118,52 70,64 92,100" fill="url(#f3)" opacity=".7"/><polygon points="70,12 54,40 70,40" fill="#fff" opacity=".5"/>
-  </svg>
+  <div id="toasts"></div>
 
 <script>
-//=== Bridge layer (native Android, or browser MOCK for design testing) ============
-const isNative = !!window.Android;
-let REQ=0; const pending={};
-window.__earnResult=(id,obj)=>{ const r=pending[id]; if(r){ delete pending[id]; r(obj); } };
-window.__earnState=(s)=>{ STATE=s; render(); };
-
-function call(method,...args){
-  return new Promise(res=>{ const id='r'+(++REQ); pending[id]=res; window.Android[method](id,...args); });
+const CLIPTOK_LOGO="https://play-lh.googleusercontent.com/CISn2zllaJv69FL7lgoRKGztQfZLMdLs30_0ARfz0qryyzokSahvGI-qw5nrbmfkel4KyHVhFpI6H92hPZb9qA=w96";
+//=== icons (inline SVG) ===========================================================
+const IC={
+  copy:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>',
+  link:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>',
+  share:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>',
+  play:'<svg viewBox="0 0 24 24" fill="#5FA0FF"><path d="M7 5v14l11-7z"/></svg>',
+  star:'<svg viewBox="0 0 24 24" fill="#F5B445"><path d="M12 2l2.9 6.3 6.8.6-5.1 4.5 1.5 6.7L12 17.3 5.9 20.6l1.5-6.7L2.3 8.9l6.8-.6z"/></svg>',
+  gift:'<svg viewBox="0 0 24 24" fill="#2DD4A7"><path d="M20 8h-2.2a3 3 0 1 0-5.8-1 3 3 0 1 0-5.8 1H4v4h16zM4 13v7h7v-7zm9 0v7h7v-7z"/></svg>',
+  flame:'<svg viewBox="0 0 24 24" fill="#F5B445"><path d="M12 2s5 4 5 9a5 5 0 0 1-10 0c0-2 1-3 1-3s0 2 2 2c0-3 2-5 2-8z"/></svg>',
+};
+function gemSVG(kind){
+  const c = kind==='blue'
+    ? {a:'#CFE9FF',b:'#9BD4FF',c:'#4DA6FF',d:'#1E63B0',e:'#8FD0FF',f:'#2E7Fd1'}
+    : {a:'#FFE9B0',b:'#FFD980',c:'#E8B44A',d:'#8A5E12',e:'#F6CB6A',f:'#B5821F'};
+  return `<svg class="emblem" viewBox="0 0 140 140"><defs>
+    <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c.a}"/><stop offset="1" stop-color="${c.c}"/></linearGradient>
+    <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c.e}"/><stop offset="1" stop-color="${c.f}"/></linearGradient>
+    <linearGradient id="g3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c.c}"/><stop offset="1" stop-color="${c.d}"/></linearGradient>
+    <linearGradient id="g4" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c.b}"/><stop offset="1" stop-color="${c.f}"/></linearGradient></defs>
+    <polygon points="70,8 38,46 102,46" fill="url(#g1)"/><polygon points="22,52 70,8 38,46" fill="url(#g4)"/>
+    <polygon points="118,52 70,8 102,46" fill="url(#g2)"/><polygon points="22,52 38,46 102,46 118,52 70,64" fill="url(#g1)"/>
+    <polygon points="22,52 70,64 70,132" fill="url(#g2)"/><polygon points="118,52 70,64 70,132" fill="url(#g3)"/>
+    <polygon points="118,52 70,64 92,100" fill="url(#g3)" opacity=".7"/><polygon points="70,12 54,40 70,40" fill="#fff" opacity=".55"/></svg>`;
 }
+
+//=== bridge (native Android or browser MOCK) ======================================
+const isNative=!!window.Android;
+let REQ=0; const pending={};
+window.__earnResult=(id,obj)=>{ const r=pending[id]; if(r){delete pending[id]; r(obj);} };
+window.__earnState=(s)=>{ STATE=s; render(); };
+function call(m,...a){ return new Promise(res=>{ const id='r'+(++REQ); pending[id]=res; window.Android[m](id,...a); }); }
 function requestState(){ if(isNative) window.Android.requestState(); else mockState(); }
 
-// ---- Browser mock so the design renders without the app ----
-let MOCK = {
-  uid:"dev-demo", code:"SANT-AB12-CD34", isAdmin:false,
+let MOCK={ uid:"dev-demo", code:"SANT-AB12-CD34", isAdmin:false,
   config:{perInvite:5,inviteeBonus:5,welcomeBonus:5,dailyBonus:15,missionGoal:5,missionBonus:50,missionHours:24},
   tiers:[{mlbb:22,cost:80,firstOnly:true},{mlbb:112,cost:250,firstOnly:false},{mlbb:223,cost:500,firstOnly:false},{mlbb:336,cost:700,firstOnly:false},{mlbb:570,cost:1000,firstOnly:false},{mlbb:1163,cost:2000,firstOnly:false}],
-  tasks:[{id:"download_cliptok",title:"Download ClipTok",desc:"Install our partner app.",link:"#",logo:"",reward:10,claimed:false},{id:"rate_5star",title:"Rate us 5 stars",desc:"Leave a 5-star review.",link:"#",logo:"",reward:5,claimed:false}],
-  account:{balance:21,earned:56,referralCount:3,firstWithdrawUsed:false,earnBanned:false,welcomeClaimed:true,referred:true,lastDailyDay:0,missionStart:0,missionBaseline:0,name:"You"},
-  dailyAvailable:true, dailyKnown:true, dailyMs:0
-};
+  tasks:[{id:"download_cliptok",title:"Download ClipTok",desc:"Install our partner app — Video & Photo Saver.",link:"https://play.google.com/store/apps/details?id=com.warlito.clipto",logo:"",reward:10,claimed:false},{id:"rate_5star",title:"Rate us 5 stars",desc:"Write an honest review on Google Play.",link:"https://play.google.com/store/apps/details?id=com.warlito.clipto",logo:"",reward:5,claimed:false}],
+  account:{balance:340,earned:560,referralCount:3,firstWithdrawUsed:true,earnBanned:false,welcomeClaimed:true,referred:false,lastDailyDay:0,missionStart:0,missionBaseline:0,name:"You"},
+  history:[{mlbb:22,cost:80,status:"fulfilled",ts:Date.now()-86400000,refunded:false},{mlbb:112,cost:250,status:"pending",ts:Date.now()-3600000,refunded:false}],
+  invited:[{name:"Justin",ts:Date.now()-7200000},{name:"Vince",ts:Date.now()-90000000},{name:"Maher",ts:Date.now()-180000000}],
+  dailyAvailable:true, dailyKnown:true, dailyMs:0 };
 function mockState(){ setTimeout(()=>window.__earnState(JSON.parse(JSON.stringify(MOCK))),60); }
-if(!isNative){
-  window.Android = {
-    requestState:()=>mockState(),
-    withdraw:(id,mlbb,cost)=>{ MOCK.account.balance-=cost; if(cost===80)MOCK.account.firstWithdrawUsed=true; setTimeout(()=>window.__earnResult(id,{ok:true}),400); },
-    claimDaily:(id,a)=>{ MOCK.account.balance+=a; MOCK.dailyAvailable=false; MOCK.dailyMs=86400000; setTimeout(()=>window.__earnResult(id,{ok:true}),300); },
-    claimTask:(id,tid,r)=>{ const t=MOCK.tasks.find(x=>x.id===tid); if(t){t.claimed=true; MOCK.account.balance+=r;} setTimeout(()=>window.__earnResult(id,{ok:true}),300); },
-    applyReferral:(id,c)=>setTimeout(()=>window.__earnResult(id,{ok:false,error:"invalid"}),300),
-    claimMission:(id,b)=>{ MOCK.account.balance+=b; setTimeout(()=>window.__earnResult(id,{ok:true}),300); },
-    claimWelcome:(id)=>setTimeout(()=>window.__earnResult(id,{ok:true}),200),
-    copy:(t)=>console.log("copy",t), share:(t)=>console.log("share",t), openLink:(u)=>console.log("link",u), toast:(m)=>console.log("toast",m),
-  };
-}
-function toast(m){ window.Android.toast(m); }
+if(!isNative){ window.Android={
+  requestState:()=>mockState(),
+  withdraw:(id,m,c)=>{MOCK.account.balance-=c; MOCK.history.unshift({mlbb:m,cost:c,status:"pending",ts:Date.now(),refunded:false}); setTimeout(()=>window.__earnResult(id,{ok:true}),400);},
+  claimDaily:(id,a)=>{MOCK.account.balance+=a; MOCK.dailyAvailable=false; MOCK.dailyMs=86400000; setTimeout(()=>window.__earnResult(id,{ok:true}),300);},
+  claimTask:(id,t,r)=>{const x=MOCK.tasks.find(q=>q.id===t); if(x){x.claimed=true; MOCK.account.balance+=r;} setTimeout(()=>window.__earnResult(id,{ok:true}),300);},
+  applyReferral:(id,c)=>setTimeout(()=>window.__earnResult(id,{ok:false,error:"invalid"}),300),
+  claimMission:(id,b)=>{MOCK.account.balance+=b; setTimeout(()=>window.__earnResult(id,{ok:true}),300);},
+  claimWelcome:(id)=>setTimeout(()=>window.__earnResult(id,{ok:true}),200),
+  copy:t=>toast("Copied: "+t,'good'), share:t=>console.log("share",t), openLink:u=>console.log("link",u), toast:m=>toast(m),
+};}
 
-//=== State + render ===============================================================
+//=== custom toast + reward gain ===================================================
+function toast(msg,kind){
+  const t=document.createElement('div'); t.className='ctoast '+(kind||'');
+  const ic=kind==='good'?'✓':kind==='bad'?'!':'';
+  t.innerHTML=(ic?`<span class="ic">${ic}</span>`:'')+`<span>${esc(msg)}</span>`;
+  document.getElementById('toasts').appendChild(t);
+  setTimeout(()=>{t.classList.add('out'); setTimeout(()=>t.remove(),300);},2200);
+}
+function gainFx(amount,kind){
+  const g=document.createElement('div'); g.className='gain';
+  g.innerHTML=`<span class="dia ${kind||'gold'}"></span>+${amount}`;
+  document.body.appendChild(g); setTimeout(()=>g.remove(),1200);
+  const pill=document.querySelector('.balpill'); if(pill){pill.classList.remove('bump'); void pill.offsetWidth; pill.classList.add('bump');}
+}
+
+//=== state + helpers ==============================================================
 let STATE=null;
-const $=(h)=>{const d=document.createElement('div');d.innerHTML=h.trim();return d.firstChild;};
-const esc=(s)=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const gemSVG=()=>document.getElementById('gemTpl').outerHTML.replace('id="gemTpl"','').replace('hide','emblem');
-
-function activeTiers(s){
-  return s.tiers.filter(t=>!(t.firstOnly && s.account.firstWithdrawUsed)).slice().sort((a,b)=>a.cost-b.cost);
+const $=h=>{const d=document.createElement('div'); d.innerHTML=h.trim(); return d.firstChild;};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ago=ts=>{const d=Math.floor((Date.now()-ts)/1000); if(d<60)return'just now'; if(d<3600)return Math.floor(d/60)+'m ago'; if(d<86400)return Math.floor(d/3600)+'h ago'; return Math.floor(d/86400)+'d ago';};
+const dateStr=ts=>new Date(ts).toLocaleDateString(undefined,{month:'short',day:'numeric'});
+function activeTiers(s){ return s.tiers.filter(t=>!(t.firstOnly&&s.account.firstWithdrawUsed)).slice().sort((a,b)=>a.cost-b.cost); }
+function goalTier(s){ const at=activeTiers(s),b=s.account.balance; return at.find(t=>t.firstOnly)||at.find(t=>b<t.cost)||at[at.length-1]; }
+function taskIcon(t){
+  if(t.id.includes('cliptok')||(t.link||'').includes('com.warlito.clipto')&&t.id.includes('download')) return `<img src="${CLIPTOK_LOGO}" alt="">`;
+  if(t.logo) return `<img src="${esc(t.logo)}" alt="">`;
+  if(t.id.includes('rate')||/review|star/i.test(t.title)) return IC.star;
+  if(/video|watch/i.test(t.title)) return IC.play;
+  return IC.gift;
 }
-function goalTier(s){
-  const at=activeTiers(s), bal=s.account.balance;
-  return at.find(t=>t.firstOnly) || at.find(t=>bal<t.cost) || at[at.length-1];
-}
+function isReview(t){ return t.id.includes('rate')||/review|star/i.test(t.title); }
 
 function render(){
-  const s=STATE; if(!s){return;}
+  const s=STATE; if(!s) return;
   document.getElementById('loading').classList.add('hide');
   const app=document.getElementById('app'); app.classList.remove('hide'); app.innerHTML='';
-  const a=s.account, c=s.config;
+  const a=s.account,c=s.config;
 
-  // (Walang web header — ginagamit ang native app bar na "Earn Diamonds" + balance, para
-  // hindi doble. Design ng hero pababa = web, mababago anytime nang walang app update.)
+  // header (in HTML now)
+  app.appendChild($(`<div class="head">
+    <div class="brand"><div class="logo"><span class="dia gold" style="width:16px;height:16px"></span></div>
+      <div><h1>Earn</h1><small>SANTORYU REWARDS</small></div></div>
+    <div class="balpill"><span class="dia gold" style="width:15px;height:15px"></span><span class="v">${a.balance.toLocaleString()}</span></div>
+  </div>`));
 
-  // hero
-  const g=goalTier(s), reached=a.balance>=g.cost, remaining=Math.max(0,g.cost-a.balance), frac=Math.min(100,Math.round(a.balance/g.cost*100));
+  // hero (BLUE)
+  const g=goalTier(s),reached=a.balance>=g.cost,remaining=Math.max(0,g.cost-a.balance),frac=Math.min(100,Math.round(a.balance/g.cost*100));
   const hero=$(`<div class="hero">
     <div class="eyebrow">${g.firstOnly?'FIRST WITHDRAWAL REWARD':'NEXT WITHDRAWAL GOAL'}</div>
     <div class="reward"><div class="num">${g.mlbb}</div><div class="rlabel"><span class="a">MLBB</span><span class="b">DIAMONDS</span></div></div>
     <div class="sub">${g.firstOnly?'One-time starter — cash out straight to your account':'Cash out straight to your MLBB account'}</div>
-    ${gemSVG()}
-    <div class="prog"><div class="prow"><div class="l">PROGRESS</div><div class="r">${a.balance} / ${g.cost}</div></div>
-      <div class="track"><div class="fill" style="width:${frac}%"></div></div></div>
-    <div class="cta ${reached&&!a.earnBanned?'':'off'}" id="heroCta"><span class="g"></span><span>${a.earnBanned?'EARNING DISABLED':reached?'WITHDRAW NOW':'COLLECT '+remaining+' MORE'}</span></div>
+    ${gemSVG('blue')}
+    <div class="prog"><div class="prow"><div class="l">PROGRESS</div><div class="r">${a.balance.toLocaleString()} / ${g.cost.toLocaleString()}</div></div>
+      <div class="track"><div class="fill" data-w="${frac}"></div></div></div>
+    <div class="cta ${reached&&!a.earnBanned?'':'off'}" id="hcta"><span class="dia ${reached?'blue':''}" style="width:14px;height:14px;${reached?'':'display:none'}"></span><span>${a.earnBanned?'EARNING DISABLED':reached?'WITHDRAW NOW':'COLLECT '+remaining.toLocaleString()+' MORE'}</span></div>
   </div>`);
-  if(reached && !a.earnBanned) hero.querySelector('#heroCta').onclick=()=>openWithdraw(g);
+  if(reached&&!a.earnBanned) hero.querySelector('#hcta').onclick=()=>openWithdraw(g);
   app.appendChild(hero);
 
-  // tiers
-  app.appendChild($(`<div class="sh"><div class="t">WITHDRAWAL TIERS</div></div>`));
+  // tiers (BLUE gems)
+  app.appendChild($(`<div class="sh"><div class="t">WITHDRAWAL TIERS</div><div class="x blue">cost in points</div></div>`));
   const tg=$(`<div class="tiers"></div>`);
   s.tiers.slice().sort((x,y)=>x.cost-y.cost).forEach(t=>{
-    const used=t.firstOnly&&a.firstWithdrawUsed, can=a.balance>=t.cost&&!used&&!a.earnBanned;
+    const used=t.firstOnly&&a.firstWithdrawUsed,can=a.balance>=t.cost&&!used&&!a.earnBanned;
     const el=$(`<div class="tier ${t.firstOnly&&!used?'lock':''} ${used?'used':''}">
-      <div class="tg"></div><div class="n">${t.mlbb}</div><div class="u">MLBB</div><div class="c">${used?'USED':t.cost}</div></div>`);
+      <span class="dia blue tg"></span><div class="n">${t.mlbb}</div><div class="u">MLBB</div>
+      <div class="c">${used?'USED':'<span class="dia gold" style="width:9px;height:9px"></span>'+t.cost.toLocaleString()}</div></div>`);
     if(can) el.onclick=()=>openWithdraw(t);
-    else if(!used) el.onclick=()=>toast('Collect '+(t.cost-a.balance)+' more diamonds');
+    else if(!used) el.onclick=()=>toast('Collect '+(t.cost-a.balance).toLocaleString()+' more points','bad');
     tg.appendChild(el);
   });
   app.appendChild(tg);
 
-  // daily
+  // daily (GOLD points)
+  const dAvail=s.dailyKnown&&s.dailyAvailable;
   app.appendChild($(`<div class="sh"><div class="t">DAILY BONUS</div></div>`));
-  const dAvail=s.dailyKnown&&s.dailyAvailable, dCard=$(`<div class="card"><div class="rowflex">
-    <div class="di" style="background:rgba(45,212,167,.14)">◆</div>
-    <div class="gleft"><div class="n">Daily check-in</div><div class="d" id="dailyDesc">${dAvail?('Claim +'+c.dailyBonus+' free diamonds today'):(s.dailyKnown?'Come back tomorrow for more':'Come back daily for free diamonds')}</div></div>
-    <button class="act ${dAvail?'on':'off'}" id="dailyBtn">${dAvail?'CLAIM':'CLAIMED'}</button></div></div>`);
-  if(dAvail) dCard.querySelector('#dailyBtn').onclick=async(e)=>{ e.target.textContent='…'; const r=await call('claimDaily',c.dailyBonus); if(r.ok){toast('+'+c.dailyBonus+' diamonds');} requestState(); };
-  else if(s.dailyKnown){ startCountdown(dCard.querySelector('#dailyDesc'), s.dailyMs); }
+  const dCard=$(`<div class="card"><div class="rowflex"><div class="di" style="background:rgba(45,212,167,.14)">${IC.gift}</div>
+    <div class="gleft"><div class="n">Daily check-in</div><div class="d" id="dd">${dAvail?('Claim +'+c.dailyBonus+' free points today'):(s.dailyKnown?'Come back tomorrow for more':'Come back daily for free points')}</div></div>
+    <button class="act ${dAvail?'on':'off'}" id="db">${dAvail?'CLAIM':'CLAIMED'}</button></div></div>`);
+  if(dAvail) dCard.querySelector('#db').onclick=async e=>{e.target.textContent='…'; const r=await call('claimDaily',c.dailyBonus); if(r.ok){gainFx(c.dailyBonus,'gold'); toast('Daily bonus claimed!','good');} requestState();};
+  else if(s.dailyKnown) startCountdown(dCard.querySelector('#dd'),s.dailyMs);
   app.appendChild(dCard);
 
   // mission
-  const done=Math.min(c.missionGoal,Math.max(0,a.referralCount-a.missionBaseline)), mReady=done>=c.missionGoal&&!a.earnBanned;
-  app.appendChild($(`<div class="sh"><div class="t">REFERRAL MISSION</div><div class="x">+${c.missionBonus}</div></div>`));
-  const mCard=$(`<div class="card"><div class="rowflex">
-    <div class="di" style="background:rgba(232,180,74,.14)">🎯</div>
-    <div class="gleft"><div class="n">Invite ${c.missionGoal} friends</div><div class="d">${done} / ${c.missionGoal} joined — earn ${c.missionBonus} bonus</div></div>
-    <button class="act ${mReady?'on':'off'}" id="mBtn">${mReady?'CLAIM':done+'/'+c.missionGoal}</button></div>
-    <div class="track" style="margin-top:11px"><div class="fill" style="width:${Math.round(done/c.missionGoal*100)}%"></div></div></div>`);
-  if(mReady) mCard.querySelector('#mBtn').onclick=async(e)=>{ e.target.textContent='…'; const r=await call('claimMission',c.missionBonus,a.referralCount); if(r.ok)toast('+'+c.missionBonus+' diamonds'); requestState(); };
+  const done=Math.min(c.missionGoal,Math.max(0,a.referralCount-a.missionBaseline)),mReady=done>=c.missionGoal&&!a.earnBanned;
+  app.appendChild($(`<div class="sh"><div class="t">REFERRAL MISSION</div><div class="x"><span class="dia gold" style="width:9px;height:9px"></span> +${c.missionBonus}</div></div>`));
+  const mCard=$(`<div class="card"><div class="rowflex"><div class="di" style="background:rgba(232,180,74,.14)">${IC.flame}</div>
+    <div class="gleft"><div class="n">Invite ${c.missionGoal} friends</div><div class="d">${done} / ${c.missionGoal} joined — earn ${c.missionBonus} points</div></div>
+    <button class="act ${mReady?'on':'off'}" id="mb">${mReady?'CLAIM':done+'/'+c.missionGoal}</button></div>
+    <div class="track" style="margin-top:11px"><div class="fill" data-w="${Math.round(done/c.missionGoal*100)}"></div></div></div>`);
+  if(mReady) mCard.querySelector('#mb').onclick=async e=>{e.target.textContent='…'; const r=await call('claimMission',c.missionBonus,a.referralCount); if(r.ok){gainFx(c.missionBonus,'gold'); toast('Mission complete!','good');} requestState();};
   app.appendChild(mCard);
 
-  // invite
+  // invite (code + copy + share code + share link + apply code)
   app.appendChild($(`<div class="sh"><div class="t">INVITE FRIENDS</div><div class="x">+${c.perInvite} per friend</div></div>`));
-  const iv=$(`<div class="card"><div class="inv"><div class="code">${esc(s.code)}</div>
-    <button class="btn copy" id="cpy">COPY</button><button class="btn share" id="shr">SHARE</button></div></div>`);
-  iv.querySelector('#cpy').onclick=()=>window.Android.copy(s.code);
-  iv.querySelector('#shr').onclick=()=>window.Android.share('Join Santoryu and get free MLBB diamonds! Use my code '+s.code);
+  const link='https://santoryutoolkit.com/?ref='+encodeURIComponent(s.code);
+  const iv=$(`<div class="card inv">
+    <div class="row1"><div class="code">${esc(s.code)}</div><button class="icb copy" id="cpy">${IC.copy}</button></div>
+    <div class="share2"><button class="sbtn code" id="shc">${IC.share}<span>Share code</span></button>
+      <button class="sbtn link" id="shl">${IC.link}<span>Share link</span></button></div>
+    ${a.referred?'':`<div class="applybox"><input id="apc" placeholder="Enter a friend's code" maxlength="20"><button id="apb">APPLY</button></div>`}
+  </div>`);
+  iv.querySelector('#cpy').onclick=()=>{window.Android.copy(s.code); toast('Code copied!','good');};
+  iv.querySelector('#shc').onclick=()=>window.Android.share('Join Santoryu Toolkit and get FREE MLBB diamonds! Use my code '+s.code+' — '+link);
+  iv.querySelector('#shl').onclick=()=>window.Android.share(link);
+  if(!a.referred){ const ab=iv.querySelector('#apb'); ab.onclick=async()=>{
+    const v=iv.querySelector('#apc').value.trim().toUpperCase(); if(!v){toast('Enter a code','bad'); return;}
+    ab.textContent='…'; const r=await call('applyReferral',v);
+    if(r.ok){ gainFx(c.inviteeBonus,'gold'); toast('Code applied! +'+c.inviteeBonus+' points','good'); }
+    else toast(refErr(r.error),'bad'); requestState();
+  };}
   app.appendChild(iv);
 
+  // withdrawal history
+  app.appendChild($(`<div class="sh"><div class="t">WITHDRAWAL HISTORY</div></div>`));
+  const hc=$(`<div class="card"></div>`);
+  if(!s.history||!s.history.length) hc.appendChild($(`<div class="empty">No withdrawals yet.<br>Hit a tier and cash out for real MLBB diamonds.</div>`));
+  else s.history.slice(0,12).forEach(h=>{
+    hc.appendChild($(`<div class="litem"><span class="dia blue" style="width:16px;height:16px"></span>
+      <div class="gleft"><div class="nm">${h.mlbb} MLBB Diamonds</div><div class="sm">${dateStr(h.ts)} · ${h.cost.toLocaleString()} points${h.refunded?' · refunded':''}</div></div>
+      <span class="stat ${h.status}">${h.status.toUpperCase()}</span></div>`));
+  });
+  app.appendChild(hc);
+
+  // invited friends
+  app.appendChild($(`<div class="sh"><div class="t">FRIENDS YOU INVITED</div><div class="x">${(s.invited||[]).length}</div></div>`));
+  const ic2=$(`<div class="card"></div>`);
+  if(!s.invited||!s.invited.length) ic2.appendChild($(`<div class="empty">No invites yet.<br>Share your code to start earning ${c.perInvite} points per friend.</div>`));
+  else s.invited.slice(0,15).forEach(f=>{
+    ic2.appendChild($(`<div class="litem"><div class="di" style="width:34px;height:34px;background:rgba(45,212,167,.14);font-family:'Rajdhani';font-weight:700;color:var(--emerald)">${esc((f.name||'?')[0].toUpperCase())}</div>
+      <div class="gleft"><div class="nm">${esc(f.name||'Player')}</div><div class="sm">joined ${ago(f.ts)}</div></div>
+      <span class="badge"><span class="dia gold" style="width:9px;height:9px"></span><b>+${c.perInvite}</b></span></div>`));
+  });
+  app.appendChild(ic2);
+
   // tasks
-  if(s.tasks.length){
+  if(s.tasks&&s.tasks.length){
     app.appendChild($(`<div class="sh"><div class="t">TASKS</div></div>`));
     const tc=$(`<div class="card"></div>`);
     s.tasks.forEach(t=>{
-      const row=$(`<div class="task"><div class="di" style="background:rgba(95,160,255,.14)">▸</div>
+      const row=$(`<div class="task rowflex" style="padding:11px 0;border-bottom:1px solid rgba(34,42,52,.6)">
+        <div class="di" style="background:rgba(95,160,255,.12)">${taskIcon(t)}</div>
         <div class="gleft"><div class="n">${esc(t.title)}</div><div class="d">${esc(t.desc)}</div></div>
-        <button class="act ${t.claimed?'off':'on'}" >${t.claimed?'DONE':'+'+t.reward}</button></div>`);
-      if(!t.claimed) row.querySelector('button').onclick=async(e)=>{
-        if(t.link&&t.link!=='#') window.Android.openLink(t.link);
-        e.target.textContent='…'; const r=await call('claimTask',t.id,t.reward);
-        if(r.ok) toast('+'+t.reward+' diamonds'); else toast('Finish the task first'); requestState();
-      };
+        <button class="act ${t.claimed?'off':'on'}">${t.claimed?'DONE':'<span class="dia gold" style="width:8px;height:8px"></span> +'+t.reward}</button></div>`);
+      if(!t.claimed) row.querySelector('button').onclick=()=> isReview(t)?openReview(t):doTask(t);
       tc.appendChild(row);
     });
+    tc.lastChild.style.borderBottom='none';
     app.appendChild(tc);
   }
+
+  // animate progress fills after layout
+  requestAnimationFrame(()=>document.querySelectorAll('.fill[data-w]').forEach(f=>f.style.width=f.dataset.w+'%'));
+}
+
+async function doTask(t){
+  if(t.link&&t.link!=='#') window.Android.openLink(t.link);
+  toast('Finish the task, then come back','good');
+  const r=await call('claimTask',t.id,t.reward);
+  if(r.ok){ gainFx(t.reward,'gold'); toast('+'+t.reward+' points earned!','good'); }
+  else toast('Complete the task first','bad');
+  requestState();
 }
 
 //=== withdraw modal ===============================================================
 function openWithdraw(tier){
   const ov=$(`<div class="ov"><div class="modal">
     <h3>Withdraw ${tier.mlbb} MLBB Diamonds</h3>
-    <p>Costs ${tier.cost} diamonds. Topped up to your MLBB account after admin review.</p>
+    <p>Costs <b style="color:var(--gold-hi)">${tier.cost.toLocaleString()} points</b>. Topped up to your MLBB account after admin review.</p>
     <label>GAME ID</label><input id="gid" inputmode="numeric" placeholder="e.g. 123456789">
     <label>SERVER ID</label><input id="srv" inputmode="numeric" placeholder="e.g. 1234">
-    <div class="err" id="werr"></div>
-    <div class="mrow"><button class="btn ghost" id="wx">Cancel</button><button class="btn go" id="wok">Withdraw</button></div>
-  </div></div>`);
+    <div class="err" id="we"></div>
+    <div class="mrow"><button class="btn ghost" id="wx">Cancel</button><button class="btn go" id="wok">Withdraw</button></div></div></div>`);
   document.body.appendChild(ov);
   ov.querySelector('#wx').onclick=()=>ov.remove();
   ov.querySelector('#wok').onclick=async()=>{
-    const gid=ov.querySelector('#gid').value.trim(), srv=ov.querySelector('#srv').value.trim(), err=ov.querySelector('#werr');
-    if(!gid){ err.textContent='Enter your Game ID'; return; }
-    const btn=ov.querySelector('#wok'); btn.textContent='…'; err.textContent='';
+    const gid=ov.querySelector('#gid').value.trim(),srv=ov.querySelector('#srv').value.trim(),e=ov.querySelector('#we');
+    if(!gid){e.textContent='Enter your Game ID'; return;}
+    const b=ov.querySelector('#wok'); b.textContent='…'; b.disabled=true; e.textContent='';
     const r=await call('withdraw',tier.mlbb,tier.cost,gid,srv);
-    if(r.ok){ ov.remove(); toast('Withdrawal submitted!'); requestState(); }
-    else { btn.textContent='Withdraw'; err.textContent=wdErr(r.error); requestState(); }
+    if(r.ok){ ov.remove(); toast('Withdrawal submitted!','good'); }
+    else{ b.textContent='Withdraw'; b.disabled=false; e.textContent=wdErr(r.error); }
+    requestState();
   };
 }
-function wdErr(e){return ({insufficient:'Not enough diamonds yet.',bad_tier:'This tier is unavailable.',no_gameid:'Enter your Game ID.',first_used:'You already used your one-time first withdrawal.',banned:'Earning is disabled on this account.',network:'Network error — try again.'})[e]||'Withdrawal failed. Try again.';}
+function wdErr(e){return({insufficient:'Not enough points yet.',bad_tier:'This tier is unavailable.',no_gameid:'Enter your Game ID.',first_used:'You already used your one-time first withdrawal.',banned:'Earning is disabled on this account.',network:'Network error — try again.'})[e]||'Withdrawal failed. Try again.';}
+function refErr(e){return({already:'You already used a code.',self:"That's your own code.",mutual:"You can't both refer each other.",invalid:'Invalid code.',error:'Something went wrong.'})[e]||'Could not apply code.';}
+
+//=== review modal (require a written comment so it's not bot-like) =================
+function openReview(t){
+  const ov=$(`<div class="ov"><div class="modal">
+    <h3>Rate us & write a review</h3>
+    <p>Open Google Play, give us 5 stars, and write an honest comment about what you like. Paste your review below to confirm.</p>
+    <label>YOUR REVIEW (min 15 chars)</label><textarea id="rv" rows="3" placeholder="Share what you love about the app…"></textarea>
+    <div class="err" id="re"></div>
+    <div class="mrow"><button class="btn ghost" id="ropen">Open Play</button><button class="btn go" id="rok" disabled>Claim +${t.reward}</button></div></div></div>`);
+  document.body.appendChild(ov);
+  const ta=ov.querySelector('#rv'),ok=ov.querySelector('#rok');
+  ta.oninput=()=>{ ok.disabled = ta.value.trim().length<15; };
+  ov.querySelector('#ropen').onclick=()=>window.Android.openLink(t.link);
+  ok.onclick=async()=>{
+    if(ta.value.trim().length<15){ov.querySelector('#re').textContent='Write at least 15 characters'; return;}
+    ok.textContent='…'; ok.disabled=true;
+    const r=await call('claimTask',t.id,t.reward);
+    if(r.ok){ ov.remove(); gainFx(t.reward,'gold'); toast('Thanks for the review! +'+t.reward,'good'); }
+    else{ ov.remove(); toast('Could not verify — try again','bad'); }
+    requestState();
+  };
+}
 
 //=== daily countdown ==============================================================
 let cdT=null;
-function startCountdown(el, ms){
+function startCountdown(el,ms){
   if(cdT) clearInterval(cdT);
-  function tick(){ if(ms<=0){ el.textContent='Available now — reopen to claim'; clearInterval(cdT); return; }
-    const h=Math.floor(ms/3600000), m=Math.floor(ms%3600000/60000), s=Math.floor(ms%60000/1000);
+  function tick(){ if(ms<=0){el.textContent='Available now — reopen to claim'; clearInterval(cdT); return;}
+    const h=Math.floor(ms/3600000),m=Math.floor(ms%3600000/60000),s=Math.floor(ms%60000/1000);
     el.textContent='Next bonus in '+String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0'); ms-=1000; }
   tick(); cdT=setInterval(tick,1000);
 }
 
-//=== boot =========================================================================
 requestState();
 </script>
 </body>
