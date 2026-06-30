@@ -574,7 +574,7 @@ function renderTournament(){
   tournBody.appendChild(hero);
   if(ev.endTs) tCountdown(hero.querySelector('#tcd'), ev.endTs);
   // Rules + how-to = naka-DIALOG (button lang dito, may teaser ng weekly task)
-  const rb=$(`<div class="rulesbtn"><div class="rbicon">📋</div><div class="rbleft"><div class="rbt">How to join &amp; Event Rules</div><div class="rbs">${esc(ev.task||'Tap to see this week\\'s task')}</div></div><div class="rbgo">VIEW ›</div></div>`);
+  const rb=$(`<div class="rulesbtn"><div class="rbicon">📋</div><div class="rbleft"><div class="rbt">How to join &amp; Event Rules</div><div class="rbs">${esc(ev.task||"Tap to see this week's task")}</div></div><div class="rbgo">VIEW ›</div></div>`);
   rb.onclick=()=>openTournRules(ev);
   tournBody.appendChild(rb);
   if(s.myEntry){
