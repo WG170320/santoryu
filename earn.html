@@ -436,7 +436,7 @@ let MOCK={ uid:"dev-demo", code:"SANT-AB12-CD34", isAdmin:false,
   tasks:[{id:"download_cliptok",title:"Download ClipTok",desc:"Install our partner app — Video & Photo Saver.",link:"https://play.google.com/store/apps/details?id=com.warlito.clipto",logo:"",reward:10,claimed:false},{id:"rate_5star",title:"Rate us 5 stars",desc:"Write an honest review on Google Play.",link:"https://play.google.com/store/apps/details?id=com.warlito.clipto",logo:"",reward:5,claimed:false}],
   account:{balance:340,earned:560,referralCount:3,firstWithdrawUsed:true,earnBanned:false,welcomeClaimed:true,referred:false,lastDailyDay:0,missionStart:0,missionBaseline:0,name:"Kairi",avatarUrl:"https://kappa.lol/7Xnnlc",earned:1340},
   history:[{mlbb:22,cost:80,status:"fulfilled",ts:Date.now()-86400000,refunded:false},{mlbb:112,cost:250,status:"pending",ts:Date.now()-3600000,refunded:false}],
-  invited:[{name:"Justin",ts:Date.now()-7200000},{name:"Vince",ts:Date.now()-90000000},{name:"Maher",ts:Date.now()-180000000}],
+  invited:[{name:"Justin",ts:Date.now()-7200000,avatarUrl:"https://kappa.lol/Z9cLjS"},{name:"Vince",ts:Date.now()-90000000,avatarUrl:""},{name:"Maher",ts:Date.now()-180000000,avatarUrl:"https://kappa.lol/oF8JPO"}],
   dailyAvailable:true, dailyKnown:true, dailyMs:0 };
 function mockState(){ setTimeout(()=>window.__earnState(JSON.parse(JSON.stringify(MOCK))),60); }
 if(!isNative){ window.Android={
@@ -750,7 +750,7 @@ function openHistory(){
     const c=$(`<div class="card"></div>`);
     h.forEach(x=>c.appendChild($(`<div class="litem"><span class="dia blue" style="width:18px;height:18px"></span>
       <div class="gleft"><div class="nm">${x.mlbb} MLBB Diamonds</div><div class="sm">${dateStr(x.ts)} · ${x.cost.toLocaleString()} points${x.refunded?' · refunded':''}</div></div>
-      <span class="stat ${x.status}">${x.status.toUpperCase()}</span></div>`)));
+      <span class="stat ${x.status}">${(({pending:'Pending',fulfilled:'Successful',rejected:'Rejected'})[x.status]||x.status).toUpperCase()}</span></div>`)));
     b.appendChild(c);
   });
 }
