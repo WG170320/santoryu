@@ -915,7 +915,7 @@ function openTournRules(ev){
       <div class="shdr">EVENT RULES</div>${rules}`;
   });
 }
-function tjErr(e){return({closed:'The event is closed.',device_used:'This device already joined (1 per device).',already_joined:'You already submitted your video.',bad_video:'Could not read that TikTok link — double-check it.',too_long:'Video must be under 10 minutes long.',old_video:'Post a NEW video for this event — old clips are not allowed.',no_hashtag:'Add #santoryutoolkit in your video caption, then submit.',missing:'Paste your TikTok link.'})[e]||'Could not join. Try again.';}
+function tjErr(e){return({closed:'The event is closed.',device_used:'This device already joined (1 per device).',already_joined:'You already submitted your video.',bad_video:'Could not read that TikTok link — double-check it.',too_long:'Video must be under 10 minutes long.',old_video:'Post a NEW video for this event — old clips are not allowed.',no_hashtag:'Add #santoryutoolkit in your video caption, then submit.',tiktok_used:'This TikTok account already joined this event.',missing:'Paste your TikTok link.'})[e]||'Could not join. Try again.';}
 function tCountdown(el,endTs){ if(tcdT)clearInterval(tcdT);
   function tick(){ const ms=msLeft(endTs); if(ms<=0){ el.textContent='Event ended'; clearInterval(tcdT); return; }
     const d=Math.floor(ms/86400000),h=Math.floor(ms%86400000/3600000),m=Math.floor(ms%3600000/60000);
