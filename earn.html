@@ -447,7 +447,7 @@ function gemSVG(kind){
 const isNative=!!window.Android;
 let REQ=0; const pending={};
 window.__earnResult=(id,obj)=>{ const r=pending[id]; if(r){delete pending[id]; r(obj);} };
-window.__earnState=(s)=>{ STATE=s; render(); if(typeof maybeWinner==='function') maybeWinner(); };
+window.__earnState=(s)=>{ STATE=s; render(); if(typeof maybeWinner==='function') maybeWinner(); if(typeof loadTournBanner==='function') loadTournBanner(); };
 function call(m,...a){ return new Promise(res=>{ const id='r'+(++REQ); pending[id]=res; window.Android[m](id,...a); }); }
 function requestState(){ if(isNative) window.Android.requestState(); else mockState(); }
 
@@ -794,6 +794,18 @@ window.__tournamentState=(s)=>{ TOURN=s; updateBanner(); if(tournBody) renderTou
 
 //=== winner claim (champion gets a celebration claim dialog → prize as blue MLBB diamonds) ===
 const TCLAIM_URL='https://asia-southeast1-diamond-bang-92125.cloudfunctions.net/tournamentClaim';
+const TLIST_URL='https://asia-southeast1-diamond-bang-92125.cloudfunctions.net/tournamentList';
+// MURA: sa load, event LANG ang kunin para sa banner + winner-check (isang beses) — hindi
+// na hinihila ang buong leaderboard kada earn-open. Ang buong list ay sa openTournament na.
+let _bannerLoaded=false;
+async function loadTournBanner(){
+  if(_bannerLoaded || !STATE || !STATE.uid) return;
+  _bannerLoaded=true;
+  try{
+    const r=await fetch(TLIST_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid:STATE.uid,bannerOnly:true})}).then(x=>x.json());
+    if(r&&r.ok){ TOURN=Object.assign({},TOURN||{},{event:r.event}); updateBanner(); maybeWinner(); }
+  }catch(e){}
+}
 let winnerShown=false;
 function maybeWinner(){
   if(winnerShown) return;
@@ -848,7 +860,9 @@ function openTournament(){
   document.body.appendChild(pg); registerPage(pg, ()=>{ tournBody=null; if(tcdT)clearInterval(tcdT); });
   tournBody=pg.querySelector('#tbody');
   window.Android.tournamentState();
-  if(TOURN) renderTournament();
+  // Mag-render lang agad kung may buong entries na (iwas "No entries" flash habang
+  // hinihintay ang full list — dahil sa load ay event-only na lang ang TOURN).
+  if(TOURN && TOURN.entries) renderTournament();
 }
 function renderTournament(){
   if(!tournBody) return; const s=TOURN; if(!s) return;
@@ -1006,7 +1020,7 @@ function startCountdown(el,ms){
 
 requestState();
 // kunin din ang tournament event para mapunan ang prize sa banner
-setTimeout(()=>{ try{ window.Android.tournamentState(); }catch(e){} }, 300);
+// (banner event ay kinukuha na ng loadTournBanner() sa __earnState — mura, event-only)
 
 //=== floating withdraw proof (LIVE fulfilled payouts — admin-controlled, walang hardcode) ===
 const PAYOUTS_URL='https://asia-southeast1-diamond-bang-92125.cloudfunctions.net/earnPayouts';
