@@ -447,7 +447,7 @@ function gemSVG(kind){
 const isNative=!!window.Android;
 let REQ=0; const pending={};
 window.__earnResult=(id,obj)=>{ const r=pending[id]; if(r){delete pending[id]; r(obj);} };
-window.__earnState=(s)=>{ STATE=s; render(); if(typeof maybeWinner==='function') maybeWinner(); if(typeof loadTournBanner==='function') loadTournBanner(); };
+window.__earnState=(s)=>{ STATE=s; render(); if(typeof maybeWinner==='function') maybeWinner(); if(typeof loadTournBanner==='function') loadTournBanner(); if(typeof maybeConsolation==='function') maybeConsolation(); };
 function call(m,...a){ return new Promise(res=>{ const id='r'+(++REQ); pending[id]=res; window.Android[m](id,...a); }); }
 function requestState(){ if(isNative) window.Android.requestState(); else mockState(); }
 
@@ -795,6 +795,7 @@ window.__tournamentState=(s)=>{ TOURN=s; updateBanner(); if(tournBody) renderTou
 //=== winner claim (champion gets a celebration claim dialog → prize as blue MLBB diamonds) ===
 const TCLAIM_URL='https://asia-southeast1-diamond-bang-92125.cloudfunctions.net/tournamentClaim';
 const TLIST_URL='https://asia-southeast1-diamond-bang-92125.cloudfunctions.net/tournamentList';
+const TCONS_URL='https://asia-southeast1-diamond-bang-92125.cloudfunctions.net/tournamentConsolation';
 // MURA: sa load, event LANG ang kunin para sa banner + winner-check (isang beses) — hindi
 // na hinihila ang buong leaderboard kada earn-open. Ang buong list ay sa openTournament na.
 let _bannerLoaded=false;
@@ -842,6 +843,41 @@ function openWinnerClaim(ev){
     }catch(e){ b.textContent='CLAIM MY PRIZE'; b.disabled=false; toast('Network error — try again','bad'); }
   };
   document.body.appendChild(pg); registerPage(pg);
+}
+//=== consolation claim (GOLD) — top entrants when grand prize is void ===
+let consoShown=false,_consoChecked=false;
+async function maybeConsolation(){
+  if(consoShown||_consoChecked||!STATE||!STATE.uid) return;
+  _consoChecked=true;
+  try{
+    const r=await fetch(TCONS_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid:STATE.uid})}).then(x=>x.json());
+    if(r&&r.ok&&r.eligible&&!r.claimed){ consoShown=true; openConsolation(r); }
+  }catch(e){}
+}
+function openConsolation(info){
+  const amt=+info.amount||50, dq=!!info.dq;
+  const title=dq?'Video Not Qualified':'Consolation Prize';
+  const body=dq
+    ? `Your video didn't use this week's featured skin (<b>Michael Jackson</b>), so it isn't qualified for the grand prize. Thanks for the effort, though — here's <b>${amt} gold</b> as a token of appreciation.`
+    : `Thanks for joining the <b>${esc((TOURN&&TOURN.event&&TOURN.event.title)||'tournament')}</b>! Here's <b>${amt} gold</b> as a consolation prize for making the top 20.`;
+  const ov=$(`<div class="ov"><div class="modal" style="text-align:center">
+    <div style="margin:2px auto 8px;width:66px;height:66px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:radial-gradient(circle,rgba(245,180,69,.28),transparent 70%)"><span class="dia gold" style="width:44px;height:44px"></span></div>
+    <h3>${title}</h3>
+    <p style="margin-bottom:2px">${body}</p>
+    <div style="font-family:'Chakra Petch';font-weight:700;font-size:23px;margin:14px 0 4px"><span class="dia gold" style="width:20px;height:20px;display:inline-block;vertical-align:-3px;margin-right:4px"></span>+${amt} Gold</div>
+    <button class="winclaim" id="cclaim" style="margin-top:14px">CLAIM ${amt} GOLD</button>
+  </div></div>`);
+  ov.querySelector('#cclaim').onclick=async e=>{
+    const b=e.target; b.textContent='CLAIMING…'; b.disabled=true;
+    try{
+      const r=await fetch(TCONS_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid:STATE.uid,action:'claim'})}).then(x=>x.json());
+      if(r.ok){ ov.remove(); gainFx(amt,'gold'); toast('Claimed +'+amt+' gold','good'); requestState(); }
+      else if(r.error==='already_claimed'){ ov.remove(); toast('Already claimed','bad'); }
+      else if(r.error==='banned'){ b.textContent='CLAIM '+amt+' GOLD'; b.disabled=false; toast('This account can\'t claim right now','bad'); }
+      else { b.textContent='CLAIM '+amt+' GOLD'; b.disabled=false; toast('Could not claim — try again','bad'); }
+    }catch(e){ b.textContent='CLAIM '+amt+' GOLD'; b.disabled=false; toast('Network error — try again','bad'); }
+  };
+  document.body.appendChild(ov);
 }
 function fmtViews(n){ n=+n||0; if(n>=1e6)return (n/1e6).toFixed(n>=1e7?0:1).replace(/\.0$/,'')+'M'; if(n>=1e3)return (n/1e3).toFixed(n>=1e5?0:1).replace(/\.0$/,'')+'K'; return ''+n; }
 function msLeft(ts){ return Math.max(0,(+ts||0)-Date.now()); }
