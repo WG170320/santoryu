@@ -804,7 +804,7 @@ async function loadTournBanner(){
   _bannerLoaded=true;
   try{
     const r=await fetch(TLIST_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid:STATE.uid,bannerOnly:true})}).then(x=>x.json());
-    if(r&&r.ok){ TOURN=Object.assign({},TOURN||{},{event:r.event}); updateBanner(); maybeWinner(); }
+    if(r&&r.ok){ TOURN=Object.assign({},TOURN||{},{event:r.event}); updateBanner(); maybeWinner(); maybeTournamentPromo(); }
   }catch(e){}
 }
 let winnerShown=false;
@@ -900,6 +900,42 @@ function openTournament(){
   // hinihintay ang full list — dahil sa load ay event-only na lang ang TOURN).
   if(TOURN && TOURN.entries) renderTournament();
 }
+//=== tournament PROMO — nakakahikayat na pop-up, isang beses KADA ARAW (per event) ===
+function maybeTournamentPromo(){
+  try{
+    const ev = TOURN && TOURN.event;
+    if(!ev || ev.status!=='open') return;
+    if(ev.endTs && ev.endTs<=Date.now()) return;
+    if(localStorage.getItem('tpromo_joined_'+ev.id)) return;        // sumali na — huwag nang gambalain
+    if(document.querySelector('.tpromo-ov')) return;                 // may nakabukas na
+    const key='tpromo_'+ev.id, today=new Date().toDateString();
+    if(localStorage.getItem(key)===today) return;                    // naipakita na ngayong araw
+    localStorage.setItem(key,today);
+    showTournamentPromo(ev);
+  }catch(e){}
+}
+function showTournamentPromo(ev){
+  const prize=(+ev.prizePool||0).toLocaleString();
+  let cd='';
+  if(ev.endTs){ const ms=msLeft(ev.endTs),d=Math.floor(ms/86400000),h=Math.floor(ms%86400000/3600000);
+    cd = d>0 ? ('Ends in '+d+' day'+(d>1?'s':'')) : ('Ends in '+h+'h'); }
+  const ov=$(`<div class="ov tpromo-ov"><div class="modal" style="text-align:center;overflow:hidden">
+    <div style="display:inline-flex;align-items:center;gap:7px;font-family:'Chakra Petch';font-weight:700;font-size:11px;letter-spacing:2px;color:#25F4EE;margin-bottom:8px"><span class="live"></span> TIKTOK TOURNAMENT</div>
+    <h3 style="margin:0 0 4px">${esc(ev.title||'TikTok Tournament')}</h3>
+    <div style="font-size:12.5px;color:var(--txt2);margin-bottom:14px">${cd}</div>
+    <div style="display:flex;flex-direction:column;align-items:center;margin:2px 0 12px">
+      <span class="dia blue" style="width:56px;height:56px"></span>
+      <div style="font-family:'Chakra Petch';font-weight:700;font-size:28px;line-height:1.05;margin-top:8px">${prize}</div>
+      <div style="font-size:10px;letter-spacing:1.6px;color:var(--txt2);margin-top:2px">MLBB DIAMONDS · GRAND PRIZE</div>
+    </div>
+    <p style="margin:0;font-size:13.5px;line-height:1.55">Mag-post ng TikTok clip mo gamit ang skins mula sa app + <b style="color:#25F4EE">#santoryutoolkit</b> — pinaka-maraming views ang mananalo ng <b>libreng diamonds</b>. Ikaw ang susunod na champion!</p>
+    <button class="winclaim" id="tpJoin" style="margin-top:16px;background:linear-gradient(110deg,#25F4EE,#FF2D55);color:#08161a;letter-spacing:2px">JOIN NOW</button>
+    <button id="tpLater" style="margin-top:9px;width:100%;height:42px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--txt2);font-family:'Inter';font-size:13px;cursor:pointer">Maybe later</button>
+  </div></div>`);
+  ov.querySelector('#tpLater').onclick=()=>ov.remove();
+  ov.querySelector('#tpJoin').onclick=()=>{ ov.remove(); openTournament(); };
+  document.body.appendChild(ov);
+}
 function renderTournament(){
   if(!tournBody) return; const s=TOURN; if(!s) return;
   tournBody.innerHTML=''; const ev=s.event;
@@ -935,7 +971,7 @@ function renderTournament(){
       const u=jb.querySelector('#tvurl').value.trim(); if(!u){ toast('Paste your TikTok link','bad'); return; }
       const b=jb.querySelector('#tjoin'); b.textContent='SUBMITTING…'; b.disabled=true;
       const r=await call('tournamentJoin',u);
-      if(r.ok){ toast('Entry submitted!','good'); window.Android.tournamentState(); }
+      if(r.ok){ try{localStorage.setItem('tpromo_joined_'+((TOURN&&TOURN.event&&TOURN.event.id)||''),'1');}catch(e){} toast('Entry submitted!','good'); window.Android.tournamentState(); }
       else { b.textContent='SUBMIT MY ENTRY'; b.disabled=false; toast(tjErr(r.error),'bad'); }
     };
     tournBody.appendChild(jb);
