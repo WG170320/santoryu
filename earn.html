@@ -168,6 +168,33 @@
 
   /* modal */
   .ov{position:fixed; inset:0; background:rgba(0,0,0,.74); display:flex; align-items:center; justify-content:center; padding:24px; z-index:30; animation:fade .2s ease;}
+  /* earn gate warning banner */
+  .banwarn{display:flex; gap:11px; align-items:flex-start; background:rgba(255,94,108,.10); border:1px solid rgba(255,94,108,.4);
+    border-radius:14px; padding:13px 14px; margin:2px 0 14px;}
+  .banwarn .bwic{width:22px;height:22px;flex:0 0 auto;border-radius:50%;background:var(--danger);color:#fff;font-weight:900;
+    display:flex;align-items:center;justify-content:center;font-size:14px;margin-top:1px;}
+  .banwarn .bwt{font-weight:800;color:var(--danger);font-size:13.5px;letter-spacing:.01em;}
+  .banwarn .bwd{color:var(--txt2);font-size:12px;line-height:1.5;margin-top:3px;}
+  /* withdrawal congratulations */
+  .ov.congrats{z-index:60;}
+  .modal.cg{position:relative; overflow:hidden; text-align:center; max-width:340px; padding:30px 24px 22px;
+    background:linear-gradient(180deg,#101a16,#0b0f13); border:1px solid rgba(45,212,167,.35);}
+  .cg .cgburst{position:absolute; top:-70px; left:50%; transform:translateX(-50%); width:260px; height:260px; pointer-events:none;
+    background:radial-gradient(circle, rgba(45,212,167,.35), rgba(95,160,255,.14) 45%, transparent 68%); animation:cgpulse 2.4s ease-in-out infinite;}
+  @keyframes cgpulse{0%,100%{opacity:.75; transform:translateX(-50%) scale(1);}50%{opacity:1; transform:translateX(-50%) scale(1.08);}}
+  .cg .cgmedal{position:relative; width:74px; height:74px; margin:2px auto 12px; border-radius:50%;
+    background:radial-gradient(circle at 50% 35%, rgba(95,160,255,.28), rgba(45,212,167,.14)); display:flex; align-items:center; justify-content:center;
+    box-shadow:0 8px 30px -8px rgba(95,160,255,.6); animation:cgpop .5s cubic-bezier(.2,1.4,.4,1) both;}
+  @keyframes cgpop{0%{transform:scale(.4); opacity:0;}100%{transform:scale(1); opacity:1;}}
+  .cg .cgkick{position:relative; font-size:11px; font-weight:800; letter-spacing:.16em; color:var(--emerald);}
+  .cg .cgh{position:relative; font-size:24px; font-weight:900; letter-spacing:.01em; margin:5px 0 10px; color:var(--txt);
+    background:linear-gradient(90deg,#5fa0ff,#2dd4a7); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;}
+  .cg .cgamt{position:relative; font-size:26px; font-weight:900; color:var(--txt); display:flex; align-items:center; justify-content:center; gap:8px;}
+  .cg .cgamt span{font-size:12px; font-weight:800; letter-spacing:.08em; color:var(--txt2); align-self:center;}
+  .cg .cgmsg{position:relative; color:var(--txt2); font-size:12.5px; line-height:1.55; margin:9px 4px 18px;}
+  .cg .cgcta{position:relative; width:100%;}
+  .cg .cgclose{position:relative; display:block; width:100%; margin-top:9px; background:none; border:none; color:var(--txt2);
+    font-size:12.5px; font-weight:700; padding:8px; cursor:pointer;}
   @keyframes fade{from{opacity:0;}to{opacity:1;}}
   .modal{width:100%; max-width:340px; background:linear-gradient(160deg,var(--surf2),var(--bg)); border:1px solid rgba(95,200,255,.32); border-radius:20px; padding:20px; animation:pop .3s cubic-bezier(.2,1.3,.4,1);}
   @keyframes pop{from{opacity:0; transform:scale(.85);}to{opacity:1; transform:scale(1);}}
@@ -447,7 +474,7 @@ function gemSVG(kind){
 const isNative=!!window.Android;
 let REQ=0; const pending={};
 window.__earnResult=(id,obj)=>{ const r=pending[id]; if(r){delete pending[id]; r(obj);} };
-window.__earnState=(s)=>{ STATE=s; render(); if(typeof maybeWinner==='function') maybeWinner(); if(typeof loadTournBanner==='function') loadTournBanner(); if(typeof maybeConsolation==='function') maybeConsolation(); };
+window.__earnState=(s)=>{ STATE=s; render(); if(typeof maybeWinner==='function') maybeWinner(); if(typeof loadTournBanner==='function') loadTournBanner(); if(typeof maybeConsolation==='function') maybeConsolation(); if(typeof maybeCongrats==='function') maybeCongrats(s); };
 function call(m,...a){ return new Promise(res=>{ const id='r'+(++REQ); pending[id]=res; window.Android[m](id,...a); }); }
 function requestState(){ if(isNative) window.Android.requestState(); else mockState(); }
 
@@ -555,6 +582,14 @@ function render(){
     <div class="brand"><div class="logo"><span class="dia gold" style="width:16px;height:16px"></span></div>
       <div><h1>Earn</h1><small>SANTORYU REWARDS</small></div></div>
     <div class="balpill"><span class="dia gold" style="width:15px;height:15px"></span><span class="v">${a.balance.toLocaleString()}</span></div>
+  </div>`));
+
+  // Device/earn gate warning — kapag naka-earnBanned ang account (neutralized clone/cheat, o
+  // ibang account na ang may-ari ng device), agad na ipakita ang malinaw na babala sa taas.
+  if(a.earnBanned) app.appendChild($(`<div class="banwarn">
+    <div class="bwic">!</div>
+    <div class="bwtx"><div class="bwt">Earning is not available on this device</div>
+      <div class="bwd">This looks like a duplicate account or an emulator. Only one real device per person can earn. The rest of the app works normally.</div></div>
   </div>`));
 
   // profile card (sino ka — avatar, pangalan, invite code, total earned)
@@ -1056,7 +1091,57 @@ function openWithdraw(tier){
   };
 }
 function wdErr(e){return({insufficient:'Not enough points yet.',bad_tier:'This tier is unavailable.',no_gameid:'Enter your Game ID.',first_used:'You already used your one-time first withdrawal.',banned:'Earning is disabled on this account.',network:'Network error — try again.'})[e]||'Withdrawal failed. Try again.';}
-function refErr(e){return({already:'You already used a code.',self:"That's your own code.",mutual:"You can't both refer each other.",invalid:'Invalid code.',error:'Something went wrong.'})[e]||'Could not apply code.';}
+function refErr(e){return({already:'You already used a code.',self:"That's your own code.",mutual:"You can't both refer each other.",invalid:'Invalid code.',
+  clone:'This device already has an earning account. Only one account per device can earn.',
+  emulator:'Earning is not available on emulators or virtual devices.',
+  device_changed:'Device change detected. Earning is locked on this account for security.',
+  banned:'Earning is disabled on this account.',
+  missing:'Device could not be verified. Restart the app and try again.',
+  error:'Something went wrong.'})[e]||'Could not apply code.';}
+
+//=== withdrawal congratulations (excited na dialog kapag na-fulfill na) ============
+// Sinusubaybayan ang history: kapag may withdrawal na naging "fulfilled" na hindi pa
+// ni-celebrate, magpakita ng masiglang congrats + invite CTA. Sa UNANG load, tahimik na
+// sini-seed ang lahat ng existing fulfilled (walang spam) — bagong fulfilled lang ang mag-t-trigger.
+function maybeCongrats(s){
+  try{
+    const fulfilled=(s.history||[]).filter(h=>h && h.status==='fulfilled' && h.ts);
+    if(!fulfilled.length) return;
+    const KEY='santoryu_celebrated_ts';
+    let seen; try{ seen=JSON.parse(localStorage.getItem(KEY)||'null'); }catch(e){ seen=null; }
+    if(seen===null || !Array.isArray(seen)){
+      localStorage.setItem(KEY, JSON.stringify(fulfilled.map(h=>h.ts)));
+      return;
+    }
+    const seenSet=new Set(seen);
+    // pinakabagong fulfilled na hindi pa ni-celebrate
+    const fresh=fulfilled.slice().sort((a,b)=>(b.ts||0)-(a.ts||0)).find(h=>!seenSet.has(h.ts));
+    if(!fresh) return;
+    seen.push(fresh.ts); localStorage.setItem(KEY, JSON.stringify(seen));
+    showCongrats(fresh);
+  }catch(e){}
+}
+function showCongrats(w){
+  if(document.querySelector('.ov.congrats')) return;
+  const code=(STATE&&STATE.code)||'';
+  const link='https://santoryutoolkit.com/?ref='+encodeURIComponent(code);
+  const amt=(w.mlbb||0).toLocaleString();
+  const ov=$(`<div class="ov congrats"><div class="modal cg">
+    <div class="cgburst"></div>
+    <div class="cgmedal"><span class="dia blue" style="width:34px;height:34px"></span></div>
+    <div class="cgkick">WITHDRAWAL SENT</div>
+    <div class="cgh">CONGRATULATIONS!</div>
+    <div class="cgamt">${amt} <span>MLBB DIAMONDS</span></div>
+    <div class="cgmsg">delivered to your Mobile Legends account. Keep inviting friends and cash out even more!</div>
+    <button class="btn go cgcta" id="cgInvite">Invite friends & earn more</button>
+    <button class="cgclose" id="cgX">Maybe later</button>
+  </div></div>`);
+  document.body.appendChild(ov);
+  ov.querySelector('#cgInvite').onclick=()=>{
+    window.Android.share('I just got '+amt+' FREE MLBB diamonds from Santoryu Toolkit! Use my code '+code+' — '+link);
+  };
+  ov.querySelector('#cgX').onclick=()=>ov.remove();
+}
 
 //=== review modal (require a written comment so it's not bot-like) =================
 function openReview(t){
