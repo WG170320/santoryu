@@ -528,7 +528,7 @@ if(!isNative){ window.Android={
   tournamentState:()=>setTimeout(()=>window.__tournamentState(JSON.parse(JSON.stringify(MOCK_T))),80),
   tournamentJoin:(id,u)=>{ MOCK_T.myEntry={views:1234,tiktokUser:"you",videoUrl:u,title:"Your clip"}; MOCK_T.myRank=4; MOCK_T.count++; setTimeout(()=>window.__earnResult(id,{ok:true,views:1234}),400); },
 };}
-let MOCK_T={ ok:true, event:{id:"evt1",title:"TikTok Highlight Cup",prize:"₱5,000",prizePool:5000,desc:"Post your best MLBB clip on TikTok. Most views wins the pool!",status:"open",endTs:Date.now()+9*86400000,maxVideos:10,
+let MOCK_T={ ok:true, event:{id:"evt1",title:"TikTok Highlight Cup",prize:"₱5,000",prizePool:5000,desc:"Post your best MLBB clip on TikTok. Most views wins the pool!",status:"open",endTs:Date.now()+9*86400000,maxVideos:10,participationReward:20,
     sampleVideoUrl:"https://www.tiktok.com/@hehsusrwcqjuan/video/7412345678901234567",
     sampleMeta:{thumb:"",author:"hehsusrwcqjuan",title:"Paano gamitin ang Santoryu Toolkit",views:1794},
     prizes:[{rank:1,amount:2000,cur:"PHP"},{rank:2,amount:1200,cur:"PHP"},{rank:3,amount:800,cur:"PHP"},{rank:4,amount:500,cur:"PHP"},{rank:5,amount:500,cur:"PHP"}]},
@@ -1020,6 +1020,7 @@ function renderTournament(){
     <div class="sub2">${me&&s.myRank?`<b>RANK #${s.myRank}</b> ·`:''} ${used} sa ${maxV} slots</div>
     <div class="slots">${slotHtml}</div>
     <div class="ladder">${tiers}</div>
+    ${(ev.participationReward>0)?`<div style="margin-top:10px;font-size:11px;color:#5FE8E3;text-align:center">Everyone who follows the rules gets ${ev.participationReward} gold</div>`:''}
     <div class="cd" id="tcd"></div></div>`);
   tournBody.appendChild(hero);
   if(ev.endTs) tCountdown(hero.querySelector('#tcd'), ev.endTs);
@@ -1107,10 +1108,13 @@ function openTournRules(ev){
     const warnHtml = `<div class="warn" style="margin-top:11px">
       <div style="font-family:'Chakra Petch';font-weight:700;font-size:11px;letter-spacing:1px;color:#FF8A94;margin-bottom:5px">BABALA</div>
       Ang video na <b>hindi tungkol sa Santoryu Toolkit</b> ay tatanggihan at <b>hindi babayaran</b> — kahit gaano karami ang views. Hindi sapat ang paglagay lang ng hashtag sa gameplay clip.</div>`;
+    const partLine = (ev.participationReward>0)?`<div class="rule"><div class="rk2" style="background:rgba(95,230,255,.16);color:#5FE8E3">+</div>
+        <div style="flex:1">Everyone who follows the rules</div>
+        <div style="font-family:'Teko';font-weight:700;font-size:17px;color:var(--txt2)">${ev.participationReward} ◆ gold</div></div>`:'';
     const prizeHtml2 = `<div class="sh"><div class="t">PREMYO</div></div><div class="rules">` +
       (ev.prizes||[]).map(p=>`<div class="rule"><div class="rk2">${p.rank}</div>
         <div style="flex:1">Top ${p.rank}</div>
-        <div style="font-family:'Teko';font-weight:700;font-size:17px;color:${p.cur==='gold'?'var(--txt2)':'#FFE08A'}">${p.amount} ◆ ${p.cur==='gold'?'gold':'MLBB'}</div></div>`).join('')+`</div>`;
+        <div style="font-family:'Teko';font-weight:700;font-size:17px;color:${p.cur==='gold'?'var(--txt2)':'#FFE08A'}">${p.amount} ◆ ${p.cur==='gold'?'gold':'MLBB'}</div></div>`).join('')+partLine+`</div>`;
     b.innerHTML=`${sampleHtml}${warnHtml}
       <div class="task"><div class="lbl2">THIS WEEK'S TASK</div><div class="v2">${esc(ev.task||'Weekly video task')}</div></div>
       <div class="shdr">STEP-BY-STEP</div>${steps}
