@@ -258,6 +258,12 @@
   .thero2 .big{font-family:'Teko';font-weight:700;font-size:58px;line-height:.85;color:#25F4EE;text-shadow:0 0 26px rgba(37,244,238,.45);margin-top:2px;}
   .thero2 .sub2{display:flex;align-items:center;gap:9px;margin-top:8px;font-size:11px;color:var(--txt2);}
   .thero2 .sub2 b{font-family:'Rajdhani';font-weight:700;font-size:13px;color:#FFE08A;}
+  .samp{display:flex;gap:11px;align-items:center;margin-top:12px;padding:11px;border-radius:14px;background:linear-gradient(120deg,rgba(95,230,255,.1),rgba(255,45,85,.06));border:1px solid rgba(95,230,255,.3);cursor:pointer;}
+  .samp:active{transform:scale(.99);}
+  .samp .th{width:52px;height:66px;border-radius:8px;background:linear-gradient(160deg,#1b2430,#0e141c);flex:0 0 auto;position:relative;overflow:hidden;border:1px solid #2a3542;}
+  .samp .th img{width:100%;height:100%;object-fit:cover;}
+  .samp .th:after{content:'▶';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#25F4EE;font-size:17px;text-shadow:0 2px 6px rgba(0,0,0,.6);}
+  .warn{margin-top:10px;padding:10px 11px;border-radius:11px;background:rgba(255,94,108,.08);border:1px solid rgba(255,94,108,.32);font-size:11px;line-height:1.5;color:#FFC2C8;}
   .slots{display:flex;gap:3px;margin-top:9px;}
   .slots i{flex:1;height:4px;border-radius:2px;background:#1a2029;}
   .slots i.on{background:#25F4EE;} .slots i.rej{background:#FF5E6C;}
@@ -514,6 +520,8 @@ if(!isNative){ window.Android={
   tournamentJoin:(id,u)=>{ MOCK_T.myEntry={views:1234,tiktokUser:"you",videoUrl:u,title:"Your clip"}; MOCK_T.myRank=4; MOCK_T.count++; setTimeout(()=>window.__earnResult(id,{ok:true,views:1234}),400); },
 };}
 let MOCK_T={ ok:true, event:{id:"evt1",title:"TikTok Highlight Cup",prize:"₱5,000",prizePool:5000,desc:"Post your best MLBB clip on TikTok. Most views wins the pool!",status:"open",endTs:Date.now()+9*86400000,maxVideos:10,
+    sampleVideoUrl:"https://www.tiktok.com/@hehsusrwcqjuan/video/7412345678901234567",
+    sampleMeta:{thumb:"",author:"hehsusrwcqjuan",title:"Paano gamitin ang Santoryu Toolkit",views:1794},
     prizes:[{rank:1,amount:2000,cur:"PHP"},{rank:2,amount:1200,cur:"PHP"},{rank:3,amount:800,cur:"PHP"},{rank:4,amount:500,cur:"PHP"},{rank:5,amount:500,cur:"PHP"}]},
   count:3, myRank:2, myEntry:{totalViews:45280,videoCount:6,rejectedCount:1},
   entries:[
@@ -1006,6 +1014,19 @@ function renderTournament(){
     <div class="cd" id="tcd"></div></div>`);
   tournBody.appendChild(hero);
   if(ev.endTs) tCountdown(hero.querySelector('#tcd'), ev.endTs);
+  if(ev.sampleVideoUrl){
+    const sm=ev.sampleMeta||{};
+    const card=$(`<div class="samp">
+      <div class="th">${sm.thumb?`<img src="${esc(sm.thumb)}" referrerpolicy="no-referrer">`:''}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-family:'Rajdhani';font-weight:700;font-size:14px">Gaya mo ito</div>
+        <div style="font-size:11px;color:#25F4EE;margin-top:2px">@${esc(sm.author||'santoryu')}${sm.views?` · ${fmtViews(sm.views)} views`:''}</div>
+        <div style="font-size:10px;color:var(--txt2);margin-top:3px;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(sm.title||'Opisyal na halimbawa')}</div>
+      </div></div>`);
+    card.onclick=()=>window.Android.openLink(ev.sampleVideoUrl);
+    tournBody.appendChild(card);
+  }
+  tournBody.appendChild($(`<div class="warn"><b>Hindi babayaran</b> ang gameplay clip na sinabitan lang ng hashtag. Dapat <b>tungkol sa Santoryu Toolkit</b> ang video — pagtuturo, review, o demo.</div>`));
   // Rules + how-to = naka-DIALOG (button lang dito, may teaser ng weekly task)
   const rb=$(`<div class="rulesbtn"><div class="rbicon"><img src="ic-rules.png" alt=""></div><div class="rbleft"><div class="rbt">How to join &amp; Event Rules</div><div class="rbs">${esc(ev.task||"Tap to see this week's task")}</div></div><div class="rbgo">VIEW ›</div></div>`);
   rb.onclick=()=>openTournRules(ev);
