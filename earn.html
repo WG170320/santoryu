@@ -252,6 +252,20 @@
   .tphero .pp{font-family:'Teko';font-weight:700;font-size:54px;line-height:.85;color:#FFE08A;text-shadow:0 0 22px rgba(232,180,74,.5);margin-top:10px;}
   .tphero .ppl{font-size:10px;letter-spacing:2px;color:#FF7591;font-weight:700;}
   .tphero .cd{margin-top:8px;font-family:'Rajdhani';font-weight:700;color:#25F4EE;font-size:14px;}
+  .thero2{overflow:hidden;border-radius:18px;padding:18px;background:radial-gradient(90% 120% at 88% 4%,rgba(37,244,238,.22),transparent 62%),linear-gradient(140deg,#0d1b22,#0b0712 66%);border:1px solid rgba(37,244,238,.38);}
+  .thero2 .lbl{font-family:'Chakra Petch';font-weight:700;font-size:10px;letter-spacing:3px;color:#5FE8E3;display:flex;align-items:center;gap:7px;}
+  .thero2 .cap{font-size:10px;letter-spacing:2px;color:var(--txt2);font-weight:600;margin-top:14px;}
+  .thero2 .big{font-family:'Teko';font-weight:700;font-size:58px;line-height:.85;color:#25F4EE;text-shadow:0 0 26px rgba(37,244,238,.45);margin-top:2px;}
+  .thero2 .sub2{display:flex;align-items:center;gap:9px;margin-top:8px;font-size:11px;color:var(--txt2);}
+  .thero2 .sub2 b{font-family:'Rajdhani';font-weight:700;font-size:13px;color:#FFE08A;}
+  .slots{display:flex;gap:3px;margin-top:9px;}
+  .slots i{flex:1;height:4px;border-radius:2px;background:#1a2029;}
+  .slots i.on{background:#25F4EE;} .slots i.rej{background:#FF5E6C;}
+  .ladder{display:flex;gap:5px;margin-top:14px;}
+  .lrung{flex:1;text-align:center;padding:7px 2px;border-radius:9px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);}
+  .lrung .p{font-family:'Teko';font-weight:700;font-size:19px;line-height:1;color:#FFE08A;}
+  .lrung .r{font-size:8px;letter-spacing:1px;color:var(--txt2);margin-top:2px;}
+  .lrung.g{background:rgba(255,215,0,.11);border-color:rgba(255,215,0,.34);}
   .lbrow{display:flex;align-items:center;gap:11px;padding:10px 4px;border-bottom:1px solid rgba(34,42,52,.55);}
   .lbrow.me{background:rgba(37,244,238,.07);border:1px solid rgba(37,244,238,.25);border-radius:11px;margin:4px 0;}
   .lbrow .rk{width:24px;text-align:center;font-family:'Teko';font-weight:700;font-size:21px;color:var(--txt2);flex:0 0 auto;}
@@ -499,8 +513,9 @@ if(!isNative){ window.Android={
   tournamentState:()=>setTimeout(()=>window.__tournamentState(JSON.parse(JSON.stringify(MOCK_T))),80),
   tournamentJoin:(id,u)=>{ MOCK_T.myEntry={views:1234,tiktokUser:"you",videoUrl:u,title:"Your clip"}; MOCK_T.myRank=4; MOCK_T.count++; setTimeout(()=>window.__earnResult(id,{ok:true,views:1234}),400); },
 };}
-let MOCK_T={ ok:true, event:{id:"evt1",title:"TikTok Highlight Cup",prize:"₱5,000",prizePool:5000,desc:"Post your best MLBB clip on TikTok. Most views wins the pool!",status:"open",endTs:Date.now()+9*86400000},
-  count:3, myRank:null, myEntry:null,
+let MOCK_T={ ok:true, event:{id:"evt1",title:"TikTok Highlight Cup",prize:"₱5,000",prizePool:5000,desc:"Post your best MLBB clip on TikTok. Most views wins the pool!",status:"open",endTs:Date.now()+9*86400000,maxVideos:10,
+    prizes:[{rank:1,amount:2000,cur:"PHP"},{rank:2,amount:1200,cur:"PHP"},{rank:3,amount:800,cur:"PHP"},{rank:4,amount:500,cur:"PHP"},{rank:5,amount:500,cur:"PHP"}]},
+  count:3, myRank:2, myEntry:{totalViews:45280,videoCount:6,rejectedCount:1},
   entries:[
     {rank:1,name:"Aki",tiktokUser:"akiplays",tiktokAvatar:"",views:1290000,title:"Insane Fanny 1v5",videoUrl:"#",mine:false},
     {rank:2,name:"Rey",tiktokUser:"reyttv",tiktokAvatar:"",views:842000,title:"Gusion combo tutorial",videoUrl:"#",mine:false},
@@ -975,9 +990,19 @@ function renderTournament(){
   if(!tournBody) return; const s=TOURN; if(!s) return;
   tournBody.innerHTML=''; const ev=s.event;
   if(!ev){ tournBody.appendChild($(`<div class="empty">No active event right now.<br>Check back soon for the next tournament.</div>`)); return; }
-  const hero=$(`<div class="tphero"><h3>${esc(ev.title||'Tournament')}</h3>
-    <div class="desc">${esc(ev.desc||'')}</div>
-    <div class="ppl" style="margin-top:12px">PRIZE POOL</div><div class="pp">${prizeHTML(ev)}</div>
+  const me=s.myEntry||null, maxV=(ev.maxVideos||10);
+  const used=me?(me.videoCount||0):0, rej=me?(me.rejectedCount||0):0, okc=Math.max(0,used-rej);
+  const slotHtml=Array.from({length:maxV},(_,i)=>
+    `<i class="${i<okc?'on':(i<used?'rej':'')}"></i>`).join('');
+  const tiers=(ev.prizes||[]).slice(0,4).map((p,i)=>
+    `<div class="lrung ${i===0?'g':''}"><div class="p">${p.amount>=1000?(p.amount/1000)+'K':p.amount}</div><div class="r">#${p.rank}</div></div>`).join('');
+  const hero=$(`<div class="thero2">
+    <div class="lbl"><span class="live"></span> TIKTOK TOURNAMENT</div>
+    <div class="cap">ANG TOTAL VIEWS MO</div>
+    <div class="big">${me?fmtViews(me.totalViews):'0'}</div>
+    <div class="sub2">${me&&s.myRank?`<b>RANK #${s.myRank}</b> ·`:''} ${used} sa ${maxV} slots</div>
+    <div class="slots">${slotHtml}</div>
+    <div class="ladder">${tiers}</div>
     <div class="cd" id="tcd"></div></div>`);
   tournBody.appendChild(hero);
   if(ev.endTs) tCountdown(hero.querySelector('#tcd'), ev.endTs);
