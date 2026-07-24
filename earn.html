@@ -1012,7 +1012,7 @@ function renderTournament(){
   const slotHtml=Array.from({length:maxV},(_,i)=>
     `<i class="${i<okc?'on':(i<used?'rej':'')}"></i>`).join('');
   const tiers=(ev.prizes||[]).slice(0,4).map((p,i)=>
-    `<div class="lrung ${i===0?'g':''}"><div class="p">${p.amount>=1000?(p.amount/1000)+'K':p.amount}</div><div class="r">#${p.rank}</div></div>`).join('');
+    `<div class="lrung ${i===0?'g':''}"><div class="p"><span class="dia blue" style="width:.68em;height:.68em;display:inline-block;vertical-align:-.08em;margin-right:.1em"></span>${p.amount>=1000?(p.amount/1000)+'K':p.amount}</div><div class="r">#${p.rank}</div></div>`).join('');
   const hero=$(`<div class="thero2">
     <div class="lbl"><span class="live"></span> TIKTOK TOURNAMENT</div>
     <div class="cap">ANG TOTAL VIEWS MO</div>
