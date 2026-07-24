@@ -534,9 +534,9 @@ let MOCK_T={ ok:true, event:{id:"evt1",title:"TikTok Highlight Cup",prize:"₱5,
     prizes:[{rank:1,amount:2000,cur:"PHP"},{rank:2,amount:1200,cur:"PHP"},{rank:3,amount:800,cur:"PHP"},{rank:4,amount:500,cur:"PHP"},{rank:5,amount:500,cur:"PHP"}]},
   count:3, myRank:2, myEntry:{totalViews:45280,videoCount:6,rejectedCount:1},
   entries:[
-    {rank:1,name:"Aki",tiktokUser:"akiplays",tiktokAvatar:"",views:1290000,title:"Insane Fanny 1v5",videoUrl:"#",mine:false},
-    {rank:2,name:"Rey",tiktokUser:"reyttv",tiktokAvatar:"",views:842000,title:"Gusion combo tutorial",videoUrl:"#",mine:false},
-    {rank:3,name:"Mika",tiktokUser:"mikagg",tiktokAvatar:"",views:233000,title:"Late game carry",videoUrl:"#",mine:false},
+    {rank:1,uid:"mock_aki",name:"Aki",tiktokUser:"akiplays",tiktokAvatar:"",totalViews:1290000,videoCount:4,mine:false},
+    {rank:2,uid:"mock_rey",name:"Rey",tiktokUser:"reyttv",tiktokAvatar:"",totalViews:842000,videoCount:2,mine:false},
+    {rank:3,uid:"mock_mika",name:"Mika",tiktokUser:"mikagg",tiktokAvatar:"",totalViews:233000,videoCount:1,mine:false},
   ]};
 
 //=== custom toast + reward gain ===================================================
@@ -1073,20 +1073,50 @@ function renderTournament(){
     const avInner=e.tiktokAvatar?`<img class="av" src="${esc(e.tiktokAvatar)}" referrerpolicy="no-referrer">`:'<div class="av" style="border-radius:50%;background:#1a1f27"></div>';
     const avBlock=top?`<div class="avwrap">${avInner}<img class="ring ${ringCls}" src="ring-frame.png" alt="">${e.rank===1?'<img class="crown" src="ic-crown.png" alt="">':''}</div>`:avInner;
     const row=$(`<div class="lbrow ${e.mine?'me':''}"><div class="rk ${rkc}">${e.rank}</div>${avBlock}
-      <div class="who"><div class="h">@${esc(e.tiktokUser||e.name)}</div><div class="t2">${esc(e.title||'')}</div></div>
-      <div class="views">${fmtViews(e.views)}<small>VIEWS</small></div></div>`);
-    if(e.videoUrl) row.onclick=()=>window.Android.openLink(e.videoUrl);
-    lb.appendChild(row);
+      <div class="who"><div class="h">@${esc(e.tiktokUser||e.name)}${e.mine?' · ikaw':''}</div>
+        <div class="t2">${e.videoCount||0} video${(e.videoCount||0)===1?'':'s'}</div></div>
+      <div class="views">${fmtViews(e.totalViews)}<small>VIEWS</small></div></div>`);
+    const exp=$(`<div id="lb_${esc(e.uid)}"></div>`);
+    row.onclick=()=>toggleLbRow(e.uid, exp);
+    lb.appendChild(row); lb.appendChild(exp);
   });
   tournBody.appendChild(lb);
+}
+const LB_OPEN={};
+async function toggleLbRow(uid, box){
+  if(LB_OPEN[uid]){ LB_OPEN[uid]=false; box.innerHTML=''; return; }
+  LB_OPEN[uid]=true; box.innerHTML='<div class="empty" style="padding:8px">Loading…</div>';
+  const r=await fetch(TVID_URL,{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({uid})}).then(x=>x.json()).catch(()=>null);
+  if(!r||!r.ok||!r.videos.length){ box.innerHTML='<div class="empty" style="padding:8px">Walang video.</div>'; return; }
+  box.innerHTML=`<div style="background:#0d1117;border-radius:11px;padding:7px 11px;margin:2px 0 8px;border:1px solid var(--line)">
+    ${r.videos.map((v,i)=>`<div class="vid" data-u="${esc(v.videoUrl)}" style="border:none;padding:6px 0">
+      <div class="n">${i+1}</div><div class="b"><div class="h">${esc(v.title||'Video')}</div></div>
+      <div class="v" style="font-size:15px">${fmtViews(v.views)}</div></div>`).join('')}</div>`;
+  box.querySelectorAll('.vid').forEach(el=>{ el.onclick=(ev)=>{ ev.stopPropagation(); window.Android.openLink(el.dataset.u); }; });
 }
 function openTournRules(ev){
   openPage('How to Join', b=>{
     const steps=(ev.steps||[]).map((s,i)=>`<div class="step"><div class="num">${i+1}</div><div class="stx">${esc(s)}</div></div>`).join('');
     const rules=(ev.rules||[]).map(r=>`<div class="rule2"><span class="ck">✓</span><span>${esc(r)}</span></div>`).join('');
-    b.innerHTML=`<div class="task"><div class="lbl2">THIS WEEK'S TASK</div><div class="v2">${esc(ev.task||'Weekly video task')}</div></div>
+    const sm=ev.sampleMeta||{};
+    const sampleHtml = ev.sampleVideoUrl ? `<div class="samp" id="rsamp">
+      <div class="th">${sm.thumb?`<img src="${esc(sm.thumb)}" referrerpolicy="no-referrer">`:''}</div>
+      <div style="flex:1;min-width:0"><div style="font-family:'Rajdhani';font-weight:700;font-size:14px">Panoorin ang halimbawa</div>
+        <div style="font-size:11px;color:#25F4EE;margin-top:2px">@${esc(sm.author||'santoryu')}${sm.views?` · ${fmtViews(sm.views)} views`:''}</div></div></div>` : '';
+    const warnHtml = `<div class="warn" style="margin-top:11px">
+      <div style="font-family:'Chakra Petch';font-weight:700;font-size:11px;letter-spacing:1px;color:#FF8A94;margin-bottom:5px">⚠ BABALA</div>
+      Ang video na <b>hindi tungkol sa Santoryu Toolkit</b> ay tatanggihan at <b>hindi babayaran</b> — kahit gaano karami ang views. Hindi sapat ang paglagay lang ng hashtag sa gameplay clip.</div>`;
+    const prizeHtml2 = `<div class="sh"><div class="t">PREMYO</div></div><div class="rules">` +
+      (ev.prizes||[]).map(p=>`<div class="rule"><div class="rk2">${p.rank}</div>
+        <div style="flex:1">Top ${p.rank}</div>
+        <div style="font-family:'Teko';font-weight:700;font-size:17px;color:${p.cur==='gold'?'var(--txt2)':'#FFE08A'}">${p.amount} ◆ ${p.cur==='gold'?'gold':'MLBB'}</div></div>`).join('')+`</div>`;
+    b.innerHTML=`${sampleHtml}${warnHtml}
+      <div class="task"><div class="lbl2">THIS WEEK'S TASK</div><div class="v2">${esc(ev.task||'Weekly video task')}</div></div>
       <div class="shdr">STEP-BY-STEP</div>${steps}
-      <div class="shdr">EVENT RULES</div>${rules}`;
+      <div class="shdr">EVENT RULES</div>${rules}
+      ${prizeHtml2}`;
+    const rs=document.getElementById('rsamp'); if(rs) rs.onclick=()=>window.Android.openLink(ev.sampleVideoUrl);
   });
 }
 function tjErr(e){return({closed:'The event is closed.',device_used:'This device already joined (1 per device).',already_joined:'You already submitted your video.',bad_video:'Could not read that TikTok link — double-check it.',too_long:'Video must be under 10 minutes long.',old_video:'Post a NEW video for this event — old clips are not allowed.',no_hashtag:'Add #santoryutoolkit in your video caption, then submit.',tiktok_used:'This TikTok account already joined this event.',missing:'Paste your TikTok link.',slots_full:'Puno na ang slots mo',handle_mismatch:'Ibang TikTok account — naka-lock ka na sa iisang handle',handle_taken:'Ginagamit na ang TikTok account na iyan ng ibang kalahok',duplicate:'Naisumite mo na ang video na ito'})[e]||'Could not join. Try again.';}
