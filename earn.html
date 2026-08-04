@@ -704,8 +704,8 @@ function render(){
     const claimable=!!s.jogosClaimable;
     const pe=$(`<div class="pehero" id="pehero">
       <div class="lbl"><span class="dot"></span> PLAY &amp; EARN</div>
-      <h3>Maglaro, kumita ng ${peRew} diamonds</h3>
-      <div class="desc">${claimable?('Tapos ka nang maglaro — i-claim na ang '+peRew+' diamonds mo!'):('Maglaro ng '+peMin+' minuto nang TULOY-TULOY sa libreng games sa Chrome. Pag umalis ka, magre-reset. Tapos i-claim ang reward — libre.')}</div>
+      <h3>Play &amp; earn ${peRew} diamonds</h3>
+      <div class="desc">${claimable?("You're all done — claim your "+peRew+" diamonds!"):('Play free games in Chrome for '+peMin+' minutes straight. Leave and it resets. Then claim your reward — free.')}</div>
       <div class="rwrow"><div class="rw">${clk} ${peMin} min</div><div class="rw hot">${gd} +${peRew}</div></div>
       <div class="go" id="pego">${claimable?('CLAIM '+peRew+' DIAMONDS'):'PLAY NOW ›'}</div>
       <div class="jby"><span class="cap">GAMES BY</span>${JOGOS_LOGO}</div>
@@ -717,7 +717,7 @@ function render(){
           const g=ev.currentTarget; g.textContent='…';
           const r=await call('claimJogos');
           if(r&&r.ok){ gainFx(peRew,'gold'); requestState(); }
-          else { g.textContent='CLAIM '+peRew+' DIAMONDS'; toast('Hindi pa ma-claim — subukan ulit.'); }
+          else { g.textContent='CLAIM '+peRew+' DIAMONDS'; toast("Can't claim yet — please try again."); }
         }
       } else if(isNative&&window.Android.playGames){ window.Android.playGames(); }
     };
