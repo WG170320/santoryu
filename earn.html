@@ -530,6 +530,9 @@ window.__earnResult=(id,obj)=>{ const r=pending[id]; if(r){delete pending[id]; r
 window.__earnState=(s)=>{ STATE=s; render(); if(typeof maybeWinner==='function') maybeWinner(); if(typeof loadTournBanner==='function') loadTournBanner(); if(typeof maybeConsolation==='function') maybeConsolation(); if(typeof maybeCongrats==='function') maybeCongrats(s); };
 function call(m,...a){ return new Promise(res=>{ const id='r'+(++REQ); pending[id]=res; window.Android[m](id,...a); }); }
 function requestState(){ if(isNative) window.Android.requestState(); else mockState(); }
+// Pagbalik sa app (hal. galing Chrome/Play & Earn), i-refresh ang state para lumabas agad
+// ang CLAIM at bagong balance.
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden) requestState(); });
 
 let MOCK={ uid:"dev-demo", code:"SANT-AB12-CD34", isAdmin:false,
   config:{perInvite:5,inviteeBonus:5,welcomeBonus:5,dailyBonus:15,missionGoal:5,missionBonus:50,missionHours:24},
@@ -692,21 +695,31 @@ function render(){
 
   // Play & Earn (jogos) — highlighted hero. Lumalabas LANG kapag naka-enable sa config AT
   // sinusuportahan ng native bridge (iwas dead button sa lumang app build na walang playGames).
-  if(c.jogosEnabled && (!isNative || (window.Android && window.Android.playGames))){
-    const peR1=c.jogosReward1||5, peR2=c.jogosReward2||10, peMin=c.jogosLongMins||5;
-    const dia='<span class="dia blue" style="width:13px;height:13px"></span>';
+  // jogos Play & Earn — one-time per user (testing). PLAY NOW -> maglaro sa Chrome (may
+  // floating timer) -> pagbalik, CLAIM. Itinatago kapag na-claim na. Double-gated + native.
+  if(c.jogosEnabled && !s.jogosClaimed && (!isNative || (window.Android && (window.Android.playGames||window.Android.claimJogos)))){
+    const peRew=c.jogosReward||25, peMin=Math.max(1,Math.round((c.jogosQualifySecs||120)/60));
+    const gd='<span class="dia gold" style="width:14px;height:14px"></span>';
+    const claimable=!!s.jogosClaimable;
     const pe=$(`<div class="pehero" id="pehero">
       <div class="lbl"><span class="dot"></span> PLAY &amp; EARN</div>
-      <h3>Maglaro, kumita ng diamonds</h3>
-      <div class="desc">Libreng games sa Chrome. Habang mas matagal kang maglaro, mas malaki ang diamonds — walang bayad, walang hassle.</div>
-      <div class="rwrow">
-        <div class="rw">${dia} 1 min · +${peR1}</div>
-        <div class="rw hot">${dia} ${peMin} min · +${peR2}</div>
-      </div>
-      <div class="go">PLAY NOW ›</div>
+      <h3>Maglaro, kumita ng ${peRew} diamonds</h3>
+      <div class="desc">${claimable?('Tapos ka nang maglaro — i-claim na ang '+peRew+' diamonds mo!'):('Maglaro ng '+peMin+' minuto sa libreng games sa Chrome, tapos i-claim ang reward — libre, walang hassle.')}</div>
+      <div class="rwrow"><div class="rw hot">${gd} ${peMin} min · +${peRew}</div></div>
+      <div class="go" id="pego">${claimable?('CLAIM '+peRew+' DIAMONDS'):'PLAY NOW ›'}</div>
       <div class="jby"><span class="cap">GAMES BY</span>${JOGOS_LOGO}</div>
     </div>`);
-    pe.onclick=()=>{ if(isNative&&window.Android.playGames) window.Android.playGames(); };
+    pe.querySelector('#pego').onclick=async ev=>{
+      ev.stopPropagation();
+      if(claimable){
+        if(isNative&&window.Android.claimJogos){
+          const g=ev.currentTarget; g.textContent='…';
+          const r=await call('claimJogos');
+          if(r&&r.ok){ gainFx(peRew,'gold'); requestState(); }
+          else { g.textContent='CLAIM '+peRew+' DIAMONDS'; toast('Hindi pa ma-claim — subukan ulit.'); }
+        }
+      } else if(isNative&&window.Android.playGames){ window.Android.playGames(); }
+    };
     app.appendChild(pe);
   }
 
