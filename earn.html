@@ -699,13 +699,14 @@ function render(){
   // floating timer) -> pagbalik, CLAIM. Itinatago kapag na-claim na. Double-gated + native.
   if(c.jogosEnabled && !s.jogosClaimed && (!isNative || (window.Android && (window.Android.playGames||window.Android.claimJogos)))){
     const peRew=c.jogosReward||25, peMin=Math.max(1,Math.round((c.jogosQualifySecs||120)/60));
-    const gd='<span class="dia gold" style="width:14px;height:14px"></span>';
+    const gd='<span class="dia gold" style="width:14px;height:14px;vertical-align:-.16em"></span>';
+    const clk='<svg viewBox="0 0 24 24" width="14" height="14" style="vertical-align:-.16em" fill="none" stroke="#8FF3C6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 1.8"/></svg>';
     const claimable=!!s.jogosClaimable;
     const pe=$(`<div class="pehero" id="pehero">
       <div class="lbl"><span class="dot"></span> PLAY &amp; EARN</div>
       <h3>Maglaro, kumita ng ${peRew} diamonds</h3>
-      <div class="desc">${claimable?('Tapos ka nang maglaro — i-claim na ang '+peRew+' diamonds mo!'):('Maglaro ng '+peMin+' minuto sa libreng games sa Chrome, tapos i-claim ang reward — libre, walang hassle.')}</div>
-      <div class="rwrow"><div class="rw hot">${gd} ${peMin} min · +${peRew}</div></div>
+      <div class="desc">${claimable?('Tapos ka nang maglaro — i-claim na ang '+peRew+' diamonds mo!'):('Maglaro ng '+peMin+' minuto nang TULOY-TULOY sa libreng games sa Chrome. Pag umalis ka, magre-reset. Tapos i-claim ang reward — libre.')}</div>
+      <div class="rwrow"><div class="rw">${clk} ${peMin} min</div><div class="rw hot">${gd} +${peRew}</div></div>
       <div class="go" id="pego">${claimable?('CLAIM '+peRew+' DIAMONDS'):'PLAY NOW ›'}</div>
       <div class="jby"><span class="cap">GAMES BY</span>${JOGOS_LOGO}</div>
     </div>`);
