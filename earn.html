@@ -515,8 +515,11 @@
   .tv-card::before{content:''; position:absolute; inset:0 0 auto 0; height:50px; background:radial-gradient(80% 100% at 50% 0,rgba(45,212,167,.3),transparent 72%);}
   .tv-cell.gold .tv-card{background:linear-gradient(165deg,#241d0e,#130f08 70%); border-color:rgba(232,180,74,.4);}
   .tv-cell.gold .tv-card::before{background:radial-gradient(80% 100% at 50% 0,rgba(232,180,74,.38),transparent 72%);}
+  .tv-cell.champ .tv-card{background:linear-gradient(165deg,#0f2234,#08111a 72%); border-color:rgba(77,166,255,.55); box-shadow:0 0 22px -6px rgba(77,166,255,.35);}
+  .tv-cell.champ .tv-card::before{background:radial-gradient(80% 100% at 50% 0,rgba(77,166,255,.42),transparent 72%);}
   .tv-lbl{font-family:'Chakra Petch'; font-weight:700; font-size:15px; color:#5ff0c8; text-align:center;}
   .tv-cell.gold .tv-lbl{color:var(--gold-hi);}
+  .tv-cell.champ .tv-lbl{color:var(--blue-hi);}
   .tv-amt{font-family:'Rajdhani'; font-weight:700; font-size:20px; color:#fff; line-height:1; display:flex; align-items:center; justify-content:center; gap:4px;}
   .tv-amt .g{width:15px;height:15px;flex:0 0 auto;background:url('gem-blue.png') center/contain no-repeat;}
   .tv-sub{font-size:10px; color:var(--txt2); letter-spacing:.12em; text-transform:uppercase;}
@@ -593,6 +596,52 @@
   .tv-evrow .n{width:20px; font-family:'Teko'; font-weight:700; color:var(--txt2); flex:0 0 auto;}
   .tv-evrow .h{flex:1; min-width:0; font-size:12.5px; color:var(--txt); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
   .tv-evrow .vv{font-family:'Rajdhani'; font-weight:700; font-size:14px; color:#5ff0c8; flex:0 0 auto;}
+  /* ===== Tournament JOIN promo dialog (cinematic mini-hero) ===== */
+  .tpromo{width:100%; max-width:352px; border-radius:20px; overflow:hidden; background:var(--bg); border:1px solid rgba(45,212,167,.4); box-shadow:0 24px 64px -22px rgba(45,212,167,.5); animation:pop .3s cubic-bezier(.2,1.3,.4,1);}
+  .tpromo-hero{position:relative; padding:22px 18px 18px; text-align:center; overflow:hidden;
+    background:radial-gradient(120% 82% at 50% 0,rgba(45,212,167,.22),transparent 60%),linear-gradient(180deg,rgba(7,9,12,.32),var(--bg)),url('hero-champion.jpg') center 18%/cover;}
+  .tpromo-hero::before{content:''; position:absolute; inset:0; background:linear-gradient(115deg,transparent 46%,rgba(45,212,167,.45) 49%,transparent 54%); mix-blend-mode:screen; opacity:.5;}
+  .tpromo-badge{position:relative; display:inline-flex; align-items:center; gap:6px; font-family:'Chakra Petch'; font-weight:700; font-size:10px; letter-spacing:2px; color:#5ff0c8;}
+  .tpromo-pool{position:relative; font-family:'Rajdhani'; font-weight:700; font-size:10px; letter-spacing:.32em; color:#5ff0c8; margin-top:14px; text-shadow:0 0 10px rgba(45,212,167,.6);}
+  .tpromo-num{position:relative; font-family:'Teko'; font-weight:600; font-size:60px; line-height:.82; background:linear-gradient(180deg,var(--gold-hi),var(--gold) 46%,var(--gold-deep)); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; filter:drop-shadow(0 3px 10px rgba(232,180,74,.35));}
+  .tpromo-num b{-webkit-text-fill-color:rgba(232,180,74,.5); font-weight:500; padding:0 4px;}
+  .tpromo-cur{position:relative; font-family:'Chakra Petch'; font-weight:600; font-size:11px; letter-spacing:.2em; color:#fff;}
+  .tpromo-body{padding:16px 18px 18px; text-align:center;}
+  .tpromo-body h3{font-family:'Chakra Petch'; font-weight:700; font-size:17px; color:#fff;}
+  .tpromo-cd{display:inline-block; font-family:'Rajdhani'; font-weight:700; font-size:12px; color:var(--amber); margin-top:6px; padding:3px 10px; border-radius:20px; background:rgba(245,180,69,.12); border:1px solid rgba(245,180,69,.3);}
+  .tpromo-body p{font-size:13px; color:var(--txt2); line-height:1.5; margin-top:11px;}
+  .tpromo-body p b{color:#5ff0c8;}
+  .tpromo-join{position:relative; overflow:hidden; width:100%; margin-top:16px; height:50px; border:none; cursor:pointer; font-family:'Chakra Petch'; font-weight:700; font-size:15px; letter-spacing:.08em; color:#04140f; border-radius:14px; background:linear-gradient(180deg,#5ff0c8,var(--emerald) 55%,#0f9d76); box-shadow:0 10px 26px -8px rgba(45,212,167,.55), inset 0 1px 0 rgba(255,255,255,.5);}
+  .tpromo-join::after{content:''; position:absolute; top:0; bottom:0; left:-45%; width:34%; transform:skewX(-20deg); background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent); animation:tvsweep 3s ease-in-out infinite;}
+  .tpromo-later{width:100%; height:42px; margin-top:9px; border:1px solid var(--line); background:transparent; color:var(--txt2); font-family:'Inter'; font-size:13px; cursor:pointer; border-radius:12px;}
+  /* ===== Proof-of-payout entry card + Top Earners page ===== */
+  .proofcard{display:flex; align-items:center; gap:12px; margin-top:12px; padding:13px 15px; cursor:pointer; border-radius:15px;
+    background:linear-gradient(110deg,rgba(77,166,255,.12),rgba(45,212,167,.05)); border:1px solid rgba(95,200,255,.32); box-shadow:0 8px 24px -14px rgba(77,166,255,.4);}
+  .proofcard:active{transform:scale(.99);}
+  .proofcard .pcic{width:40px;height:40px;flex:0 0 auto;border-radius:11px;display:flex;align-items:center;justify-content:center;background:rgba(77,166,255,.14);border:1px solid rgba(77,166,255,.3);}
+  .proofcard .pcmid{flex:1;min-width:0;}
+  .proofcard .pct{font-family:'Rajdhani';font-weight:700;font-size:15.5px;color:var(--txt);display:flex;align-items:center;gap:7px;}
+  .proofcard .pcv{font-family:'Chakra Petch';font-weight:700;font-size:8.5px;letter-spacing:1px;color:#04140f;background:var(--emerald);padding:2px 6px;border-radius:5px;}
+  .proofcard .pcs{font-size:11.5px;color:var(--txt2);margin-top:2px;}
+  .proofcard .pcgo{font-size:20px;color:var(--cyan);font-weight:700;}
+  .tehero{text-align:center; padding:20px 16px 18px; margin-bottom:6px; border-radius:18px; overflow:hidden;
+    background:radial-gradient(110% 90% at 50% 0,rgba(77,166,255,.22),transparent 62%),linear-gradient(160deg,#0e1c2e,#0a0f14 78%); border:1px solid rgba(77,166,255,.35);}
+  .tehero .tebadge{display:inline-block; font-family:'Chakra Petch'; font-weight:700; font-size:9.5px; letter-spacing:1.5px; color:#04140f; background:linear-gradient(180deg,#5ff0c8,var(--emerald)); padding:4px 11px; border-radius:20px;}
+  .tehero .tek{font-family:'Rajdhani'; font-weight:700; font-size:10px; letter-spacing:.3em; color:#9BD4FF; margin-top:13px;}
+  .tehero .tev{font-family:'Teko'; font-weight:600; font-size:56px; line-height:.85; color:var(--blue-hi); text-shadow:0 2px 18px rgba(77,166,255,.5); margin-top:2px;}
+  .tehero .tesub{font-size:11.5px; color:var(--txt2); margin-top:4px;}
+  .terow{display:flex; align-items:center; gap:12px; padding:11px 2px; border-bottom:1px solid rgba(34,42,52,.55);}
+  .terow:last-child{border-bottom:none;}
+  .terank{width:22px; text-align:center; font-family:'Teko'; font-weight:700; font-size:19px; color:var(--txt2); flex:0 0 auto;}
+  .terank.g{color:var(--gold);} .terank.s{color:#C9D6E4;} .terank.b{color:#E0955A;}
+  .teav{position:relative; width:38px; height:38px; border-radius:50%; flex:0 0 auto; overflow:hidden; display:flex; align-items:center; justify-content:center; font-family:'Chakra Petch'; font-weight:700; font-size:15px; color:#04140f; background:linear-gradient(135deg,#4DA6FF,#2DD4A7);}
+  .teav.top{box-shadow:0 0 0 2px var(--gold), 0 0 10px -2px rgba(232,180,74,.6);}
+  .teav img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
+  .teinfo{flex:1; min-width:0;}
+  .tename{font-family:'Rajdhani'; font-weight:700; font-size:15px; color:var(--txt); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .tetime{font-size:11px; color:var(--txt2); margin-top:1px;}
+  .teamt{font-family:'Rajdhani'; font-weight:700; font-size:16px; color:var(--blue-hi); flex:0 0 auto;}
+  .teproof{margin-top:14px; padding:13px 15px; border-radius:12px; background:rgba(45,212,167,.07); border:1px solid rgba(45,212,167,.25); font-size:12px; color:var(--txt2); line-height:1.5; text-align:center;}
 </style>
 </head>
 <body>
@@ -802,6 +851,13 @@ function render(){
   </div>`);
   if(reached&&!a.earnBanned) hero.querySelector('#hcta').onclick=()=>openWithdraw(g);
   app.appendChild(hero);
+
+  // Proof of payout — social-proof entry that opens the Top Earners page
+  const proof=$(`<div class="proofcard"><div class="pcic"><span class="dia blue" style="width:22px;height:22px"></span></div>
+    <div class="pcmid"><div class="pct">Real payouts <span class="pcv">VERIFIED</span></div><div class="pcs">See who's cashing out real diamonds</div></div>
+    <div class="pcgo">›</div></div>`);
+  proof.onclick=openTopEarners;
+  app.appendChild(proof);
 
   // WITHDRAW — Codashop grid: piliin ang amount = goal mo na rin (makikita sa progress sa taas)
   app.appendChild($(`<div class="sh"><div class="t">WITHDRAW</div><div class="x blue">tap to set your goal</div></div>`));
@@ -1195,23 +1251,52 @@ function maybeTournamentPromo(){
     showTournamentPromo(ev);
   }catch(e){}
 }
+// ── Top Earners / payout proof — real fulfilled withdrawals (earnPayouts) ─────
+const EPAY_URL='https://asia-southeast1-diamond-bang-92125.cloudfunctions.net/earnPayouts';
+function openTopEarners(){
+  openPage('Real Payouts', async b=>{
+    b.innerHTML='<div class="empty" style="padding-top:40px">Loading real payouts…</div>';
+    const r=await fetch(EPAY_URL).then(x=>x.json()).catch(()=>null);
+    if(!r||!r.ok||!r.payouts||!r.payouts.length){ b.innerHTML='<div class="empty" style="padding-top:40px">No payouts to show yet — be the first to cash out!</div>'; return; }
+    const total=r.payouts.reduce((s,p)=>s+(+p.mlbb||0),0);
+    const rows=r.payouts.map((p,i)=>{
+      const top3=i<3, medal=i===0?'g':i===1?'s':i===2?'b':'';
+      const av=p.avatarUrl?`<img src="${esc(p.avatarUrl)}" referrerpolicy="no-referrer" onerror="this.remove()">`:'';
+      const ini=(String(p.name||'?').trim()[0]||'?').toUpperCase();
+      return `<div class="terow"><div class="terank ${medal}">${i+1}</div>
+        <div class="teav ${top3?'top':''}"><span class="ini">${ini}</span>${av}</div>
+        <div class="teinfo"><div class="tename">${esc(p.name||'Player')}</div><div class="tetime">${ago(p.ts)}</div></div>
+        <div class="teamt"><span class="dia blue" style="width:15px;height:15px;display:inline-block;vertical-align:-2px;margin-right:3px"></span>${(+p.mlbb||0).toLocaleString()}</div></div>`;
+    }).join('');
+    b.innerHTML=`<div class="tehero">
+        <div class="tebadge">✓ VERIFIED PAYOUTS</div>
+        <div class="tek">RECENTLY PAID OUT</div>
+        <div class="tev"><span class="dia blue" style="width:30px;height:30px;display:inline-block;vertical-align:-5px;margin-right:7px"></span>${total.toLocaleString()}</div>
+        <div class="tesub">Real MLBB diamonds sent straight to players' accounts</div></div>
+      <div class="sh"><div class="t">TOP EARNERS</div><div class="x blue">${r.payouts.length} recent</div></div>
+      <div class="card" style="padding:4px 14px">${rows}</div>
+      <div class="teproof">Every withdrawal is reviewed and delivered to the player's Mobile Legends account. Save up your points and cash out — it's real.</div>`;
+  });
+}
 function showTournamentPromo(ev){
   const prize=(+ev.prizePool||0).toLocaleString();
   let cd='';
   if(ev.endTs){ const ms=msLeft(ev.endTs),d=Math.floor(ms/86400000),h=Math.floor(ms%86400000/3600000);
     cd = d>0 ? ('Ends in '+d+' day'+(d>1?'s':'')) : ('Ends in '+h+'h'); }
-  const ov=$(`<div class="ov tpromo-ov"><div class="modal" style="text-align:center;overflow:hidden">
-    <div style="display:inline-flex;align-items:center;gap:7px;font-family:'Chakra Petch';font-weight:700;font-size:11px;letter-spacing:2px;color:#25F4EE;margin-bottom:8px"><span class="live"></span> TIKTOK TOURNAMENT</div>
-    <h3 style="margin:0 0 4px">${esc(ev.title||'TikTok Tournament')}</h3>
-    <div style="font-size:12.5px;color:var(--txt2);margin-bottom:14px">${cd}</div>
-    <div style="display:flex;flex-direction:column;align-items:center;margin:2px 0 12px">
-      <span class="dia blue" style="width:56px;height:56px"></span>
-      <div style="font-family:'Chakra Petch';font-weight:700;font-size:28px;line-height:1.05;margin-top:8px">${prize}</div>
-      <div style="font-size:10px;letter-spacing:1.6px;color:var(--txt2);margin-top:2px">MLBB DIAMONDS · GRAND PRIZE</div>
+  const ov=$(`<div class="ov tpromo-ov"><div class="tpromo">
+    <div class="tpromo-hero">
+      <div class="tpromo-badge"><span class="live"></span> TIKTOK TOURNAMENT</div>
+      <div class="tpromo-pool">PRIZE POOL</div>
+      <div class="tpromo-num"><b>[</b>${prize}<b>]</b></div>
+      <div class="tpromo-cur">MLBB DIAMONDS</div>
     </div>
-    <p style="margin:0;font-size:13.5px;line-height:1.55">Post a TikTok using skins from the app + <b style="color:#25F4EE">#santoryutoolkit</b> — the most views wins <b>free diamonds</b>. You could be the next champion!</p>
-    <button class="winclaim" id="tpJoin" style="margin-top:16px;background:linear-gradient(110deg,#25F4EE,#FF2D55);color:#08161a;letter-spacing:2px">JOIN NOW</button>
-    <button id="tpLater" style="margin-top:9px;width:100%;height:42px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--txt2);font-family:'Inter';font-size:13px;cursor:pointer">Maybe later</button>
+    <div class="tpromo-body">
+      <h3>${esc(ev.title||'TikTok Tournament')}</h3>
+      ${cd?`<div class="tpromo-cd">${cd}</div>`:''}
+      <p>Post a TikTok using skins from the app + <b>#santoryutoolkit</b>. The most views wins <b>free diamonds</b> — you could be the next champion!</p>
+      <button class="tpromo-join" id="tpJoin">JOIN NOW ›</button>
+      <button class="tpromo-later" id="tpLater">Maybe later</button>
+    </div>
   </div></div>`);
   ov.querySelector('#tpLater').onclick=()=>ov.remove();
   ov.querySelector('#tpJoin').onclick=()=>{ ov.remove(); openTournament(); };
@@ -1240,7 +1325,8 @@ function renderTournament(){
 
   const cardHtml=cards.map((p,i)=>{
     const gold=p.cur==='gold';
-    return `<div class="tv-cell ${i===0?'gold':''}"><div class="tv-cash"></div><div class="tv-card">
+    const cls = gold?'gold':(i===0?'champ':''); // Top 1 = blue premium (mlbb), NOT gold
+    return `<div class="tv-cell ${cls}"><div class="tv-cash"></div><div class="tv-card">
       <div class="tv-lbl">Top ${p.rank}</div>
       <div class="tv-amt"><span class="g" style="${gold?"background-image:url('gem-gold.png')":''}"></span>${(+p.amount||0).toLocaleString()}</div>
       <div class="tv-sub">${gold?'Gold':'Diamonds'}</div></div></div>`;
