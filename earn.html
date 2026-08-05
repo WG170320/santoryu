@@ -546,8 +546,8 @@
   .tv-lrow{display:flex; align-items:center; gap:11px; padding:12px 4px; border-bottom:1px solid var(--line); cursor:pointer;}
   .tv-lrow.me{background:rgba(45,212,167,.06);}
   .tv-lrank{font-family:'Teko'; font-weight:700; font-size:22px; color:var(--txt2); width:22px; text-align:center; flex:0 0 auto;}
-  .tv-lthumb{width:46px; height:58px; border-radius:5px; flex:0 0 auto; background:linear-gradient(150deg,#0f2a22,#07130f); border:1px solid var(--line); overflow:hidden; display:flex; align-items:center; justify-content:center;}
-  .tv-lthumb img{width:100%;height:100%;object-fit:cover;}
+  .tv-lthumb{position:relative; width:46px; height:58px; border-radius:5px; flex:0 0 auto; background:linear-gradient(150deg,#0f2a22,#07130f); border:1px solid var(--line); overflow:hidden; display:flex; align-items:center; justify-content:center;}
+  .tv-lthumb img{position:absolute; inset:0; width:100%;height:100%;object-fit:cover;}
   .tv-linfo{flex:1; min-width:0;}
   .tv-lname{font-size:13px; color:var(--txt); font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
   .tv-lsub{font-size:11px; color:var(--txt2); margin-top:3px;}
@@ -568,7 +568,8 @@
   .tv-post::after{content:''; position:absolute; top:0; bottom:0; left:-45%; width:34%; transform:skewX(-20deg); background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent); animation:tvsweep 3.4s ease-in-out infinite;}
   .tv-post:disabled::after{display:none;}
   @keyframes tvsweep{0%,100%{left:-45%;}55%{left:120%;}}
-  .tv-closed{flex:1; display:flex; align-items:center; justify-content:center; gap:8px; height:44px; font-family:'Rajdhani'; font-weight:700; font-size:13px; letter-spacing:.06em; text-transform:uppercase; color:var(--txt2); background:rgba(255,255,255,.03); border:1px solid var(--line); border-radius:12px;}
+  .tv-ended{display:flex; align-items:center; justify-content:center; gap:8px; height:44px; font-family:'Rajdhani'; font-weight:700; font-size:13px; letter-spacing:.08em; text-transform:uppercase; color:var(--txt2); background:rgba(255,255,255,.03); border:1px solid var(--line); border-radius:12px;}
+  .tv-ended::before{content:''; width:7px; height:7px; border-radius:50%; background:var(--txt2); opacity:.6;}
   .tv-empty{text-align:center; color:var(--txt2); font-size:12.5px; padding:20px 14px; line-height:1.5;}
   .tv-evrow{display:flex; align-items:center; gap:10px; padding:9px 2px; border-bottom:1px solid var(--line); cursor:pointer;}
   .tv-evrow .n{width:20px; font-family:'Teko'; font-weight:700; color:var(--txt2); flex:0 0 auto;}
@@ -1236,9 +1237,9 @@ function renderTournament(){
 
   const podHtml=top3.map(e=>{
     const cls=e.rank===1?'r1':e.rank===2?'r2':'r3';
-    const bg=e.cover||e.tiktokAvatar||'hero-champion.jpg';
-    const cov=`<img class="cov ${e.cover?'':'covbg'}" src="${esc(bg)}" referrerpolicy="no-referrer">`;
-    const av=e.tiktokAvatar?`<img src="${esc(e.tiktokAvatar)}" referrerpolicy="no-referrer">`:tvInit(e.tiktokUser||e.name);
+    const bg=e.cover||'hero-champion.jpg';
+    const cov=`<img class="cov ${e.cover?'':'covbg'}" src="${esc(bg)}" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='hero-champion.jpg';this.classList.add('covbg')">`;
+    const av=tvInit(e.tiktokUser||e.name); // initials = reliable (TikTok avatar URLs expire)
     return `<div class="tv-p ${cls}"><div class="tv-crown">${e.rank}</div>
       <div class="tv-thumb" data-uid="${esc(e.uid)}">${cov}
         <div class="tv-views">${tvEye()}${fmtViews(e.totalViews)}</div>
@@ -1246,10 +1247,9 @@ function renderTournament(){
           <div class="tv-name">${esc(e.tiktokUser||e.name)}</div></div></div></div>`;
   }).join('');
   const restHtml=rest.map(e=>{
-    const t=e.cover||e.tiktokAvatar;
-    const cov=t?`<img src="${esc(t)}" referrerpolicy="no-referrer">`:tvPlay();
+    const cov=e.cover?`<img src="${esc(e.cover)}" referrerpolicy="no-referrer" onerror="this.remove()">`:'';
     return `<div class="tv-lrow ${e.mine?'me':''}" data-uid="${esc(e.uid)}">
-      <div class="tv-lrank">${e.rank}</div><div class="tv-lthumb">${cov}</div>
+      <div class="tv-lrank">${e.rank}</div><div class="tv-lthumb">${tvPlay()}${cov}</div>
       <div class="tv-linfo"><div class="tv-lname">@${esc(e.tiktokUser||e.name)}${e.mine?' · you':''}</div>
         <div class="tv-lsub">${e.videoCount||0} video${(e.videoCount||0)===1?'':'s'}</div></div>
       <div class="tv-lviews">${fmtViews(e.totalViews)}<small>VIEWS</small></div></div>`;
@@ -1273,18 +1273,16 @@ function renderTournament(){
     <div id="tvRank"><div class="tv-sect"><h3>Ranking</h3><div class="tv-sw"></div></div>
       <div class="tv-wrap">${myStat}${top3.length?`<div class="tv-pod">${podHtml}</div>`:''}${restHtml}${!ent.length?`<div class="tv-empty">No entries yet — be the first to post!</div>`:''}${me&&me.videoCount?`<div class="tv-sect" style="margin:20px 0 10px"><h3 style="font-size:13px">My Videos</h3><div class="tv-sw" style="width:88px"></div></div><div id="tvMine"></div>`:''}</div></div>
     <div id="tvHow"><div class="tv-sect"><h3>How to Join</h3><div class="tv-sw"></div></div>
-      <div class="tv-wrap">${ev.task?`<div class="tv-task"><div class="k">THIS EVENT'S TASK</div><div class="v">${esc(ev.task)}</div></div>`:''}${steps?`<div style="margin-top:8px">${steps}</div>`:''}${rules?`<div style="margin-top:6px">${rules}</div>`:''}<div class="tv-warn"><b>Off-topic clips won't be paid.</b> Your video must be about the Santoryu Toolkit — a tutorial, review, or demo. A hashtag alone on random gameplay is not enough.</div></div></div>`;
+      <div class="tv-wrap">${ev.task?`<div class="tv-task"><div class="k">THIS EVENT'S TASK</div><div class="v">${esc(ev.task)}</div></div>`:''}${steps?`<div style="margin-top:8px">${steps}</div>`:''}${rules?`<div style="margin-top:6px">${rules}</div>`:''}<div class="tv-warn"><b>Off-topic clips won't be paid.</b> Your video must be about the Santoryu Toolkit — a tutorial, review, or demo. A hashtag alone on random gameplay is not enough.</div></div></div>${!open?`<div class="tv-wrap" style="margin-top:22px"><div class="tv-ended">This event has ended</div></div>`:''}`;
 
-  let cta;
-  if(!open){
-    cta=$(`<div class="tv-cta"><div class="tv-closed"><span class="live" style="background:var(--txt2)"></span> This event has ended</div></div>`);
-  } else {
+  tournBody.style.paddingBottom = open ? '96px' : '26px'; // fixed CTA needs clearance; closed = inline
+  if(open){
     const full=used>=maxV;
     const label=full?`Slots full · ${used}/${maxV}`:me?`Post your video · ${maxV-used} left`:'Post your video';
-    cta=$(`<div class="tv-cta"><button class="tv-post" ${full?'disabled':''}>${label.toUpperCase()}</button></div>`);
+    const cta=$(`<div class="tv-cta"><button class="tv-post" ${full?'disabled':''}>${label.toUpperCase()}</button></div>`);
     if(!full) cta.querySelector('.tv-post').onclick=()=>openJoinSheet(ev,me);
+    tournBody.appendChild(cta);
   }
-  tournBody.appendChild(cta);
 
   tournBody.querySelectorAll('.tv-tab').forEach(t=>t.onclick=()=>{
     tournBody.querySelectorAll('.tv-tab').forEach(x=>x.classList.toggle('on',x===t));
