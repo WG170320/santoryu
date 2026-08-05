@@ -568,6 +568,7 @@
   .tv-post::after{content:''; position:absolute; top:0; bottom:0; left:-45%; width:34%; transform:skewX(-20deg); background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent); animation:tvsweep 3.4s ease-in-out infinite;}
   .tv-post:disabled::after{display:none;}
   @keyframes tvsweep{0%,100%{left:-45%;}55%{left:120%;}}
+  .tv-closed{flex:1; display:flex; align-items:center; justify-content:center; gap:8px; height:44px; font-family:'Rajdhani'; font-weight:700; font-size:13px; letter-spacing:.06em; text-transform:uppercase; color:var(--txt2); background:rgba(255,255,255,.03); border:1px solid var(--line); border-radius:12px;}
   .tv-empty{text-align:center; color:var(--txt2); font-size:12.5px; padding:20px 14px; line-height:1.5;}
   .tv-evrow{display:flex; align-items:center; gap:10px; padding:9px 2px; border-bottom:1px solid var(--line); cursor:pointer;}
   .tv-evrow .n{width:20px; font-family:'Teko'; font-weight:700; color:var(--txt2); flex:0 0 auto;}
@@ -1274,9 +1275,15 @@ function renderTournament(){
     <div id="tvHow"><div class="tv-sect"><h3>How to Join</h3><div class="tv-sw"></div></div>
       <div class="tv-wrap">${ev.task?`<div class="tv-task"><div class="k">THIS EVENT'S TASK</div><div class="v">${esc(ev.task)}</div></div>`:''}${steps?`<div style="margin-top:8px">${steps}</div>`:''}${rules?`<div style="margin-top:6px">${rules}</div>`:''}<div class="tv-warn"><b>Off-topic clips won't be paid.</b> Your video must be about the Santoryu Toolkit — a tutorial, review, or demo. A hashtag alone on random gameplay is not enough.</div></div></div>`;
 
-  const label=!open?'Event closed':used>=maxV?`Slots full · ${used}/${maxV}`:me?`Post your video · ${maxV-used} left`:'Post your video';
-  const cta=$(`<div class="tv-cta"><button class="tv-post" ${(!open||used>=maxV)?'disabled':''}>${label.toUpperCase()}</button></div>`);
-  if(open&&used<maxV) cta.querySelector('.tv-post').onclick=()=>openJoinSheet(ev,me);
+  let cta;
+  if(!open){
+    cta=$(`<div class="tv-cta"><div class="tv-closed"><span class="live" style="background:var(--txt2)"></span> This event has ended</div></div>`);
+  } else {
+    const full=used>=maxV;
+    const label=full?`Slots full · ${used}/${maxV}`:me?`Post your video · ${maxV-used} left`:'Post your video';
+    cta=$(`<div class="tv-cta"><button class="tv-post" ${full?'disabled':''}>${label.toUpperCase()}</button></div>`);
+    if(!full) cta.querySelector('.tv-post').onclick=()=>openJoinSheet(ev,me);
+  }
   tournBody.appendChild(cta);
 
   tournBody.querySelectorAll('.tv-tab').forEach(t=>t.onclick=()=>{
