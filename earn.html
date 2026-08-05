@@ -1284,12 +1284,13 @@ function renderTournament(){
         ${ev.task?`<div class="tv-tag">${esc(ev.task)}</div>`:''}</div></div>
     <div class="tv-meta">${dateStr?`<span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>${dateStr}</span><span class="d"></span>`:''}${open?`<span class="tv-open">● Open now</span>`:`<span><b>${s.count||0}</b> joined</span>`}</div>
     <div class="tv-tabs"><div class="tv-tab on" data-go="tvRank">RANKING</div><div class="tv-tab" data-go="tvRew">REWARDS</div><div class="tv-tab" data-go="tvHow">HOW TO JOIN</div></div>
+    ${sampleCard?`<div class="tv-wrap" style="margin-top:14px">${sampleCard}</div>`:''}
     <div id="tvRew"><div class="tv-sect"><h3>Prize Rewards</h3><div class="tv-sw"></div></div>
       <div class="tv-wrap"><div class="tv-prow">${cardHtml}</div>${rowHtml}</div></div>
     <div id="tvRank"><div class="tv-sect"><h3>Ranking</h3><div class="tv-sw"></div></div>
       <div class="tv-wrap">${myStat}${top3.length?`<div class="tv-pod">${podHtml}</div>`:''}${restHtml}${!ent.length?`<div class="tv-empty">No entries yet — be the first to post!</div>`:''}${me&&me.videoCount?`<div class="tv-sect" style="margin:20px 0 10px"><h3 style="font-size:13px">My Videos</h3><div class="tv-sw" style="width:88px"></div></div><div id="tvMine"></div>`:''}</div></div>
     <div id="tvHow"><div class="tv-sect"><h3>How to Join</h3><div class="tv-sw"></div></div>
-      <div class="tv-wrap">${sampleCard}${ev.task?`<div class="tv-task"><div class="k">THIS EVENT'S TASK</div><div class="v">${esc(ev.task)}</div></div>`:''}${steps?`<div style="margin-top:8px">${steps}</div>`:''}${rules?`<div style="margin-top:6px">${rules}</div>`:''}<div class="tv-warn"><b>Off-topic clips won't be paid.</b> Your video must be about the Santoryu Toolkit — a tutorial, review, or demo. A hashtag alone on random gameplay is not enough.</div></div></div>`;
+      <div class="tv-wrap">${ev.task?`<div class="tv-task"><div class="k">THIS EVENT'S TASK</div><div class="v">${esc(ev.task)}</div></div>`:''}${steps?`<div style="margin-top:8px">${steps}</div>`:''}${rules?`<div style="margin-top:6px">${rules}</div>`:''}<div class="tv-warn"><b>Off-topic clips won't be paid.</b> Your video must be about the Santoryu Toolkit — a tutorial, review, or demo. A hashtag alone on random gameplay is not enough.</div></div></div>`;
 
   // The sticky bar lives at BODY level (outside .page) so position:fixed is truly
   // viewport-pinned — .page has will-change:transform which would otherwise make a
