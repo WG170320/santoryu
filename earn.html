@@ -945,8 +945,8 @@ function openWinnerClaim(ev){
   const pg=$(`<div class="page"><div class="pgh"><div class="pgback">${IC.back}</div><h2>You won!</h2></div>
     <div class="winwrap">
       <div class="wintrophy"><div class="winglow"></div><img src="trophy.png" alt="" onerror="this.style.display='none'"></div>
-      <div class="wincongrats">CHAMPION</div>
-      <div class="winsub">You topped the ${esc(ev.title||'tournament')}</div>
+      <div class="wincongrats">WINNER</div>
+      <div class="winsub">You won the top prize in the ${esc(ev.title||'tournament')}</div>
       <div class="winprize"><span class="dia blue" style="width:30px;height:30px"></span><span class="wpn">${prize}</span><span class="wpl">MLBB<br>DIAMONDS</span></div>
       <div class="winform">
         <label>MLBB Game ID</label><input id="wgid" inputmode="numeric" placeholder="e.g. 123456789">
@@ -977,19 +977,48 @@ async function maybeConsolation(){
   _consoChecked=true;
   try{
     const r=await fetch(TCONS_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid:STATE.uid})}).then(x=>x.json());
-    if(r&&r.ok&&r.eligible&&!r.claimed){ consoShown=true; openConsolation(r); }
+    if(r&&r.ok&&r.eligible&&!r.claimed){
+      // A pure DQ notice (no reward) shouldn't nag every open once acknowledged.
+      if((+r.amount||0)<=0 && dqSeen()) return;
+      consoShown=true; openConsolation(r);
+    }
   }catch(e){}
 }
+function dqKey(){ return 'dqSeen_'+((TOURN&&TOURN.event&&TOURN.event.id)||''); }
+function dqSeen(){ try{ return localStorage.getItem(dqKey())==='1'; }catch(e){ return false; } }
+// Per-outcome copy for the settlement — honest, in the app's own voice, sentence case.
+function consoCopy(rank, amt, evTitle){
+  if(rank===1) return { notice:true, title:'Not qualified',
+    body:`Your entry led on views, but it didn't follow this round's rules, so it can't be paid out. No hard feelings — the next Cup is a clean shot, and the prize is yours to win fairly.` };
+  if(rank===2) return { title:'Not qualified — but thanks',
+    body:`Your videos didn't meet this round's rules, so they're out of the grand prize. You still put in real work, so here's <b>${amt} gold</b> on us.` };
+  if(rank===3) return { title:'So close',
+    body:`Your content was clearly about the toolkit — nice work. It just missed the one required video for this round's task, so the grand prize doesn't apply. Here's <b>${amt} gold</b> for the effort.` };
+  return { title:'Thanks for joining',
+    body:`Thanks for competing in the <b>${esc(evTitle||'tournament')}</b>. Here's <b>${amt} gold</b> for taking part.` };
+}
 function openConsolation(info){
-  const amt=+info.amount||50, dq=!!info.dq;
-  const title=dq?'Video Not Qualified':'Consolation Prize';
-  const body=dq
-    ? `Your video didn't use this week's featured skin (<b>Michael Jackson</b>), so it isn't qualified for the grand prize. Thanks for the effort, though — here's <b>${amt} gold</b> as a token of appreciation.`
-    : `Thanks for joining the <b>${esc((TOURN&&TOURN.event&&TOURN.event.title)||'tournament')}</b>! Here's <b>${amt} gold</b> as a consolation prize for making the top 20.`;
+  const amt=+info.amount||0, rank=+info.rank||0;
+  const evTitle=(TOURN&&TOURN.event&&TOURN.event.title)||'tournament';
+  const c=consoCopy(rank, amt, evTitle);
+  // Full DQ (no reward): sober, non-gold notice with a single acknowledge action.
+  if(c.notice || amt<=0){
+    const ov=$(`<div class="ov"><div class="modal" style="text-align:center">
+      <div style="margin:2px auto 11px;width:66px;height:66px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:radial-gradient(circle,rgba(148,163,184,.2),transparent 70%)">
+        <svg width="33" height="33" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.4-3 7.4-7 8.5C8 21.4 5 18.4 5 14V6l7-3z"/><line x1="8.6" y1="8.6" x2="15.4" y2="15.4"/></svg>
+      </div>
+      <h3>${c.title}</h3>
+      <p style="margin-bottom:2px">${c.body}</p>
+      <button class="winclaim" id="cok" style="margin-top:16px;background:linear-gradient(180deg,#2b3543,#1b2230);box-shadow:none">Got it</button>
+    </div></div>`);
+    ov.querySelector('#cok').onclick=()=>{ try{ localStorage.setItem(dqKey(),'1'); }catch(e){} ov.remove(); };
+    document.body.appendChild(ov);
+    return;
+  }
   const ov=$(`<div class="ov"><div class="modal" style="text-align:center">
     <div style="margin:2px auto 8px;width:66px;height:66px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:radial-gradient(circle,rgba(245,180,69,.28),transparent 70%)"><span class="dia gold" style="width:44px;height:44px"></span></div>
-    <h3>${title}</h3>
-    <p style="margin-bottom:2px">${body}</p>
+    <h3>${c.title}</h3>
+    <p style="margin-bottom:2px">${c.body}</p>
     <div style="font-family:'Chakra Petch';font-weight:700;font-size:23px;margin:14px 0 4px"><span class="dia gold" style="width:20px;height:20px;display:inline-block;vertical-align:-3px;margin-right:4px"></span>+${amt} Gold</div>
     <button class="winclaim" id="cclaim" style="margin-top:14px">CLAIM ${amt} GOLD</button>
   </div></div>`);
