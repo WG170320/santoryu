@@ -544,13 +544,18 @@
   .tv-av img{position:absolute; inset:0; width:100%;height:100%;object-fit:cover;}
   .tv-lav{position:relative; width:46px; height:46px; border-radius:50%; flex:0 0 auto; display:flex; align-items:center; justify-content:center; font-family:'Chakra Petch'; font-weight:700; font-size:16px; color:#04140f; overflow:hidden; border:2px solid rgba(255,255,255,.14);}
   .tv-lav img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
-  .tv-sample{display:flex; gap:12px; align-items:center; margin-bottom:14px; padding:10px; border-radius:12px; background:linear-gradient(120deg,rgba(45,212,167,.1),rgba(45,212,167,.03)); border:1px solid rgba(45,212,167,.28); cursor:pointer;}
-  .tv-sthumb{position:relative; width:52px; height:66px; border-radius:8px; overflow:hidden; flex:0 0 auto; background:linear-gradient(150deg,#0f2a22,#07130f);}
-  .tv-sthumb img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
-  .tv-splay{position:absolute; inset:0; display:flex; align-items:center; justify-content:center;}
-  .tv-sinfo{flex:1; min-width:0;}
-  .tv-slabel{font-family:'Chakra Petch'; font-weight:700; font-size:14px; color:#fff;}
-  .tv-sauthor{font-size:11.5px; color:#5ff0c8; margin-top:3px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .tv-sample{position:relative; height:160px; border-radius:15px; overflow:hidden; cursor:pointer; background:linear-gradient(150deg,#0f2a22,#07130f); border:1px solid rgba(45,212,167,.45); box-shadow:0 10px 28px -10px rgba(45,212,167,.45);}
+  .tv-sample:active{transform:scale(.985);}
+  .tv-scover{position:absolute; inset:0;}
+  .tv-scover img{width:100%; height:100%; object-fit:cover; object-position:center 32%;}
+  .tv-sample::after{content:''; position:absolute; inset:0; background:linear-gradient(180deg,rgba(4,10,8,.12) 0,rgba(4,10,8,.02) 38%,rgba(4,10,8,.92) 100%);}
+  .tv-sbadge{position:absolute; top:10px; left:10px; z-index:2; display:flex; align-items:center; gap:5px; font-family:'Chakra Petch'; font-weight:700; font-size:10.5px; letter-spacing:.09em; color:#04140f; background:linear-gradient(180deg,#5ff0c8,var(--emerald)); padding:5px 10px; border-radius:20px;}
+  .tv-splaybtn{position:absolute; top:44%; left:50%; transform:translate(-50%,-50%); z-index:2; width:58px; height:58px; border-radius:50%; background:rgba(255,255,255,.94); display:flex; align-items:center; justify-content:center; box-shadow:0 6px 20px rgba(0,0,0,.5); animation:tvpulse 2.4s ease-in-out infinite;}
+  .tv-splaybtn svg{margin-left:3px;}
+  @keyframes tvpulse{0%,100%{box-shadow:0 6px 20px rgba(0,0,0,.5),0 0 0 0 rgba(95,240,200,.55);}50%{box-shadow:0 6px 20px rgba(0,0,0,.5),0 0 0 13px rgba(95,240,200,0);}}
+  .tv-sfoot{position:absolute; left:14px; right:14px; bottom:12px; z-index:2;}
+  .tv-stitle{font-family:'Chakra Petch'; font-weight:700; font-size:16px; color:#fff; text-shadow:0 1px 6px #000;}
+  .tv-sfoot .tv-sauthor{font-size:11.5px; color:#d7fff2; margin-top:2px; text-shadow:0 1px 4px #000; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
   .tv-name{font-size:12px; color:#fff; font-weight:700; text-shadow:0 1px 4px #000; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
   .tv-lrow{display:flex; align-items:center; gap:11px; padding:12px 4px; border-bottom:1px solid var(--line); cursor:pointer;}
   .tv-lrow.me{background:rgba(45,212,167,.06);}
@@ -1271,8 +1276,10 @@ function renderTournament(){
   const rules=(ev.rules||[]).map(r=>`<div class="tv-rule"><span class="ck">✓</span><span>${esc(r)}</span></div>`).join('');
   const sm=ev.sampleMeta||{};
   const sampleCard = ev.sampleVideoUrl ? `<div class="tv-sample" data-url="${esc(ev.sampleVideoUrl)}">
-    <div class="tv-sthumb">${sm.thumb?`<img src="${esc(sm.thumb)}" referrerpolicy="no-referrer" onerror="this.remove()">`:''}<div class="tv-splay">${tvPlayBig()}</div></div>
-    <div class="tv-sinfo"><div class="tv-slabel">Watch a sample</div><div class="tv-sauthor">@${esc(sm.author||'santoryu')}${sm.views?` · ${fmtViews(sm.views)} views`:''}</div></div></div>` : '';
+    <div class="tv-scover">${sm.thumb?`<img src="${esc(sm.thumb)}" referrerpolicy="no-referrer" onerror="this.remove()">`:''}</div>
+    <div class="tv-sbadge"><svg width="9" height="9" viewBox="0 0 24 24" fill="#04140f"><path d="M8 5v14l11-7z"/></svg> WATCH A SAMPLE</div>
+    <div class="tv-splaybtn"><svg width="30" height="30" viewBox="0 0 24 24" fill="#04140f"><path d="M8 5v14l11-7z"/></svg></div>
+    <div class="tv-sfoot"><div class="tv-stitle">See how it's done</div><div class="tv-sauthor">@${esc(sm.author||'santoryu')}${sm.views?` · ${fmtViews(sm.views)} views`:''} · TikTok</div></div></div>` : '';
   const dateStr=fmtRange(ev.startTs, ev.endTs);
   const myStat=me?`<div class="tv-mystat"><div><div class="k">Your views</div><div class="v">${fmtViews(me.totalViews)}</div></div>${s.myRank?`<div><div class="k">Your rank</div><div class="v">#${s.myRank}</div></div>`:''}<div><div class="k">Slots</div><div class="v">${used}/${maxV}</div></div></div>`:'';
 
