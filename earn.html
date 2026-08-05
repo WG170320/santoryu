@@ -468,6 +468,110 @@
   .ppop .pt .amt{color:#9BD4FF; font-weight:800; margin:0 1px;}
   .ppop .pt .lbl{display:block; font-size:9.5px; color:var(--txt2); letter-spacing:.3px; margin-top:1px; text-transform:uppercase;}
   .ppop .dia{display:inline-block; vertical-align:-1px;}
+  /* ===== TOURNAMENT REDESIGN — "Showcase Cup" style (emerald/gold, blade-cut) ===== */
+  .tvpage{padding:0 !important;}
+  .tv{padding:0 0 96px;}
+  .tv-back{position:absolute; top:14px; left:12px; z-index:12; width:38px; height:38px; display:flex; align-items:center; justify-content:center; border-radius:11px; background:rgba(7,9,12,.55); border:1px solid var(--line); backdrop-filter:blur(4px); cursor:pointer;}
+  .tv-back svg{width:20px;height:20px;color:#fff;}
+  .tv-hero{position:relative; height:314px; overflow:hidden;
+    background:radial-gradient(120% 66% at 50% 0%, rgba(45,212,167,.16), transparent 55%),
+      linear-gradient(180deg, rgba(7,9,12,.12) 26%, rgba(7,9,12,.5) 70%, var(--bg) 98%),
+      url('hero-champion.jpg') center 22%/cover no-repeat;}
+  .tv-hero::before{content:''; position:absolute; inset:0; background:linear-gradient(115deg,transparent 46%,rgba(45,212,167,.5) 49%,rgba(95,240,200,.15) 52%,transparent 55%); mix-blend-mode:screen; opacity:.5;}
+  .tv-rules{position:absolute; top:15px; right:14px; z-index:6; font-family:'Rajdhani'; font-weight:700; font-size:13px; color:#fff; background:rgba(10,20,17,.55); border:1px solid rgba(45,212,167,.4); padding:6px 15px; clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px); cursor:pointer;}
+  .tv-hf{position:absolute; left:0; right:0; bottom:14px; text-align:center; padding:0 18px; z-index:4;}
+  .tv-plabel{font-family:'Rajdhani'; font-weight:700; font-size:11px; letter-spacing:.34em; color:#5ff0c8; text-transform:uppercase; margin-bottom:2px; text-shadow:0 0 12px rgba(45,212,167,.6);}
+  .tv-pnum{font-family:'Teko'; font-weight:600; font-size:72px; line-height:.82; background:linear-gradient(180deg,var(--gold-hi),var(--gold) 46%,var(--gold-deep)); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; filter:drop-shadow(0 3px 10px rgba(232,180,74,.35));}
+  .tv-pnum b{-webkit-text-fill-color:rgba(232,180,74,.5); font-weight:500; padding:0 5px;}
+  .tv-psub{font-family:'Chakra Petch'; font-weight:600; font-size:12px; letter-spacing:.22em; color:var(--txt); opacity:.9;}
+  .tv-title{font-family:'Chakra Petch'; font-weight:700; font-size:15px; color:#fff; margin-top:7px; text-shadow:0 1px 8px #000;}
+  .tv-tag{font-size:11px; color:#5ff0c8; font-weight:600; margin-top:3px; text-shadow:0 1px 6px #000; padding:0 8px; line-height:1.35; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
+  .tv-meta{display:flex; align-items:center; justify-content:center; gap:14px; padding:12px 0 2px; color:var(--txt2); font-size:12.5px; font-weight:500;}
+  .tv-meta b{color:var(--txt); font-family:'Rajdhani'; font-weight:700; font-size:14px;}
+  .tv-meta .d{width:3px;height:3px;border-radius:50%;background:var(--txt2);opacity:.5;}
+  .tv-meta svg{vertical-align:-2px; margin-right:4px; opacity:.7;}
+  .tv-open{color:#5ff0c8; font-weight:700;}
+  .tv-tabs{display:flex; gap:6px; padding:12px 14px 2px;}
+  .tv-tab{flex:1; text-align:center; padding:11px 0 12px; font-family:'Chakra Petch'; font-weight:700; font-size:12px; letter-spacing:.05em; color:var(--txt2); position:relative; cursor:pointer;}
+  .tv-tab.on{color:#fff;}
+  .tv-tab.on::after{content:''; position:absolute; left:22%; right:22%; bottom:2px; height:3px; border-radius:3px; background:linear-gradient(90deg,transparent,var(--emerald),#5ff0c8,var(--emerald),transparent); box-shadow:0 0 10px rgba(45,212,167,.7);}
+  .tv-sect{text-align:center; margin:24px 0 15px;}
+  .tv-sect h3{font-family:'Chakra Petch'; font-weight:700; font-size:15.5px; letter-spacing:.14em; color:#fff; text-transform:uppercase; display:inline-block;}
+  .tv-sw{display:block; width:120px; height:3px; margin:6px auto 0; border-radius:3px; background:linear-gradient(90deg,transparent,var(--emerald),#5ff0c8,var(--emerald),transparent); box-shadow:0 0 8px rgba(45,212,167,.5);}
+  .tv-wrap{padding:0 14px;}
+  .tv-mystat{display:grid; grid-template-columns:1fr 1fr 1fr; gap:9px; margin-bottom:14px;}
+  .tv-mystat > div{text-align:center; padding:11px 4px; border-radius:11px; background:linear-gradient(160deg,#0d1b16,#081310); border:1px solid var(--line);}
+  .tv-mystat .k{font-size:9px; letter-spacing:.14em; color:var(--txt2); text-transform:uppercase;}
+  .tv-mystat .v{font-family:'Rajdhani'; font-weight:700; font-size:19px; color:#5ff0c8; margin-top:2px;}
+  .tv-prow{display:grid; grid-template-columns:1fr 1fr 1fr; gap:9px; align-items:stretch;}
+  .tv-cell{position:relative; padding-top:19px;}
+  .tv-cash{position:absolute; top:0; left:50%; transform:translateX(-50%); width:42px; height:42px; z-index:2; background:url('gem-blue.png') center/contain no-repeat; filter:drop-shadow(0 4px 10px rgba(77,166,255,.55));}
+  .tv-cell.gold .tv-cash{background-image:url('gem-gold.png'); filter:drop-shadow(0 4px 12px rgba(232,180,74,.6));}
+  .tv-card{position:relative; height:128px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; padding:20px 6px 12px; background:linear-gradient(165deg,#10241d,#081310 70%); border:1px solid rgba(45,212,167,.22); clip-path:polygon(13px 0,100% 0,100% calc(100% - 13px),calc(100% - 13px) 100%,0 100%,0 13px);}
+  .tv-card::before{content:''; position:absolute; inset:0 0 auto 0; height:50px; background:radial-gradient(80% 100% at 50% 0,rgba(45,212,167,.3),transparent 72%);}
+  .tv-cell.gold .tv-card{background:linear-gradient(165deg,#241d0e,#130f08 70%); border-color:rgba(232,180,74,.4);}
+  .tv-cell.gold .tv-card::before{background:radial-gradient(80% 100% at 50% 0,rgba(232,180,74,.38),transparent 72%);}
+  .tv-lbl{font-family:'Chakra Petch'; font-weight:700; font-size:15px; color:#5ff0c8; text-align:center;}
+  .tv-cell.gold .tv-lbl{color:var(--gold-hi);}
+  .tv-amt{font-family:'Rajdhani'; font-weight:700; font-size:20px; color:#fff; line-height:1; display:flex; align-items:center; justify-content:center; gap:4px;}
+  .tv-amt .g{width:15px;height:15px;flex:0 0 auto;background:url('gem-blue.png') center/contain no-repeat;}
+  .tv-sub{font-size:10px; color:var(--txt2); letter-spacing:.12em; text-transform:uppercase;}
+  .tv-trow{display:flex; align-items:center; gap:12px; margin-top:9px; padding:14px 15px; background:linear-gradient(100deg,#0d1b16,#081310); border:1px solid var(--line); clip-path:polygon(11px 0,100% 0,100% calc(100% - 11px),calc(100% - 11px) 100%,0 100%,0 11px);}
+  .tv-trow .l{flex:1;}
+  .tv-trow .tt{font-family:'Chakra Petch'; font-weight:700; font-size:14px; color:#fff;}
+  .tv-trow .ta{font-family:'Rajdhani'; font-weight:700; font-size:15px; color:#5ff0c8; margin-top:1px;}
+  .tv-trow .ta .g{width:13px;height:13px;display:inline-block;vertical-align:-2px;margin-right:3px;background:url('gem-blue.png') center/contain no-repeat;}
+  .tv-trow .ts{font-size:10px;color:var(--txt2);letter-spacing:.1em;text-transform:uppercase;margin-top:2px;}
+  .tv-coin{width:32px;height:32px;background:center/contain no-repeat;opacity:.26;flex:0 0 auto;}
+  .tv-coin.g{background-image:url('gem-gold.png');} .tv-coin.b{background-image:url('gem-blue.png');}
+  .tv-pod{display:grid; grid-template-columns:1fr 1fr 1fr; gap:9px; align-items:end; margin-top:4px;}
+  .tv-p{position:relative;}
+  .tv-crown{position:absolute; top:-11px; left:50%; transform:translateX(-50%); z-index:4; width:26px; height:22px; display:flex; align-items:center; justify-content:center; font-family:'Teko'; font-weight:700; font-size:16px; color:#04140f; line-height:1; clip-path:polygon(50% 0,100% 32%,82% 100%,18% 100%,0 32%);}
+  .tv-p.r1 .tv-crown{background:linear-gradient(180deg,var(--gold-hi),var(--gold-deep));}
+  .tv-p.r2 .tv-crown{background:linear-gradient(180deg,#5ff0c8,#159c78);}
+  .tv-p.r3 .tv-crown{background:linear-gradient(180deg,var(--cyan),#2b8fb0);}
+  .tv-thumb{aspect-ratio:3/4; border-radius:4px; position:relative; overflow:hidden; background:linear-gradient(150deg,#0f2a22,#07130f); border:2px solid rgba(255,255,255,.1); cursor:pointer;}
+  .tv-thumb img.cov{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
+  .tv-p.r1 .tv-thumb{border-color:var(--gold); box-shadow:0 0 14px -3px rgba(232,180,74,.6);}
+  .tv-p.r2 .tv-thumb{border-color:var(--emerald); box-shadow:0 0 14px -3px rgba(45,212,167,.55);}
+  .tv-p.r3 .tv-thumb{border-color:var(--cyan); box-shadow:0 0 14px -3px rgba(95,230,255,.5);}
+  .tv-thumb::after{content:''; position:absolute; inset:0; z-index:1; background:linear-gradient(180deg,rgba(0,0,0,.15) 0,transparent 34%,transparent 46%,rgba(0,0,0,.86));}
+  .tv-views{position:absolute; left:5px; top:5px; z-index:3; font-family:'Rajdhani'; font-weight:700; font-size:12px; color:#fff; background:rgba(0,0,0,.5); padding:2px 7px; border-radius:20px;}
+  .tv-views svg{vertical-align:-1px; margin-right:2px;}
+  .tv-center{position:absolute; left:0; right:0; bottom:9px; z-index:3; text-align:center; padding:0 4px;}
+  .tv-av{width:34px; height:34px; border-radius:50%; margin:0 auto 4px; border:2px solid #fff; font-family:'Chakra Petch'; font-size:14px; font-weight:700; display:flex; align-items:center; justify-content:center; color:#04140f; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.6);}
+  .tv-av img{width:100%;height:100%;object-fit:cover;}
+  .tv-name{font-size:12px; color:#fff; font-weight:700; text-shadow:0 1px 4px #000; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .tv-lrow{display:flex; align-items:center; gap:11px; padding:12px 4px; border-bottom:1px solid var(--line); cursor:pointer;}
+  .tv-lrow.me{background:rgba(45,212,167,.06);}
+  .tv-lrank{font-family:'Teko'; font-weight:700; font-size:22px; color:var(--txt2); width:22px; text-align:center; flex:0 0 auto;}
+  .tv-lthumb{width:46px; height:58px; border-radius:5px; flex:0 0 auto; background:linear-gradient(150deg,#0f2a22,#07130f); border:1px solid var(--line); overflow:hidden;}
+  .tv-lthumb img{width:100%;height:100%;object-fit:cover;}
+  .tv-linfo{flex:1; min-width:0;}
+  .tv-lname{font-size:13px; color:var(--txt); font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .tv-lsub{font-size:11px; color:var(--txt2); margin-top:3px;}
+  .tv-lviews{font-family:'Rajdhani'; font-weight:700; font-size:15px; color:#5ff0c8; flex:0 0 auto; text-align:right;} .tv-lviews small{display:block; font-size:8px; color:var(--txt2); letter-spacing:.1em;}
+  .tv-task{margin-top:2px; padding:14px 15px; border-radius:12px; background:linear-gradient(120deg,rgba(45,212,167,.1),rgba(45,212,167,.03)); border:1px solid rgba(45,212,167,.28);}
+  .tv-task .k{font-family:'Chakra Petch'; font-weight:700; font-size:10px; letter-spacing:.18em; color:#5ff0c8;}
+  .tv-task .v{font-size:13.5px; color:var(--txt); margin-top:4px; line-height:1.4;}
+  .tv-step{display:flex; gap:11px; align-items:flex-start; padding:9px 2px;}
+  .tv-step .n{width:22px;height:22px;border-radius:7px;flex:0 0 auto;background:rgba(45,212,167,.16);color:#5ff0c8;font-family:'Chakra Petch';font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;}
+  .tv-step .x{font-size:13px; color:var(--txt); line-height:1.4; padding-top:1px;}
+  .tv-rule{display:flex; gap:9px; align-items:flex-start; padding:7px 2px; font-size:12.5px; color:var(--txt2); line-height:1.4;}
+  .tv-rule .ck{color:var(--emerald); font-weight:800; flex:0 0 auto;}
+  .tv-warn{margin-top:12px; padding:12px 14px; border-radius:12px; background:rgba(255,94,108,.08); border:1px solid rgba(255,94,108,.3); font-size:12px; color:#ffb3ba; line-height:1.45;}
+  .tv-warn b{color:#ff8a94;}
+  .tv-cta{position:fixed; left:50%; transform:translateX(-50%); bottom:0; width:100%; max-width:440px; z-index:20; display:flex; gap:10px; padding:12px 14px 18px; background:linear-gradient(180deg,transparent,var(--bg) 34%);}
+  .tv-post{flex:1; position:relative; overflow:hidden; border:none; cursor:pointer; height:50px; font-family:'Chakra Petch'; font-weight:700; font-size:15px; letter-spacing:.08em; color:#04140f; background:linear-gradient(180deg,#5ff0c8,var(--emerald) 55%,#0f9d76); clip-path:polygon(13px 0,100% 0,100% calc(100% - 13px),calc(100% - 13px) 100%,0 100%,0 13px); box-shadow:0 8px 22px -6px rgba(45,212,167,.55), inset 0 1px 0 rgba(255,255,255,.5);}
+  .tv-post:disabled{background:linear-gradient(180deg,#2a3540,#1a222b); color:var(--txt2); box-shadow:none; cursor:default;}
+  .tv-post::after{content:''; position:absolute; top:0; bottom:0; left:-45%; width:34%; transform:skewX(-20deg); background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent); animation:tvsweep 3.4s ease-in-out infinite;}
+  .tv-post:disabled::after{display:none;}
+  @keyframes tvsweep{0%,100%{left:-45%;}55%{left:120%;}}
+  .tv-empty{text-align:center; color:var(--txt2); font-size:12.5px; padding:20px 14px; line-height:1.5;}
+  .tv-evrow{display:flex; align-items:center; gap:10px; padding:9px 2px; border-bottom:1px solid var(--line); cursor:pointer;}
+  .tv-evrow .n{width:20px; font-family:'Teko'; font-weight:700; color:var(--txt2); flex:0 0 auto;}
+  .tv-evrow .h{flex:1; min-width:0; font-size:12.5px; color:var(--txt); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .tv-evrow .vv{font-family:'Rajdhani'; font-weight:700; font-size:14px; color:#5ff0c8; flex:0 0 auto;}
 </style>
 </head>
 <body>
@@ -1046,8 +1150,8 @@ function updateBanner(){
 }
 function openTournament(){
   if(!(window.Android&&window.Android.tournamentState)){ toast('Update the app to join tournaments','bad'); return; }
-  const pg=$(`<div class="page"><div class="pgh"><div class="pgback">${IC.back}</div><h2>Tournament</h2></div><div id="tbody"><div class="empty">Loading…</div></div></div>`);
-  pg.querySelector('.pgback').onclick=()=>closePage(pg);
+  const pg=$(`<div class="page tvpage"><div class="tv-back">${IC.back}</div><div id="tbody" class="tv"><div class="tv-empty">Loading…</div></div></div>`);
+  pg.querySelector('.tv-back').onclick=()=>closePage(pg);
   document.body.appendChild(pg); registerPage(pg, ()=>{ tournBody=null; if(tcdT)clearInterval(tcdT); });
   tournBody=pg.querySelector('#tbody');
   window.Android.tournamentState();
@@ -1083,7 +1187,7 @@ function showTournamentPromo(ev){
       <div style="font-family:'Chakra Petch';font-weight:700;font-size:28px;line-height:1.05;margin-top:8px">${prize}</div>
       <div style="font-size:10px;letter-spacing:1.6px;color:var(--txt2);margin-top:2px">MLBB DIAMONDS · GRAND PRIZE</div>
     </div>
-    <p style="margin:0;font-size:13.5px;line-height:1.55">Mag-post ng TikTok clip mo gamit ang skins mula sa app + <b style="color:#25F4EE">#santoryutoolkit</b> — pinaka-maraming views ang mananalo ng <b>libreng diamonds</b>. Ikaw ang susunod na champion!</p>
+    <p style="margin:0;font-size:13.5px;line-height:1.55">Post a TikTok using skins from the app + <b style="color:#25F4EE">#santoryutoolkit</b> — the most views wins <b>free diamonds</b>. You could be the next champion!</p>
     <button class="winclaim" id="tpJoin" style="margin-top:16px;background:linear-gradient(110deg,#25F4EE,#FF2D55);color:#08161a;letter-spacing:2px">JOIN NOW</button>
     <button id="tpLater" style="margin-top:9px;width:100%;height:42px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--txt2);font-family:'Inter';font-size:13px;cursor:pointer">Maybe later</button>
   </div></div>`);
@@ -1091,85 +1195,122 @@ function showTournamentPromo(ev){
   ov.querySelector('#tpJoin').onclick=()=>{ ov.remove(); openTournament(); };
   document.body.appendChild(ov);
 }
+function fmtRange(a,b){
+  const M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const f=t=>{ t=+t; if(!t) return ''; const d=new Date(t); return M[d.getMonth()]+' '+d.getDate(); };
+  const s=f(a), e=f(b); return s&&e?`${s} – ${e}`:(s||e||'');
+}
+function tvEye(){ return '<svg width="10" height="10" viewBox="0 0 24 24" fill="#fff"><path d="M12 5C5 5 1 12 1 12s4 7 11 7 11-7 11-7-4-7-11-7zm0 11a4 4 0 110-8 4 4 0 010 8z"/></svg>'; }
+function tvInit(x){ return (String(x||'?').trim()[0]||'?').toUpperCase(); }
+function tvAvColor(r){ return r===1?'#E8B44A':r===2?'#2DD4A7':r===3?'#5FE6FF':'#4DA6FF'; }
 function renderTournament(){
-  if(!tournBody) return; const s=TOURN; if(!s) return;
-  tournBody.innerHTML=''; const ev=s.event;
-  if(!ev){ tournBody.appendChild($(`<div class="empty">No active event right now.<br>Check back soon for the next tournament.</div>`)); return; }
-  const me=s.myEntry||null, maxV=(ev.maxVideos||10);
-  const used=me?(me.videoCount||0):0, rej=me?(me.rejectedCount||0):0, okc=Math.max(0,used-rej);
-  const slotHtml=Array.from({length:maxV},(_,i)=>
-    `<i class="${i<okc?'on':(i<used?'rej':'')}"></i>`).join('');
-  const tiers=(ev.prizes||[]).slice(0,4).map((p,i)=>
-    `<div class="lrung ${i===0?'g':''}"><div class="p"><span class="dia blue" style="width:.68em;height:.68em;display:inline-block;vertical-align:-.08em;margin-right:.1em"></span>${p.amount>=1000?(p.amount/1000)+'K':p.amount}</div><div class="r">#${p.rank}</div></div>`).join('');
-  const hero=$(`<div class="thero2">
-    <div class="lbl"><span class="live"></span> TIKTOK TOURNAMENT</div>
-    <div class="cap">ANG TOTAL VIEWS MO</div>
-    <div class="big">${me?fmtViews(me.totalViews):'0'}</div>
-    <div class="sub2">${me&&s.myRank?`<b>RANK #${s.myRank}</b> ·`:''} ${used} sa ${maxV} slots</div>
-    <div class="slots">${slotHtml}</div>
-    <div class="ladder">${tiers}</div>
-    ${(ev.participationReward>0)?`<div style="margin-top:10px;font-size:11px;color:#5FE8E3;text-align:center">Everyone who follows the rules gets ${ev.participationReward} gold</div>`:''}
-    <div class="cd" id="tcd"></div></div>`);
-  tournBody.appendChild(hero);
-  if(ev.endTs) tCountdown(hero.querySelector('#tcd'), ev.endTs);
-  if(ev.sampleVideoUrl){
-    const sm=ev.sampleMeta||{};
-    const card=$(`<div class="samp">
-      <div class="th">${sm.thumb?`<img src="${esc(sm.thumb)}" referrerpolicy="no-referrer">`:''}</div>
-      <div style="flex:1;min-width:0">
-        <div style="font-family:'Rajdhani';font-weight:700;font-size:14px">Gaya mo ito</div>
-        <div style="font-size:11px;color:#25F4EE;margin-top:2px">@${esc(sm.author||'santoryu')}${sm.views?` · ${fmtViews(sm.views)} views`:''}</div>
-        <div style="font-size:10px;color:var(--txt2);margin-top:3px;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(sm.title||'Opisyal na halimbawa')}</div>
-      </div></div>`);
-    card.onclick=()=>window.Android.openLink(ev.sampleVideoUrl);
-    tournBody.appendChild(card);
-  }
-  tournBody.appendChild($(`<div class="warn"><b>Hindi babayaran</b> ang gameplay clip na sinabitan lang ng hashtag. Dapat <b>tungkol sa Santoryu Toolkit</b> ang video — pagtuturo, review, o demo.</div>`));
-  // Rules + how-to = naka-DIALOG (button lang dito, may teaser ng weekly task)
-  const rb=$(`<div class="rulesbtn"><div class="rbicon"><img src="ic-rules.png" alt=""></div><div class="rbleft"><div class="rbt">How to join &amp; Event Rules</div><div class="rbs">${esc(ev.task||"Tap to see this week's task")}</div></div><div class="rbgo">VIEW ›</div></div>`);
-  rb.onclick=()=>openTournRules(ev);
-  tournBody.appendChild(rb);
-  if(me && me.videoCount){
-    tournBody.appendChild($(`<div class="sh"><div class="t">MGA VIDEO KO</div><div class="x">${used}/${maxV}</div></div>`));
-    const list=$(`<div id="myvids"><div class="empty">Loading…</div></div>`);
-    tournBody.appendChild(list);
-    loadMyVideos(list);
-  }
-  if(ev.status==='open' && used<maxV){
-    const jb=$(`<div class="card joinbox" style="margin-top:11px">
-      <input id="tvurl" placeholder="I-paste ang TikTok link mo">
-      <button class="joinbtn" id="tjoin">MAGDAGDAG NG VIDEO · ${maxV-used} SLOT PA</button>
-      <div style="font-size:10.5px;color:var(--txt2);margin-top:9px;line-height:1.45">
-        ${me&&me.tiktokUser?`Naka-lock sa <b style="color:var(--txt)">@${esc(me.tiktokUser)}</b>. `:''}Ang tinanggihan ay hindi nagbabalik ng slot.</div></div>`);
-    jb.querySelector('#tjoin').onclick=async()=>{
-      const u=jb.querySelector('#tvurl').value.trim(); if(!u){ toast('I-paste ang TikTok link','bad'); return; }
-      const b=jb.querySelector('#tjoin'); b.textContent='ISINUSUMITE…'; b.disabled=true;
-      const r=await call('tournamentJoin',u);
-      if(r.ok){ try{localStorage.setItem('tpromo_joined_'+(ev.id||''),'1');}catch(e){}
-        toast('Naidagdag!','good'); window.Android.tournamentState(); }
-      else { b.textContent=`MAGDAGDAG NG VIDEO · ${maxV-used} SLOT PA`; b.disabled=false; toast(tjErr(r.error),'bad'); }
-    };
-    tournBody.appendChild(jb);
-  } else if(ev.status==='open' && used>=maxV){
-    tournBody.appendChild($(`<div class="empty">Puno na ang ${maxV} slots mo. Ang mga views ay tumataas pa rin.</div>`));
-  }
-  tournBody.appendChild($(`<div class="sh"><div class="t">LEADERBOARD</div><div class="x">${s.count||0} entries</div></div>`));
-  if(!s.entries||!s.entries.length){ tournBody.appendChild($(`<div class="empty">No entries yet — be the first!</div>`)); return; }
-  const lb=$(`<div class="card"></div>`);
-  s.entries.forEach(e=>{
-    const rkc=e.rank===1?'g':e.rank===2?'s':e.rank===3?'b':'';
-    const top=e.rank<=3, ringCls=e.rank===2?'s':e.rank===3?'b':'';
-    const avInner=e.tiktokAvatar?`<img class="av" src="${esc(e.tiktokAvatar)}" referrerpolicy="no-referrer">`:'<div class="av" style="border-radius:50%;background:#1a1f27"></div>';
-    const avBlock=top?`<div class="avwrap">${avInner}<img class="ring ${ringCls}" src="ring-frame.png" alt="">${e.rank===1?'<img class="crown" src="ic-crown.png" alt="">':''}</div>`:avInner;
-    const row=$(`<div class="lbrow ${e.mine?'me':''}"><div class="rk ${rkc}">${e.rank}</div>${avBlock}
-      <div class="who"><div class="h">@${esc(e.tiktokUser||e.name)}${e.mine?' · ikaw':''}</div>
-        <div class="t2">${e.videoCount||0} video${(e.videoCount||0)===1?'':'s'}</div></div>
-      <div class="views">${fmtViews(e.totalViews)}<small>VIEWS</small></div></div>`);
-    const exp=$(`<div id="lb_${esc(e.uid)}"></div>`);
-    row.onclick=()=>toggleLbRow(e.uid, exp);
-    lb.appendChild(row); lb.appendChild(exp);
+  if(!tournBody) return; const s=TOURN; if(!s) return; const ev=s.event;
+  tournBody.innerHTML=''; tournBody.className='tv';
+  if(!ev){ tournBody.appendChild($(`<div class="tv-empty" style="padding-top:64px">No active event right now.<br>Check back soon for the next tournament.</div>`)); return; }
+  const me=s.myEntry||null, maxV=(ev.maxVideos||10), used=me?(me.videoCount||0):0;
+  const open=ev.status==='open';
+  const pool=(+ev.prizePool||0).toLocaleString();
+  const ent=s.entries||[]; const top3=ent.slice(0,3), rest=ent.slice(3,15);
+  const prizes=(ev.prizes||[]).slice().sort((x,y)=>(+x.rank||0)-(+y.rank||0));
+  const cards=prizes.slice(0,3), rows=prizes.slice(3);
+
+  const cardHtml=cards.map((p,i)=>{
+    const gold=p.cur==='gold';
+    return `<div class="tv-cell ${i===0?'gold':''}"><div class="tv-cash"></div><div class="tv-card">
+      <div class="tv-lbl">Top ${p.rank}</div>
+      <div class="tv-amt"><span class="g" style="${gold?"background-image:url('gem-gold.png')":''}"></span>${(+p.amount||0).toLocaleString()}</div>
+      <div class="tv-sub">${gold?'Gold':'Diamonds'}</div></div></div>`;
+  }).join('');
+  const rowHtml=rows.map(p=>{
+    const gold=p.cur==='gold';
+    return `<div class="tv-trow"><div class="l"><div class="tt">Top ${p.rank}</div>
+      <div class="ta" style="${gold?'color:var(--gold-hi)':''}"><span class="g" style="${gold?"background-image:url('gem-gold.png')":''}"></span>${(+p.amount||0).toLocaleString()} ${gold?'Gold':'Diamonds'}</div></div>
+      <div class="tv-coin ${gold?'g':'b'}"></div></div>`;
+  }).join('')+((+ev.participationReward>0)?`<div class="tv-trow"><div class="l"><div class="tt">Everyone who joins</div>
+      <div class="ta" style="color:var(--gold-hi)"><span class="g" style="background-image:url('gem-gold.png')"></span>${ev.participationReward} Gold each</div>
+      <div class="ts">Participation reward</div></div><div class="tv-coin g"></div></div>`:'');
+
+  const podHtml=top3.map(e=>{
+    const cls=e.rank===1?'r1':e.rank===2?'r2':'r3';
+    const cov=e.cover?`<img class="cov" src="${esc(e.cover)}" referrerpolicy="no-referrer">`:'';
+    const av=e.tiktokAvatar?`<img src="${esc(e.tiktokAvatar)}" referrerpolicy="no-referrer">`:tvInit(e.tiktokUser||e.name);
+    return `<div class="tv-p ${cls}"><div class="tv-crown">${e.rank}</div>
+      <div class="tv-thumb" data-uid="${esc(e.uid)}">${cov}
+        <div class="tv-views">${tvEye()}${fmtViews(e.totalViews)}</div>
+        <div class="tv-center"><div class="tv-av" style="background:${tvAvColor(e.rank)}">${av}</div>
+          <div class="tv-name">${esc(e.tiktokUser||e.name)}</div></div></div></div>`;
+  }).join('');
+  const restHtml=rest.map(e=>{
+    const cov=e.cover?`<img src="${esc(e.cover)}" referrerpolicy="no-referrer">`:'';
+    return `<div class="tv-lrow ${e.mine?'me':''}" data-uid="${esc(e.uid)}">
+      <div class="tv-lrank">${e.rank}</div><div class="tv-lthumb">${cov}</div>
+      <div class="tv-linfo"><div class="tv-lname">@${esc(e.tiktokUser||e.name)}${e.mine?' · you':''}</div>
+        <div class="tv-lsub">${e.videoCount||0} video${(e.videoCount||0)===1?'':'s'}</div></div>
+      <div class="tv-lviews">${fmtViews(e.totalViews)}<small>VIEWS</small></div></div>`;
+  }).join('');
+
+  const steps=(ev.steps||[]).map((st,i)=>`<div class="tv-step"><div class="n">${i+1}</div><div class="x">${esc(st)}</div></div>`).join('');
+  const rules=(ev.rules||[]).map(r=>`<div class="tv-rule"><span class="ck">✓</span><span>${esc(r)}</span></div>`).join('');
+  const dateStr=fmtRange(ev.startTs, ev.endTs);
+  const myStat=me?`<div class="tv-mystat"><div><div class="k">Your views</div><div class="v">${fmtViews(me.totalViews)}</div></div>${s.myRank?`<div><div class="k">Your rank</div><div class="v">#${s.myRank}</div></div>`:''}<div><div class="k">Slots</div><div class="v">${used}/${maxV}</div></div></div>`:'';
+
+  tournBody.innerHTML=`
+    <div class="tv-hero"><div class="tv-rules" id="tvRules">Rules</div>
+      <div class="tv-hf"><div class="tv-plabel">Prize Pool</div>
+        <div class="tv-pnum"><b>[</b>${pool}<b>]</b></div><div class="tv-psub">MLBB DIAMONDS</div>
+        <div class="tv-title">${esc(ev.title||'Tournament')}</div>
+        ${ev.task?`<div class="tv-tag">${esc(ev.task)}</div>`:''}</div></div>
+    <div class="tv-meta">${dateStr?`<span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>${dateStr}</span><span class="d"></span>`:''}${open?`<span class="tv-open">● Open now</span>`:`<span><b>${s.count||0}</b> joined</span>`}</div>
+    <div class="tv-tabs"><div class="tv-tab on" data-go="tvRank">RANKING</div><div class="tv-tab" data-go="tvRew">REWARDS</div><div class="tv-tab" data-go="tvHow">HOW TO JOIN</div></div>
+    <div id="tvRew"><div class="tv-sect"><h3>Prize Rewards</h3><div class="tv-sw"></div></div>
+      <div class="tv-wrap"><div class="tv-prow">${cardHtml}</div>${rowHtml}</div></div>
+    <div id="tvRank"><div class="tv-sect"><h3>Ranking</h3><div class="tv-sw"></div></div>
+      <div class="tv-wrap">${myStat}${top3.length?`<div class="tv-pod">${podHtml}</div>`:''}${restHtml}${!ent.length?`<div class="tv-empty">No entries yet — be the first to post!</div>`:''}${me&&me.videoCount?`<div class="tv-sect" style="margin:20px 0 10px"><h3 style="font-size:13px">My Videos</h3><div class="tv-sw" style="width:88px"></div></div><div id="tvMine"></div>`:''}</div></div>
+    <div id="tvHow"><div class="tv-sect"><h3>How to Join</h3><div class="tv-sw"></div></div>
+      <div class="tv-wrap">${ev.task?`<div class="tv-task"><div class="k">THIS EVENT'S TASK</div><div class="v">${esc(ev.task)}</div></div>`:''}${steps?`<div style="margin-top:8px">${steps}</div>`:''}${rules?`<div style="margin-top:6px">${rules}</div>`:''}<div class="tv-warn"><b>Off-topic clips won't be paid.</b> Your video must be about the Santoryu Toolkit — a tutorial, review, or demo. A hashtag alone on random gameplay is not enough.</div></div></div>`;
+
+  const label=!open?'Event closed':used>=maxV?`Slots full · ${used}/${maxV}`:me?`Post your video · ${maxV-used} left`:'Post your video';
+  const cta=$(`<div class="tv-cta"><button class="tv-post" ${(!open||used>=maxV)?'disabled':''}>${label.toUpperCase()}</button></div>`);
+  if(open&&used<maxV) cta.querySelector('.tv-post').onclick=()=>openJoinSheet(ev,me);
+  tournBody.appendChild(cta);
+
+  tournBody.querySelectorAll('.tv-tab').forEach(t=>t.onclick=()=>{
+    tournBody.querySelectorAll('.tv-tab').forEach(x=>x.classList.toggle('on',x===t));
+    const el=tournBody.querySelector('#'+t.dataset.go); if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
   });
-  tournBody.appendChild(lb);
+  const rp=tournBody.querySelector('#tvRules'); if(rp) rp.onclick=()=>{ const el=tournBody.querySelector('#tvHow'); if(el) el.scrollIntoView({behavior:'smooth'}); };
+  tournBody.querySelectorAll('.tv-thumb,.tv-lrow').forEach(el=>{ if(el.dataset.uid) el.onclick=()=>openEntryVideos(el.dataset.uid); });
+  const mine=tournBody.querySelector('#tvMine'); if(mine){ mine.innerHTML='<div class="tv-empty">Loading your videos…</div>'; loadMyVideos(mine); }
+}
+function openJoinSheet(ev,me){
+  const maxV=ev.maxVideos||10, used=me?(me.videoCount||0):0;
+  const ov=$(`<div class="ov"><div class="modal" style="max-width:360px">
+    <h3 style="margin-bottom:4px">Post your video</h3>
+    <p style="margin-bottom:10px">Post a public TikTok about the toolkit with <b style="color:#5ff0c8">#santoryutoolkit</b>, then paste the link here.</p>
+    ${me&&me.tiktokUser?`<div style="font-size:11px;color:var(--txt2);margin-bottom:8px">Locked to <b style="color:var(--txt)">@${esc(me.tiktokUser)}</b> · ${maxV-used} slots left</div>`:''}
+    <input id="tjv" placeholder="Paste your TikTok link" style="width:100%;background:#0d1117;border:1px solid var(--line);border-radius:11px;padding:12px;color:var(--txt);font-size:13px;font-family:'Inter'">
+    <button class="tv-post" id="tjSub" style="width:100%;margin-top:12px;height:48px">SUBMIT VIDEO</button>
+    <button id="tjX" style="width:100%;height:42px;margin-top:8px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--txt2);font-family:'Inter';font-size:13px;cursor:pointer">Cancel</button>
+  </div></div>`);
+  document.body.appendChild(ov);
+  ov.querySelector('#tjX').onclick=()=>ov.remove();
+  ov.querySelector('#tjSub').onclick=async()=>{
+    const u=ov.querySelector('#tjv').value.trim(); if(!u){ toast('Paste your TikTok link','bad'); return; }
+    const b=ov.querySelector('#tjSub'); b.textContent='SUBMITTING…'; b.disabled=true;
+    const r=await call('tournamentJoin',u);
+    if(r.ok){ try{localStorage.setItem('tpromo_joined_'+(ev.id||''),'1');}catch(e){} ov.remove(); toast('Video added!','good'); window.Android.tournamentState(); }
+    else { b.textContent='SUBMIT VIDEO'; b.disabled=false; toast(tjErr(r.error),'bad'); }
+  };
+}
+async function openEntryVideos(uid){
+  if(!uid) return;
+  const ov=$(`<div class="ov"><div class="modal" style="max-width:360px"><h3 style="margin-bottom:10px">Videos</h3><div id="evl"><div class="tv-empty">Loading…</div></div><button id="evX" style="width:100%;height:42px;margin-top:12px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--txt2);font-family:'Inter';font-size:13px;cursor:pointer">Close</button></div></div>`);
+  document.body.appendChild(ov); ov.querySelector('#evX').onclick=()=>ov.remove();
+  const r=await fetch(TVID_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid})}).then(x=>x.json()).catch(()=>null);
+  const box=ov.querySelector('#evl');
+  if(!r||!r.ok||!r.videos||!r.videos.length){ box.innerHTML='<div class="tv-empty">No videos.</div>'; return; }
+  box.innerHTML=r.videos.map((v,i)=>`<div class="tv-evrow" data-u="${esc(v.videoUrl)}"><div class="n">${i+1}</div><div class="h">${esc(v.title||'Video')}</div><div class="vv">${fmtViews(v.views)}</div></div>`).join('');
+  box.querySelectorAll('.tv-evrow').forEach(el=>el.onclick=()=>window.Android.openLink(el.dataset.u));
 }
 const LB_OPEN={};
 async function toggleLbRow(uid, box){
@@ -1219,7 +1360,7 @@ async function loadMyVideos(box){
   if(!uid){ box.innerHTML='<div class="empty">—</div>'; return; }
   const r=await fetch(TVID_URL,{method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({uid,viewerUid:uid})}).then(x=>x.json()).catch(()=>null);
-  if(!r||!r.ok||!r.videos.length){ box.innerHTML='<div class="empty">Wala pang video.</div>'; return; }
+  if(!r||!r.ok||!r.videos.length){ box.innerHTML='<div class="empty">No videos yet.</div>'; return; }
   box.innerHTML=r.videos.map((v,i)=>`<div class="vid ${v.status==='rejected'?'rej':''}" data-u="${esc(v.videoUrl)}">
     <div class="n">${i+1}</div>
     <div class="b"><div class="h">${esc(v.title||'Video')}</div>
