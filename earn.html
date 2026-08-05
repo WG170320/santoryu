@@ -1258,7 +1258,8 @@ function openTopEarners(){
     b.innerHTML='<div class="empty" style="padding-top:40px">Loading real payouts…</div>';
     const r=await fetch(EPAY_URL).then(x=>x.json()).catch(()=>null);
     if(!r||!r.ok||!r.payouts||!r.payouts.length){ b.innerHTML='<div class="empty" style="padding-top:40px">No payouts to show yet — be the first to cash out!</div>'; return; }
-    const total=r.payouts.reduce((s,p)=>s+(+p.mlbb||0),0);
+    const total=(+r.totalPaid|| r.payouts.reduce((s,p)=>s+(+p.mlbb||0),0));
+    const count=(+r.totalCount|| r.payouts.length);
     const rows=r.payouts.map((p,i)=>{
       const top3=i<3, medal=i===0?'g':i===1?'s':i===2?'b':'';
       const av=p.avatarUrl?`<img src="${esc(p.avatarUrl)}" referrerpolicy="no-referrer" onerror="this.remove()">`:'';
@@ -1270,10 +1271,10 @@ function openTopEarners(){
     }).join('');
     b.innerHTML=`<div class="tehero">
         <div class="tebadge">✓ VERIFIED PAYOUTS</div>
-        <div class="tek">RECENTLY PAID OUT</div>
+        <div class="tek">TOTAL PAID OUT · ALL TIME</div>
         <div class="tev"><span class="dia blue" style="width:30px;height:30px;display:inline-block;vertical-align:-5px;margin-right:7px"></span>${total.toLocaleString()}</div>
-        <div class="tesub">Real MLBB diamonds sent straight to players' accounts</div></div>
-      <div class="sh"><div class="t">TOP EARNERS</div><div class="x blue">${r.payouts.length} recent</div></div>
+        <div class="tesub">Real MLBB diamonds redeemed across ${count.toLocaleString()} withdrawal${count===1?'':'s'} — proof it's real</div></div>
+      <div class="sh"><div class="t">TOP EARNERS</div><div class="x blue">recent cash-outs</div></div>
       <div class="card" style="padding:4px 14px">${rows}</div>
       <div class="teproof">Every withdrawal is reviewed and delivered to the player's Mobile Legends account. Save up your points and cash out — it's real.</div>`;
   });
