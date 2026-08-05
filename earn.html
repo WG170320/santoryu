@@ -532,6 +532,7 @@
   .tv-p.r3 .tv-crown{background:linear-gradient(180deg,var(--cyan),#2b8fb0);}
   .tv-thumb{aspect-ratio:3/4; border-radius:4px; position:relative; overflow:hidden; background:linear-gradient(150deg,#0f2a22,#07130f); border:2px solid rgba(255,255,255,.1); cursor:pointer;}
   .tv-thumb img.cov{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
+  .tv-thumb img.covbg{filter:blur(7px) brightness(.5); transform:scale(1.25);}
   .tv-p.r1 .tv-thumb{border-color:var(--gold); box-shadow:0 0 14px -3px rgba(232,180,74,.6);}
   .tv-p.r2 .tv-thumb{border-color:var(--emerald); box-shadow:0 0 14px -3px rgba(45,212,167,.55);}
   .tv-p.r3 .tv-thumb{border-color:var(--cyan); box-shadow:0 0 14px -3px rgba(95,230,255,.5);}
@@ -545,7 +546,7 @@
   .tv-lrow{display:flex; align-items:center; gap:11px; padding:12px 4px; border-bottom:1px solid var(--line); cursor:pointer;}
   .tv-lrow.me{background:rgba(45,212,167,.06);}
   .tv-lrank{font-family:'Teko'; font-weight:700; font-size:22px; color:var(--txt2); width:22px; text-align:center; flex:0 0 auto;}
-  .tv-lthumb{width:46px; height:58px; border-radius:5px; flex:0 0 auto; background:linear-gradient(150deg,#0f2a22,#07130f); border:1px solid var(--line); overflow:hidden;}
+  .tv-lthumb{width:46px; height:58px; border-radius:5px; flex:0 0 auto; background:linear-gradient(150deg,#0f2a22,#07130f); border:1px solid var(--line); overflow:hidden; display:flex; align-items:center; justify-content:center;}
   .tv-lthumb img{width:100%;height:100%;object-fit:cover;}
   .tv-linfo{flex:1; min-width:0;}
   .tv-lname{font-size:13px; color:var(--txt); font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
@@ -1152,7 +1153,8 @@ function openTournament(){
   if(!(window.Android&&window.Android.tournamentState)){ toast('Update the app to join tournaments','bad'); return; }
   const pg=$(`<div class="page tvpage"><div class="tv-back">${IC.back}</div><div id="tbody" class="tv"><div class="tv-empty">Loading…</div></div></div>`);
   pg.querySelector('.tv-back').onclick=()=>closePage(pg);
-  document.body.appendChild(pg); registerPage(pg, ()=>{ tournBody=null; if(tcdT)clearInterval(tcdT); });
+  const _pp=document.getElementById('payoutpop'); if(_pp) _pp.classList.add('hide'); // huwag tumabon sa tournament page
+  document.body.appendChild(pg); registerPage(pg, ()=>{ tournBody=null; if(tcdT)clearInterval(tcdT); if(_pp) _pp.classList.remove('hide'); });
   tournBody=pg.querySelector('#tbody');
   window.Android.tournamentState();
   // Mag-render lang agad kung may buong entries na (iwas "No entries" flash habang
@@ -1201,6 +1203,7 @@ function fmtRange(a,b){
   const s=f(a), e=f(b); return s&&e?`${s} – ${e}`:(s||e||'');
 }
 function tvEye(){ return '<svg width="10" height="10" viewBox="0 0 24 24" fill="#fff"><path d="M12 5C5 5 1 12 1 12s4 7 11 7 11-7 11-7-4-7-11-7zm0 11a4 4 0 110-8 4 4 0 010 8z"/></svg>'; }
+function tvPlay(){ return '<svg width="18" height="18" viewBox="0 0 24 24" fill="#5ff0c8" style="opacity:.5"><path d="M8 5v14l11-7z"/></svg>'; }
 function tvInit(x){ return (String(x||'?').trim()[0]||'?').toUpperCase(); }
 function tvAvColor(r){ return r===1?'#E8B44A':r===2?'#2DD4A7':r===3?'#5FE6FF':'#4DA6FF'; }
 function renderTournament(){
@@ -1232,7 +1235,8 @@ function renderTournament(){
 
   const podHtml=top3.map(e=>{
     const cls=e.rank===1?'r1':e.rank===2?'r2':'r3';
-    const cov=e.cover?`<img class="cov" src="${esc(e.cover)}" referrerpolicy="no-referrer">`:'';
+    const bg=e.cover||e.tiktokAvatar||'hero-champion.jpg';
+    const cov=`<img class="cov ${e.cover?'':'covbg'}" src="${esc(bg)}" referrerpolicy="no-referrer">`;
     const av=e.tiktokAvatar?`<img src="${esc(e.tiktokAvatar)}" referrerpolicy="no-referrer">`:tvInit(e.tiktokUser||e.name);
     return `<div class="tv-p ${cls}"><div class="tv-crown">${e.rank}</div>
       <div class="tv-thumb" data-uid="${esc(e.uid)}">${cov}
@@ -1241,7 +1245,8 @@ function renderTournament(){
           <div class="tv-name">${esc(e.tiktokUser||e.name)}</div></div></div></div>`;
   }).join('');
   const restHtml=rest.map(e=>{
-    const cov=e.cover?`<img src="${esc(e.cover)}" referrerpolicy="no-referrer">`:'';
+    const t=e.cover||e.tiktokAvatar;
+    const cov=t?`<img src="${esc(t)}" referrerpolicy="no-referrer">`:tvPlay();
     return `<div class="tv-lrow ${e.mine?'me':''}" data-uid="${esc(e.uid)}">
       <div class="tv-lrank">${e.rank}</div><div class="tv-lthumb">${cov}</div>
       <div class="tv-linfo"><div class="tv-lname">@${esc(e.tiktokUser||e.name)}${e.mine?' · you':''}</div>
