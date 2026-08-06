@@ -711,7 +711,7 @@ document.addEventListener('visibilitychange',()=>{ if(!document.hidden) requestS
 let MOCK={ uid:"dev-demo", code:"SANT-AB12-CD34", isAdmin:false,
   config:{perInvite:5,inviteeBonus:5,welcomeBonus:5,dailyBonus:15,missionGoal:5,missionBonus:50,missionHours:24},
   tiers:[{mlbb:22,cost:80,firstOnly:true},{mlbb:112,cost:250,firstOnly:false},{mlbb:223,cost:470,firstOnly:false},{mlbb:336,cost:670,firstOnly:false},{mlbb:570,cost:1080,firstOnly:false},{mlbb:1163,cost:2050,firstOnly:false}],
-  tasks:[{id:"download_cliptok",title:"Download ClipTok",desc:"Install our partner app — Video & Photo Saver.",link:"https://play.google.com/store/apps/details?id=com.warlito.clipto",logo:"",reward:10,claimed:false},{id:"rate_5star",title:"Rate us 5 stars",desc:"Write an honest review on Google Play.",link:"https://play.google.com/store/apps/details?id=com.warlito.clipto",logo:"",reward:5,claimed:false}],
+  tasks:[{id:"download_cliptok",title:"Download ClipTok",desc:"Install our partner app — Video & Photo Saver.",link:"https://play.google.com/store/apps/details?id=com.warlito.clipto",logo:"",reward:10,claimed:false},{id:"rate_5star",title:"Rate us 5 stars",desc:"Write an honest review on Google Play.",link:"https://play.google.com/store/apps/details?id=com.warlito.clipto",logo:"",reward:5,claimed:false},{id:"fb_heart_post",title:"Heart our Facebook post",desc:"Tap the heart (like) on our Facebook post to support us.",link:"https://www.facebook.com/share/p/1UnZBCNUnZ/",logo:"",reward:5,claimed:false}],
   account:{balance:340,earned:560,referralCount:3,firstWithdrawUsed:true,earnBanned:false,welcomeClaimed:true,referred:false,lastDailyDay:0,missionStart:0,missionBaseline:0,name:"Kairi",avatarUrl:"https://kappa.lol/7Xnnlc",earned:1340},
   history:[{mlbb:22,cost:80,status:"fulfilled",ts:Date.now()-86400000,refunded:false},{mlbb:112,cost:250,status:"pending",ts:Date.now()-3600000,refunded:false}],
   invited:[{name:"Justin",ts:Date.now()-7200000,avatarUrl:"https://kappa.lol/Z9cLjS"},{name:"Vince",ts:Date.now()-90000000,avatarUrl:""},{name:"Maher",ts:Date.now()-180000000,avatarUrl:"https://kappa.lol/oF8JPO"}],
@@ -772,10 +772,14 @@ function taskIcon(t){
   if(t.id.includes('cliptok')||(t.link||'').includes('com.warlito.clipto')&&t.id.includes('download')) return `<img src="${CLIPTOK_LOGO}" alt="">`;
   if(t.logo) return `<img src="${esc(t.logo)}" alt="">`;
   if(t.id.includes('rate')||/review|star/i.test(t.title)) return II('ic-rate');
+  if(isSocial(t)) return `<svg viewBox="0 0 24 24" width="20" height="20" fill="#1877F2"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.15 8.44 9.9v-7H7.9v-2.9h2.54V9.84c0-2.52 1.5-3.91 3.78-3.91 1.1 0 2.24.2 2.24.2v2.47h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.44 2.9h-2.34v7c4.78-.75 8.44-4.9 8.44-9.9Z"/></svg>`;
   if(/video|watch/i.test(t.title)) return IC.play;
   return II('ic-daily');
 }
 function isReview(t){ return t.id.includes('rate')||/review|star/i.test(t.title); }
+// Social dwell task (hal. i-heart ang FB post) — kailangang manatili ~10s bago mag-claim.
+function isSocial(t){ return /facebook\.com|fb\.watch|fb\.me/i.test(t.link||'')||/facebook|fb\b/i.test(t.title||''); }
+function dwellSecs(t){ return Number(t.dwell)>0?Number(t.dwell):10; }
 
 // withdrawal — Codashop style: lahat ng amount NAKALABAS na cards, tap para piliin (highlight),
 // tapos ISANG button sa baba. WSEL = napiling tier cost (persisted across re-renders).
@@ -988,7 +992,7 @@ function appendTasks(app,s){
       : `<button class="tclaim"><span class="dia gold" style="width:14px;height:14px"></span>+${t.reward}</button>`;
     const row=$(`<div class="taskrow"><div class="ti">${taskIcon(t)}</div>
       <div class="gleft"><div class="n">${esc(t.title)}</div><div class="d">${esc(t.desc)}</div></div>${right}</div>`);
-    if(!t.claimed) row.querySelector('.tclaim').onclick=()=> isReview(t)?openReview(t):doTask(t);
+    if(!t.claimed) row.querySelector('.tclaim').onclick=()=> isReview(t)?openReview(t): isSocial(t)?openDwell(t): doTask(t);
     tc.appendChild(row);
   });
   app.appendChild(tc);
@@ -1626,6 +1630,38 @@ function openReview(t){
     else{ ov.remove(); toast('Could not verify — try again','bad'); }
     requestState();
   };
+}
+
+// Dwell task (FB heart): buksan ang post, manatili ng N segundo, tapos saka ma-claim.
+// One-time — pinapatupad ng server (hwid lock); dito lang ang 10s gate + countdown.
+function openDwell(t){
+  const secs=dwellSecs(t);
+  const ov=$(`<div class="ov"><div class="modal">
+    <h3>Heart our Facebook post</h3>
+    <p>Tap <b>Open Facebook</b>, then react with a <b>Like / Heart</b> on our post. Stay for ${secs} seconds, come back, and claim your ${t.reward} diamonds.</p>
+    <div class="err" id="de"></div>
+    <div class="mrow"><button class="btn ghost" id="dopen">Open Facebook</button><button class="btn go" id="dok" disabled>Wait ${secs}s</button></div></div></div>`);
+  document.body.appendChild(ov);
+  const ok=ov.querySelector('#dok'); let started=false, timer=null;
+  ov.querySelector('#dopen').onclick=()=>{
+    if(t.link&&t.link!=='#') window.Android.openLink(t.link);
+    if(started) return; started=true;
+    let left=secs;
+    timer=setInterval(()=>{
+      left--;
+      if(left<=0){ clearInterval(timer); ok.disabled=false; ok.textContent='Claim +'+t.reward; }
+      else ok.textContent='Wait '+left+'s';
+    },1000);
+  };
+  ok.onclick=async()=>{
+    if(ok.disabled) return;
+    ok.textContent='…'; ok.disabled=true;
+    const r=await call('claimTask',t.id,t.reward);
+    if(r.ok){ ov.remove(); gainFx(t.reward,'gold'); toast('Thanks for the support! +'+t.reward,'good'); }
+    else{ ov.remove(); toast(r.error==='already_claimed'?'Already claimed':'Could not verify — try again','bad'); }
+    requestState();
+  };
+  ov.onclick=e=>{ if(e.target===ov){ if(timer)clearInterval(timer); ov.remove(); } };
 }
 
 //=== daily countdown ==============================================================
