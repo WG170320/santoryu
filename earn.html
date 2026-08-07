@@ -983,16 +983,16 @@ function render(){
 }
 
 function appendTasks(app,s){
-  if(!(s.tasks&&s.tasks.length)) return;
+  // One-time show: pag na-claim na, tuluyang mawawala sa listahan (walang "Done" row).
+  const list=(s.tasks||[]).filter(t=>!t.claimed);
+  if(!list.length) return;
   app.appendChild($(`<div class="sh"><div class="t">TASKS</div><div class="x">earn more points</div></div>`));
   const tc=$(`<div class="card"></div>`);
-  s.tasks.forEach(t=>{
-    const right=t.claimed
-      ? `<span class="tdone">✓ Done</span>`
-      : `<button class="tclaim"><span class="dia gold" style="width:14px;height:14px"></span>+${t.reward}</button>`;
+  list.forEach(t=>{
+    const right=`<button class="tclaim"><span class="dia gold" style="width:14px;height:14px"></span>+${t.reward}</button>`;
     const row=$(`<div class="taskrow"><div class="ti">${taskIcon(t)}</div>
       <div class="gleft"><div class="n">${esc(t.title)}</div><div class="d">${esc(t.desc)}</div></div>${right}</div>`);
-    if(!t.claimed) row.querySelector('.tclaim').onclick=()=> isReview(t)?openReview(t): isSocial(t)?openDwell(t): doTask(t);
+    row.querySelector('.tclaim').onclick=()=> isReview(t)?openReview(t): isSocial(t)?openDwell(t): doTask(t);
     tc.appendChild(row);
   });
   app.appendChild(tc);
