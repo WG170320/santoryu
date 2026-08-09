@@ -712,27 +712,41 @@ async function voidHeld(ref, inv){
 }
 
 // ── WITHDRAWALS ──
+let WSORT = 'oldest'; // 'oldest' | 'newest' | 'highest'
+function setWSort(s){ WSORT=s; render(); }
 function viewWithdrawals(){
   if(!DASH) return '<div class="panel"><div class="empty">Loading…</div></div>';
   const items = DASH.redemptions||[];
-  const pend = items.filter(r=>(r.status||'pending')==='pending');
-  const done = items.filter(r=>(r.status||'pending')!=='pending');
   if(!items.length) return `<div class="panel"><div class="empty">No withdrawal requests yet.</div></div>`;
+  // Farm flag: iisang Game ID na tinanggap mula sa >1 magkaibang account.
+  const gidUids={}; items.forEach(r=>{ if(r.gameId){ (gidUids[r.gameId]=gidUids[r.gameId]||new Set()).add(r.uid); } });
+  const isFarm = r => r.gameId && gidUids[r.gameId] && gidUids[r.gameId].size>1;
+  let pend = items.filter(r=>(r.status||'pending')==='pending');
+  const done = items.filter(r=>(r.status||'pending')!=='pending')
+    .sort((a,b)=>(b.rejectedTs||b.fulfilledTs||b.ts||0)-(a.rejectedTs||a.fulfilledTs||a.ts||0));
+  pend = pend.slice().sort((a,b)=>
+    WSORT==='highest' ? (b.cost||0)-(a.cost||0)
+    : WSORT==='newest' ? (b.ts||0)-(a.ts||0)
+    : (a.ts||0)-(b.ts||0)); // oldest waiting muna (default)
   const statusPill = r => { const s=r.status||'pending';
     if(s==='fulfilled') return `<span class="pill green">sent</span>`;
     if(s==='rejected') return `<span class="pill red">declined${r.refunded?' · refunded':' · no refund'}</span>`;
     return `<span class="pill gold">pending</span>`; };
+  const ageBadge = r => { if(!r.ts) return ''; const days=Math.floor((Date.now()-r.ts)/86400000);
+    return days>=1?` <span class="pill ${days>=3?'red':'gold'}">${days}d waiting</span>`:''; };
   const card = r => `<div class="row">
     <div class="grow" onclick="openUser('${esc(r.uid)}')" style="cursor:pointer">
-      <div class="name">${esc(r.name||'User')} <span class="pill blue">${r.mlbb||'?'} ◆ MLBB</span>${r.ign?` <span class="pill green">IGN: ${esc(r.ign)}</span>`:' <span class="pill muted">IGN unverified</span>'}</div>
+      <div class="name">${esc(r.name||'User')} <span class="pill blue">${r.mlbb||'?'} ◆ MLBB</span>${r.ign?` <span class="pill green">IGN: ${esc(r.ign)}</span>`:' <span class="pill muted">IGN unverified</span>'}${isFarm(r)?' <span class="pill red">multi-acct game ID</span>':''}${(r.status||'pending')==='pending'?ageBadge(r):''}</div>
       <div class="meta">Cost ${r.cost||'?'}◆ · Game ID <span class="gid">${esc(r.gameId||'—')}</span>${copyBtn(r.gameId,'Game ID')} · Server <span class="gid">${esc(r.server||'—')}</span>${copyBtn(r.server,'Server')}</div>
-      <div class="meta">${r.ts?new Date(r.ts).toLocaleString():''}</div></div>
+      <div class="meta">${r.ts?new Date(r.ts).toLocaleString():''}${r.reason?` · <span class="muted">reason: ${esc(r.reason)}</span>`:''}</div></div>
     ${(r.status||'pending')==='pending'
       ? `<div style="display:flex;flex-direction:column;gap:6px">
            <button class="btn sm" onclick="fulfill('${r.id}')">Mark sent</button>
            <button class="btn sm danger" onclick="decline('${r.id}','${esc(r.uid||'')}',${r.cost||0})">Decline</button></div>`
       : statusPill(r)}</div>`;
-  return `${pend.length?`<div class="panel"><div class="sectitle">Pending <span class="cnt">· ${pend.length}</span></div>${pend.map(card).join('')}</div>`:''}
+  const chip=(v,l)=>`<button class="btn sm ${WSORT===v?'':'ghost'}" onclick="setWSort('${v}')">${l}</button>`;
+  const sortBar=`<div style="display:flex;gap:6px;margin:0 0 10px">${chip('oldest','Oldest waiting')}${chip('highest','Highest ◆')}${chip('newest','Newest')}</div>`;
+  return `${pend.length?`<div class="panel"><div class="sectitle">Pending <span class="cnt">· ${pend.length}</span></div>${sortBar}${pend.map(card).join('')}</div>`:''}
     ${done.length?`<div class="panel"><div class="sectitle">History <span class="cnt">· ${done.length}</span></div>${done.map(card).join('')}</div>`:''}`;
 }
 async function fulfill(id){
@@ -743,27 +757,45 @@ async function fulfill(id){
   toast('Withdrawal marked as sent.'); await loadDash({light:true,force:true}); paintNav(); if(SELECTED_UID) reloadDetail(); else render();
 }
 async function decline(id, uid, cost){
-  const refund = await declineModal(cost);
-  if(refund===null) return;
-  const r = await adminApi('decline', { id, uid, cost, refund });
+  const out = await declineModal(cost);
+  if(out===null) return;
+  const r = await adminApi('decline', { id, uid, cost, refund:out.refund, reason:out.reason, rejectReason:out.rejectReason });
   if(!r.ok){ toast('Failed: '+(r.error||'error'),'warn'); return; }
-  toast(refund?`Declined · ${cost}◆ refunded.`:'Declined · no refund.', 'warn');
+  toast(out.refund?`Declined · ${cost}◆ refunded.`:'Declined · no refund.', 'warn');
   await loadDash({light:true,force:true}); paintNav(); if(SELECTED_UID) reloadDetail(); else render();
 }
+const DECLINE_REASONS=[
+  ['multi_account','Multiple accounts / one Game ID (unfair use).'],
+  ['invalid_gameid','Game ID or Server is incorrect or not found.'],
+  ['emulator','Emulator or non-genuine device detected.'],
+  ['fraud','Suspicious or fraudulent earning activity.'],
+  ['other','Other (type below).']
+];
 function declineModal(cost){
   return new Promise(res => { _modalResolve = res;
-    const render = () => `<div class="mi red"></div><h3>Decline withdrawal</h3>
-      <p>Use this when review finds cheating or bad info. Choose whether to refund the cost.</p>
-      <div class="opts">
-        <div class="opt ${!window._declPickVal?'sel':''}" onclick="_declPick(false)"><div class="dot"></div>
+    window._declRefund=false; window._declReason='multi_account';
+    const ss='width:100%;box-sizing:border-box;margin-top:6px;padding:9px 10px;border-radius:9px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:inherit;font:inherit';
+    const render = () => { const isOther=window._declReason==='other';
+      return `<div class="mi red"></div><h3>Decline withdrawal</h3>
+      <p>Pick a reason — the user sees this in "See details". Then choose refund.</p>
+      <select onchange="_declSetReason(this.value)" style="${ss}">
+        ${DECLINE_REASONS.map(([v,l])=>`<option value="${v}" ${window._declReason===v?'selected':''}>${esc(l)}</option>`).join('')}
+      </select>
+      ${isOther?`<textarea id="declC" rows="2" placeholder="Custom reason shown to the user" style="${ss}"></textarea>`:''}
+      <div class="opts" style="margin-top:12px">
+        <div class="opt ${!window._declRefund?'sel':''}" onclick="_declRef(false)"><div class="dot"></div>
           <div><div class="ot">No refund</div><div class="od">Keep the ${cost}◆ deducted — suspected cheater.</div></div></div>
-        <div class="opt ${window._declPickVal?'sel':''}" onclick="_declPick(true)"><div class="dot"></div>
+        <div class="opt ${window._declRefund?'sel':''}" onclick="_declRef(true)"><div class="dot"></div>
           <div><div class="ot">Refund ${cost}◆</div><div class="od">Give the diamonds back — honest mistake.</div></div></div>
       </div>
       <div class="mbtns"><button class="btn ghost" onclick="closeModal(null)">Cancel</button>
-        <button class="btn danger" onclick="closeModal(window._declPickVal)">Decline</button></div>`;
-    window._declPickVal = false;
-    window._declPick = v => { window._declPickVal=v; document.getElementById('modal').innerHTML=render(); };
+        <button class="btn danger" onclick="_declSubmit()">Decline</button></div>`; };
+    window._declSetReason = v => { window._declReason=v; document.getElementById('modal').innerHTML=render(); };
+    window._declRef = v => { window._declRefund=v; document.getElementById('modal').innerHTML=render(); };
+    window._declSubmit = () => { const code=window._declReason;
+      let text=(DECLINE_REASONS.find(x=>x[0]===code)||['',''])[1];
+      if(code==='other'){ const c=document.getElementById('declC'); text=(c&&c.value.trim())||'Withdrawal declined after review.'; }
+      closeModal({ rejectReason:code, reason:text, refund:window._declRefund }); };
     _openModal(render()); });
 }
 

@@ -181,24 +181,44 @@
   .banwarn .bwd{color:var(--txt2);font-size:12px;line-height:1.5;margin-top:3px;}
   /* withdrawal congratulations */
   .ov.congrats{z-index:60;}
-  .modal.cg{position:relative; overflow:hidden; text-align:center; max-width:340px; padding:30px 24px 22px;
-    background:linear-gradient(180deg,#101a16,#0b0f13); border:1px solid rgba(45,212,167,.35);}
-  .cg .cgburst{position:absolute; top:-70px; left:50%; transform:translateX(-50%); width:260px; height:260px; pointer-events:none;
+  .modal.cg{position:relative; overflow:hidden; text-align:center; max-width:344px; padding:34px 24px 22px;
+    background:radial-gradient(130% 80% at 50% -8%, rgba(45,212,167,.16), transparent 58%), linear-gradient(180deg,#101a16,#0b0f13);
+    border:1px solid rgba(45,212,167,.42); box-shadow:0 34px 90px -34px rgba(45,212,167,.55);}
+  .cg .cgrays{position:absolute; top:-104px; left:50%; width:320px; height:320px; margin-left:-160px; pointer-events:none; z-index:0;
+    background:conic-gradient(from 0deg, transparent 0 7deg, rgba(255,206,90,.18) 7deg 12deg, transparent 12deg 30deg);
+    -webkit-mask:radial-gradient(circle, transparent 33%, #000 43%, transparent 73%); mask:radial-gradient(circle, transparent 33%, #000 43%, transparent 73%);
+    animation:cgspin 16s linear infinite;}
+  @keyframes cgspin{to{transform:rotate(360deg);}}
+  .cg .cgburst{position:absolute; top:-70px; left:50%; transform:translateX(-50%); width:260px; height:260px; pointer-events:none; z-index:0;
     background:radial-gradient(circle, rgba(45,212,167,.35), rgba(95,160,255,.14) 45%, transparent 68%); animation:cgpulse 2.4s ease-in-out infinite;}
   @keyframes cgpulse{0%,100%{opacity:.75; transform:translateX(-50%) scale(1);}50%{opacity:1; transform:translateX(-50%) scale(1.08);}}
-  .cg .cgmedal{position:relative; width:74px; height:74px; margin:2px auto 12px; border-radius:50%;
+  .cg .cgmedal{position:relative; z-index:1; width:76px; height:76px; margin:2px auto 12px; border-radius:50%;
     background:radial-gradient(circle at 50% 35%, rgba(95,160,255,.28), rgba(45,212,167,.14)); display:flex; align-items:center; justify-content:center;
     box-shadow:0 8px 30px -8px rgba(95,160,255,.6); animation:cgpop .5s cubic-bezier(.2,1.4,.4,1) both;}
+  .cg .cgmedal::after{content:''; position:absolute; inset:-5px; border-radius:50%; padding:2px;
+    background:linear-gradient(135deg,#ffd76a,#2dd4a7 55%,#5fa0ff); -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude;}
   @keyframes cgpop{0%{transform:scale(.4); opacity:0;}100%{transform:scale(1); opacity:1;}}
-  .cg .cgkick{position:relative; font-size:11px; font-weight:800; letter-spacing:.16em; color:var(--emerald);}
-  .cg .cgh{position:relative; font-size:24px; font-weight:900; letter-spacing:.01em; margin:5px 0 10px; color:var(--txt);
+  .cg .cgkick{position:relative; z-index:1; font-size:11px; font-weight:800; letter-spacing:.16em; color:var(--emerald);}
+  .cg .cgh{position:relative; z-index:1; font-size:24px; font-weight:900; letter-spacing:.01em; margin:5px 0 10px; color:var(--txt);
     background:linear-gradient(90deg,#5fa0ff,#2dd4a7); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;}
-  .cg .cgamt{position:relative; font-size:26px; font-weight:900; color:var(--txt); display:flex; align-items:center; justify-content:center; gap:8px;}
+  .cg .cgamt{position:relative; z-index:1; font-size:26px; font-weight:900; color:var(--txt); display:flex; align-items:center; justify-content:center; gap:8px;}
+  .cg .cgamt .cgnum{background:linear-gradient(92deg,#ffe9a8,#ffc24d 45%,#ffe9a8 90%); background-size:200% 100%;
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; animation:cgshine 2.6s linear infinite;}
+  @keyframes cgshine{to{background-position:200% 0;}}
   .cg .cgamt span{font-size:12px; font-weight:800; letter-spacing:.08em; color:var(--txt2); align-self:center;}
-  .cg .cgmsg{position:relative; color:var(--txt2); font-size:12.5px; line-height:1.55; margin:9px 4px 18px;}
-  .cg .cgcta{position:relative; width:100%;}
-  .cg .cgclose{position:relative; display:block; width:100%; margin-top:9px; background:none; border:none; color:var(--txt2);
+  .cg .cgmsg{position:relative; z-index:1; color:var(--txt2); font-size:12.5px; line-height:1.55; margin:9px 4px 18px;}
+  .cg .cgcta{position:relative; z-index:1; width:100%; overflow:hidden;}
+  .cg .cgcta::after{content:''; position:absolute; top:0; left:-60%; width:45%; height:100%; pointer-events:none;
+    background:linear-gradient(105deg, transparent, rgba(255,255,255,.45), transparent); animation:cgsweep 2.8s ease-in-out infinite;}
+  @keyframes cgsweep{0%{left:-60%;}55%,100%{left:120%;}}
+  .cg .cgclose{position:relative; z-index:1; display:block; width:100%; margin-top:9px; background:none; border:none; color:var(--txt2);
     font-size:12.5px; font-weight:700; padding:8px; cursor:pointer;}
+  .litem .seedet{margin-top:5px; background:none; border:none; padding:0; color:#ff9b8a; font-size:11.5px; font-weight:800;
+    letter-spacing:.02em; cursor:pointer; text-decoration:underline; text-underline-offset:2px;}
+  .litem .rdet{margin-top:6px; padding:8px 10px; border-radius:9px; background:rgba(255,92,74,.09);
+    border:1px solid rgba(255,92,74,.22); color:var(--txt2); font-size:11.5px; line-height:1.5;}
+  .litem .rdet b{color:var(--txt);}
   @keyframes fade{from{opacity:0;}to{opacity:1;}}
   .modal{width:100%; max-width:340px; background:linear-gradient(160deg,var(--surf2),var(--bg)); border:1px solid rgba(95,200,255,.32); border-radius:20px; padding:20px; animation:pop .3s cubic-bezier(.2,1.3,.4,1);}
   @keyframes pop{from{opacity:0; transform:scale(.85);}to{opacity:1; transform:scale(1);}}
@@ -1075,16 +1095,42 @@ function openPage(title, build){
   const body=document.createElement('div'); build(body); pg.appendChild(body);
   document.body.appendChild(pg); registerPage(pg);
 }
+const MYW_URL='https://asia-southeast1-diamond-bang-92125.cloudfunctions.net/earnMyWithdrawals';
 function openHistory(){
   openPage('Withdrawal History', b=>{
     const h=(STATE.history)||[];
     if(!h.length){ b.appendChild($(`<div class="empty">No withdrawals yet.<br>Hit a tier and cash out for real MLBB diamonds.</div>`)); return; }
     const c=$(`<div class="card"></div>`);
-    h.forEach(x=>c.appendChild($(`<div class="litem"><span class="dia blue" style="width:18px;height:18px"></span>
-      <div class="gleft"><div class="nm">${x.mlbb} MLBB Diamonds</div><div class="sm">${dateStr(x.ts)} · ${x.cost.toLocaleString()} points${x.refunded?' · refunded':''}</div></div>
-      <span class="stat ${x.status}">${(({pending:'Pending',fulfilled:'Successful',rejected:'Rejected'})[x.status]||x.status).toUpperCase()}</span></div>`)));
+    h.forEach(x=>{
+      const lbl=(({pending:'Pending',fulfilled:'Successful',rejected:'Rejected'})[x.status]||x.status).toUpperCase();
+      const rej=x.status==='rejected';
+      const row=$(`<div class="litem hi" data-ts="${x.ts||''}" data-st="${x.status}"><span class="dia blue" style="width:18px;height:18px"></span>
+        <div class="gleft"><div class="nm">${x.mlbb} MLBB Diamonds</div>
+          <div class="sm">${dateStr(x.ts)} · ${x.cost.toLocaleString()} points${x.refunded?' · refunded':''}</div>
+          ${rej?`<button class="seedet" type="button">See details</button><div class="rdet" hidden></div>`:''}</div>
+        <span class="stat ${x.status}">${lbl}</span></div>`);
+      if(rej){ const btn=row.querySelector('.seedet'), det=row.querySelector('.rdet');
+        btn.onclick=()=>{ if(det.hasAttribute('hidden')){ det.removeAttribute('hidden'); btn.textContent='Hide details'; } else { det.setAttribute('hidden',''); btn.textContent='See details'; } }; }
+      c.appendChild(row);
+    });
     b.appendChild(c);
+    if(h.some(x=>x.status==='rejected') && STATE && STATE.uid) fillRejectReasons(b);
   });
+}
+// Kunin ang reason ng bawat rejected withdrawal (server) — hindi kasama sa native history,
+// kaya direktang fetch. Walang app update na kailangan; per-uid, non-sensitive fields lang.
+async function fillRejectReasons(scope){
+  try{
+    const r=await fetch(MYW_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid:STATE.uid})}).then(x=>x.json());
+    if(!r||!r.ok||!Array.isArray(r.items)) return;
+    const map={}; r.items.forEach(it=>{ if(it && it.ts!=null) map[it.ts]=it; });
+    scope.querySelectorAll('.litem.hi[data-st="rejected"]').forEach(row=>{
+      const it=map[+row.getAttribute('data-ts')]; const det=row.querySelector('.rdet'); if(!det) return;
+      const reason=(it&&it.reason)||'Your withdrawal was declined after review. Please make sure you follow the fair-use rules.';
+      const refunded=it&&it.refunded;
+      det.innerHTML=`${esc(reason)}${refunded?' <b>Your points were refunded.</b>':' <b>Points were not refunded.</b>'}`;
+    });
+  }catch(e){}
 }
 function openInvited(){
   openPage('Friends You Invited', b=>{
@@ -1594,11 +1640,12 @@ function showCongrats(w){
   const link='https://santoryutoolkit.com/?ref='+encodeURIComponent(code);
   const amt=(w.mlbb||0).toLocaleString();
   const ov=$(`<div class="ov congrats"><div class="modal cg">
+    <div class="cgrays"></div>
     <div class="cgburst"></div>
     <div class="cgmedal"><span class="dia blue" style="width:34px;height:34px"></span></div>
     <div class="cgkick">WITHDRAWAL SENT</div>
     <div class="cgh">CONGRATULATIONS!</div>
-    <div class="cgamt">${amt} <span>MLBB DIAMONDS</span></div>
+    <div class="cgamt"><span class="cgnum">${amt}</span> <span>MLBB DIAMONDS</span></div>
     <div class="cgmsg">delivered to your Mobile Legends account. Keep inviting friends and cash out even more!</div>
     <button class="btn go cgcta" id="cgInvite">Invite friends & earn more</button>
     <button class="cgclose" id="cgX">Maybe later</button>
