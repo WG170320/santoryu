@@ -769,19 +769,24 @@ const DECLINE_REASONS=[
   ['invalid_gameid','Game ID or Server is incorrect or not found.'],
   ['emulator','Emulator or non-genuine device detected.'],
   ['fraud','Suspicious or fraudulent earning activity.'],
-  ['other','Other (type below).']
+  ['duplicate_device','This device already withdrew — no more allowed.'],
+  ['other','Other (write your own message below).']
 ];
+function _declPreset(code){ return (DECLINE_REASONS.find(x=>x[0]===code)||['',''])[1]; }
 function declineModal(cost){
   return new Promise(res => { _modalResolve = res;
     window._declRefund=false; window._declReason='multi_account';
+    window._declMsg=_declPreset('multi_account');
     const ss='width:100%;box-sizing:border-box;margin-top:6px;padding:9px 10px;border-radius:9px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:inherit;font:inherit';
-    const render = () => { const isOther=window._declReason==='other';
+    const render = () => {
       return `<div class="mi red"></div><h3>Decline withdrawal</h3>
-      <p>Pick a reason — the user sees this in "See details". Then choose refund.</p>
+      <p>Pick a reason, then edit the message the user will see in "See details". Then choose refund.</p>
       <select onchange="_declSetReason(this.value)" style="${ss}">
         ${DECLINE_REASONS.map(([v,l])=>`<option value="${v}" ${window._declReason===v?'selected':''}>${esc(l)}</option>`).join('')}
       </select>
-      ${isOther?`<textarea id="declC" rows="2" placeholder="Custom reason shown to the user" style="${ss}"></textarea>`:''}
+      <div style="margin-top:10px;font-size:12px;opacity:.7">Message shown to the user (edit freely):</div>
+      <textarea id="declC" rows="3" maxlength="300" oninput="window._declMsg=this.value"
+        placeholder="Type the message the user will see…" style="${ss};margin-top:4px">${esc(window._declMsg||'')}</textarea>
       <div class="opts" style="margin-top:12px">
         <div class="opt ${!window._declRefund?'sel':''}" onclick="_declRef(false)"><div class="dot"></div>
           <div><div class="ot">No refund</div><div class="od">Keep the ${cost}◆ deducted — suspected cheater.</div></div></div>
@@ -790,11 +795,13 @@ function declineModal(cost){
       </div>
       <div class="mbtns"><button class="btn ghost" onclick="closeModal(null)">Cancel</button>
         <button class="btn danger" onclick="_declSubmit()">Decline</button></div>`; };
-    window._declSetReason = v => { window._declReason=v; document.getElementById('modal').innerHTML=render(); };
+    window._declSetReason = v => { window._declReason=v;
+      // swap the message to the new preset unless the admin already typed a custom one
+      if(v!=='other') window._declMsg=_declPreset(v);
+      document.getElementById('modal').innerHTML=render(); };
     window._declRef = v => { window._declRefund=v; document.getElementById('modal').innerHTML=render(); };
     window._declSubmit = () => { const code=window._declReason;
-      let text=(DECLINE_REASONS.find(x=>x[0]===code)||['',''])[1];
-      if(code==='other'){ const c=document.getElementById('declC'); text=(c&&c.value.trim())||'Withdrawal declined after review.'; }
+      const text=(window._declMsg||'').trim()||_declPreset(code)||'Withdrawal declined after review.';
       closeModal({ rejectReason:code, reason:text, refund:window._declRefund }); };
     _openModal(render()); });
 }
