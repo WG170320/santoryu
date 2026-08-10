@@ -850,6 +850,14 @@ function render(){
       <div class="bwd">This looks like a duplicate account or an emulator. Only one real device per person can earn. The rest of the app works normally.</div></div>
   </div>`));
 
+  // Parallel/cloner (dual-space) na app — app-side detection. Babala + hikayat gamitin ang
+  // tunay na app. (Server-side enforcement ay naka-kill-switch pa; ito ang malinaw na paalala.)
+  else if(s.cloned) app.appendChild($(`<div class="banwarn">
+    <div class="bwic">!</div>
+    <div class="bwtx"><div class="bwt">Please open the app normally to earn</div>
+      <div class="bwd">You're running Santoryu inside a cloner / dual-space app. Earning only works on a normal install. Open the real app to keep earning.</div></div>
+  </div>`));
+
   // profile card (sino ka — avatar, pangalan, invite code, total earned)
   const pfav = a.avatarUrl ? `<img class="pf-av" src="${esc(a.avatarUrl)}" alt="" onerror="this.removeAttribute('src');this.classList.add('pf-ini');this.textContent='${esc((a.name||'U').slice(0,1).toUpperCase())}'">`
     : `<div class="pf-av pf-ini">${esc((a.name||'U').slice(0,1).toUpperCase())}</div>`;
@@ -927,6 +935,33 @@ function render(){
       } else if(isNative&&window.Android.playGames){ window.Android.playGames(); }
     };
     app.appendChild(pe);
+  }
+
+  // Play & Earn STEP 2 — one-time, lumalabas LANG matapos ma-claim ang step 1 (at hindi pa
+  // step 2). Kailangan ng bagong app build (claimJogos2 bridge) — kaya naka-gate sa native.
+  if(c.jogosEnabled && s.jogosClaimed && !s.jogosClaimed2 && isNative && window.Android && window.Android.claimJogos2){
+    const p2Rew=c.jogosStep2Reward||5, p2Min=Math.max(1,Math.round((c.jogosStep2Secs||60)/60));
+    const gd='<span class="dia gold" style="width:14px;height:14px;vertical-align:-.16em"></span>';
+    const clk='<svg viewBox="0 0 24 24" width="14" height="14" style="vertical-align:-.16em" fill="none" stroke="#8FF3C6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 1.8"/></svg>';
+    const claimable2=!!s.jogosClaimable2;
+    const pe2=$(`<div class="pehero" id="pehero2">
+      <div class="lbl"><span class="dot"></span> PLAY &amp; EARN · ROUND 2</div>
+      <h3>One more round — ${p2Rew} diamonds</h3>
+      <div class="desc">${claimable2?("Nice! Claim your extra "+p2Rew+" diamonds."):('Quick bonus round — just '+p2Min+' minute'+(p2Min>1?'s':'')+' of play, then claim '+p2Rew+' more.')}</div>
+      <div class="rwrow"><div class="rw">${clk} ${p2Min} min</div><div class="rw hot">${gd} +${p2Rew}</div></div>
+      <div class="go" id="pego2">${claimable2?('CLAIM '+p2Rew+' DIAMONDS'):'PLAY NOW ›'}</div>
+      <div class="jby"><span class="cap">GAMES BY</span>${JOGOS_LOGO}</div>
+    </div>`);
+    pe2.querySelector('#pego2').onclick=async ev=>{
+      ev.stopPropagation();
+      if(claimable2){
+        const g=ev.currentTarget; g.textContent='…';
+        const r=await call('claimJogos2');
+        if(r&&r.ok){ gainFx(p2Rew,'gold'); requestState(); }
+        else { g.textContent='CLAIM '+p2Rew+' DIAMONDS'; toast("Can't claim yet — please try again."); }
+      } else if(window.Android.playGames){ window.Android.playGames(); }
+    };
+    app.appendChild(pe2);
   }
 
   // daily (GOLD points)
