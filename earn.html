@@ -146,6 +146,7 @@
   .stat.pending{background:rgba(245,180,69,.14); color:var(--amber);}
   .stat.fulfilled{background:rgba(52,211,153,.14); color:var(--green);}
   .stat.rejected{background:rgba(255,94,108,.14); color:var(--danger);}
+  .stat.refunded{background:rgba(245,166,35,.16); color:#e0912a;}
   .empty{text-align:center; color:var(--txt2); font-size:12px; padding:16px 0;}
 
   /* nav rows (open sub-pages) */
@@ -721,7 +722,7 @@ function gemSVG(kind){
 const isNative=!!window.Android;
 let REQ=0; const pending={};
 window.__earnResult=(id,obj)=>{ const r=pending[id]; if(r){delete pending[id]; r(obj);} };
-window.__earnState=(s)=>{ STATE=s; render(); if(typeof maybeWinner==='function') maybeWinner(); if(typeof loadTournBanner==='function') loadTournBanner(); if(typeof maybeConsolation==='function') maybeConsolation(); if(typeof maybeCongrats==='function') maybeCongrats(s); };
+window.__earnState=(s)=>{ STATE=s; render(); if(typeof maybeWinner==='function') maybeWinner(); if(typeof loadTournBanner==='function') loadTournBanner(); if(typeof maybeConsolation==='function') maybeConsolation(); if(typeof maybeCongrats==='function') maybeCongrats(s); if(typeof maybePromoRefund==='function') maybePromoRefund(s); };
 function call(m,...a){ return new Promise(res=>{ const id='r'+(++REQ); pending[id]=res; window.Android[m](id,...a); }); }
 function requestState(){ if(isNative) window.Android.requestState(); else mockState(); }
 // Pagbalik sa app (hal. galing Chrome/Play & Earn), i-refresh ang state para lumabas agad
@@ -1137,19 +1138,19 @@ function openHistory(){
     if(!h.length){ b.appendChild($(`<div class="empty">No withdrawals yet.<br>Hit a tier and cash out for real MLBB diamonds.</div>`)); return; }
     const c=$(`<div class="card"></div>`);
     h.forEach(x=>{
-      const lbl=(({pending:'Pending',fulfilled:'Successful',rejected:'Rejected'})[x.status]||x.status).toUpperCase();
-      const rej=x.status==='rejected';
+      const lbl=(({pending:'Pending',fulfilled:'Successful',rejected:'Rejected',refunded:'Refunded'})[x.status]||x.status).toUpperCase();
+      const detailed=x.status==='rejected'||x.status==='refunded';
       const row=$(`<div class="litem hi" data-ts="${x.ts||''}" data-st="${x.status}"><span class="dia blue" style="width:18px;height:18px"></span>
         <div class="gleft"><div class="nm">${x.mlbb} MLBB Diamonds</div>
           <div class="sm">${dateStr(x.ts)} · ${x.cost.toLocaleString()} points${x.refunded?' · refunded':''}</div>
-          ${rej?`<button class="seedet" type="button">See details</button><div class="rdet" hidden></div>`:''}</div>
+          ${detailed?`<button class="seedet" type="button">See details</button><div class="rdet" hidden></div>`:''}</div>
         <span class="stat ${x.status}">${lbl}</span></div>`);
-      if(rej){ const btn=row.querySelector('.seedet'), det=row.querySelector('.rdet');
+      if(detailed){ const btn=row.querySelector('.seedet'), det=row.querySelector('.rdet');
         btn.onclick=()=>{ if(det.hasAttribute('hidden')){ det.removeAttribute('hidden'); btn.textContent='Hide details'; } else { det.setAttribute('hidden',''); btn.textContent='See details'; } }; }
       c.appendChild(row);
     });
     b.appendChild(c);
-    if(h.some(x=>x.status==='rejected') && STATE && STATE.uid) fillRejectReasons(b);
+    if(h.some(x=>x.status==='rejected'||x.status==='refunded') && STATE && STATE.uid) fillRejectReasons(b);
   });
 }
 // Kunin ang reason ng bawat rejected withdrawal (server) — hindi kasama sa native history,
@@ -1159,10 +1160,13 @@ async function fillRejectReasons(scope){
     const r=await fetch(MYW_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid:STATE.uid})}).then(x=>x.json());
     if(!r||!r.ok||!Array.isArray(r.items)) return;
     const map={}; r.items.forEach(it=>{ if(it && it.ts!=null) map[it.ts]=it; });
-    scope.querySelectorAll('.litem.hi[data-st="rejected"]').forEach(row=>{
+    scope.querySelectorAll('.litem.hi[data-st="rejected"], .litem.hi[data-st="refunded"]').forEach(row=>{
       const it=map[+row.getAttribute('data-ts')]; const det=row.querySelector('.rdet'); if(!det) return;
-      const reason=(it&&it.reason)||'Your withdrawal was declined after review. Please make sure you follow the fair-use rules.';
-      const refunded=it&&it.refunded;
+      const isRef=row.getAttribute('data-st')==='refunded';
+      const fallback=isRef?'Hindi na available ang 5 Diamonds na promo (naubos na). Ibinalik ang iyong points.'
+        :'Your withdrawal was declined after review. Please make sure you follow the fair-use rules.';
+      const reason=(it&&it.reason)||fallback;
+      const refunded=(it&&it.refunded)||isRef;
       det.innerHTML=`${esc(reason)}${refunded?' <b>Your points were refunded.</b>':' <b>Points were not refunded.</b>'}`;
     });
   }catch(e){}
@@ -1692,6 +1696,34 @@ function showCongrats(w){
   ov.querySelector('#cgX').onclick=()=>ov.remove();
 }
 
+//=== promo-ended apology (one-time, soft) ========================================
+// Shows once when a user has a refunded 5-diamond promo withdrawal. Warm apology,
+// amber tone (not an error). No app update needed — status "refunded" comes from RTDB.
+function maybePromoRefund(s){
+  try{
+    const ref=(s.history||[]).filter(h=>h && h.status==='refunded');
+    if(!ref.length) return;
+    const KEY='santoryu_promo_apology_v1';
+    if(localStorage.getItem(KEY)) return;
+    localStorage.setItem(KEY,'1');
+    showPromoRefund();
+  }catch(e){}
+}
+function showPromoRefund(){
+  if(document.querySelector('.ov.promoref')) return;
+  const ov=$(`<div class="ov promoref"><div class="modal cg">
+    <div class="cgmedal" style="background:linear-gradient(150deg,#ffd98a,#f5a623)"><span style="position:relative;z-index:2;font-size:34px;font-weight:900;color:#3a2600">!</span></div>
+    <div class="cgkick" style="color:#e0912a">PAUMANHIN PO</div>
+    <div class="cgh">Natapos na ang 5 Diamonds promo</div>
+    <div class="cgmsg">Pasensya na po — naubos na ang <b>5 Diamonds</b> na first-withdraw promo, kaya <b>ibinalik namin nang buo</b> ang inyong points. Mas malaki na ngayon: <b>22 Diamonds</b> na ang bagong first withdraw. Puwede na kayong mag-withdraw ulit ngayon. Salamat sa pang-unawa!</div>
+    <button class="btn go" id="prOk" style="background:linear-gradient(95deg,#ffd98a,#f5a623);color:#3a2600">Sige, salamat!</button>
+    <button class="cgclose" id="prX">Isara</button>
+  </div></div>`);
+  document.body.appendChild(ov);
+  const close=()=>ov.remove();
+  ov.querySelector('#prOk').onclick=close;
+  ov.querySelector('#prX').onclick=close;
+}
 //=== review modal (require a written comment so it's not bot-like) =================
 function openReview(t){
   const ov=$(`<div class="ov"><div class="modal">
