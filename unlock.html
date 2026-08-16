@@ -96,10 +96,6 @@
     font-size:13px; letter-spacing:.5px; padding:10px 20px; border-radius:11px; cursor:pointer;}
 
   .foot{text-align:center; color:var(--txt2); font-size:11px; margin-top:20px; line-height:1.5;}
-  .usagehint{display:flex; align-items:center; gap:11px; justify-content:space-between; margin:2px 0 4px; padding:12px 14px;
-    border-radius:14px; background:rgba(232,180,74,.08); border:1px solid rgba(232,180,74,.28); font-size:12px; color:var(--txt2); line-height:1.4;}
-  .usagehint b{color:var(--gold-hi);}
-  .usagehint .btn{flex:0 0 auto; background:linear-gradient(180deg,var(--gold-hi),var(--gold)); color:#231603; box-shadow:0 6px 16px -8px rgba(232,180,74,.5);}
 
   /* toast */
   #toasts{position:fixed; left:0; right:0; bottom:28px; display:flex; flex-direction:column; align-items:center; gap:8px; z-index:50; pointer-events:none;}
@@ -161,18 +157,6 @@
   function copyCode(text){ callBridge("copyCode",[text]); }
   function markUnlocked(id){ callBridge("markUnlocked",[id]); }
   function nativeToast(msg){ callBridge("toast",[msg]); }
-  function usageOK(){ var b=bridge(); return !!(b && typeof b.hasUsageAccess==="function" && b.hasUsageAccess()); }
-  function openUsageSettings(){ callBridge("openUsageSettings",[]); }
-  function usageSeconds(pkg){
-    return new Promise(function(res){
-      var id="u"+(RID++);
-      PENDING[id]=res;
-      var b=bridge();
-      if(b && typeof b.usageSeconds==="function"){
-        try{ b.usageSeconds(id, pkg); }catch(e){ delete PENDING[id]; res(0); }
-      } else { delete PENDING[id]; res(0); }
-    });
-  }
 
   function isInstalled(pkg){
     return new Promise(function(res){
@@ -192,30 +176,11 @@
 
   // ---- native entry points ----
   window.__unlockBoot=function(fnBase){ FN=fnBase||""; load(); };
-  window.__resumed=function(){ if(CFG && CFG.enabled){ recheckAll(); pollUsage(); } };
+  window.__resumed=function(){ if(CFG && CFG.enabled) recheckAll(); };
   window.__installed=function(reqId, val){
     var p=PENDING[reqId];
     if(p){ delete PENDING[reqId]; p(!!val); }
   };
-  window.__usage=function(reqId, secs){
-    var p=PENDING[reqId];
-    if(p){ delete PENDING[reqId]; p((+secs)||0); }
-  };
-
-  // On return to the gate, refresh real usage for any usage-required app in progress.
-  function pollUsage(){
-    if(!CFG || !CFG.apps) return;
-    CFG.apps.forEach(function(a){
-      var s=st(a.id);
-      if((+a.usageSecs)>0 && s.usageStarted && !s.opened && usageOK()){
-        usageSeconds(a.package).then(function(sec){
-          s.usedSecs=sec;
-          if(sec >= (+a.usageSecs)){ s.opened=true; s.usageStarted=false; }
-          rerenderCard(a);
-        });
-      }
-    });
-  }
 
   // ---- in-page toast fallback (mirrors native toast on preview) ----
   function toast(msg, good){
@@ -229,7 +194,7 @@
     setTimeout(function(){ t.classList.add("out"); setTimeout(function(){ t.remove(); }, 320); }, 2200);
   }
 
-  function st(id){ return ST[id] || (ST[id]={opened:false, promo:false, busy:false, usageStarted:false, usedSecs:0}); }
+  function st(id){ return ST[id] || (ST[id]={opened:false, promo:false, busy:false}); }
 
   // ---- data ----
   function load(){
@@ -277,28 +242,14 @@
     CFG.apps.forEach(function(a){
       el.appendChild(buildCard(a));
     });
-    if(needsUsageGrant()){
-      var h=document.createElement("div");
-      h.className="usagehint";
-      h.innerHTML='<span>Enable <b>usage access</b> for instant verification instead of waiting.</span>'+
-        '<button class="btn" data-act="grant">Grant</button>';
-      h.querySelector('[data-act]').onclick=function(){ openUsageSettings(); };
-      el.appendChild(h);
-    }
-  }
-  function needsUsageGrant(){
-    return !!(CFG && CFG.apps && CFG.apps.some(function(a){ return (+a.usageSecs)>0; }) && !usageOK());
   }
 
   function buildCard(a){
     var s=st(a.id);
     var inst=!!INSTALLED[a.id];
     var needOpen=(+a.openSecs)>0;
-    var needUse=(+a.usageSecs)>0;
-    var hasOpenStep=needUse || needOpen;
-    var openDur=needUse ? (+a.usageSecs) : (+a.openSecs);
     var needPromo=!!(a.promo && String(a.promo).length);
-    var ready = inst && (!hasOpenStep || s.opened) && (!needPromo || s.promo);
+    var ready = inst && (!needOpen || s.opened) && (!needPromo || s.promo);
 
     var card=document.createElement("div");
     card.className="app"+(ready?" ready":"");
@@ -322,24 +273,16 @@
       ? ''
       : '<button class="btn" data-act="dl">Get</button>');
 
-    // Step: open / use
-    if(hasOpenStep){
+    // Step: open
+    if(needOpen){
       stepNo++;
-      var label = needUse ? ('Open and use for '+openDur+'s') : 'Open the app';
       var openBtn='';
       if(inst && !s.opened){
-        if(s.busy==='open'){
-          openBtn = '<button class="btn wait" data-act="none" disabled>'+ (s.remain||openDur) +'s</button>';
-        } else if(needUse && usageOK()){
-          // real usage verification (has PACKAGE_USAGE_STATS)
-          if(s.usedSecs>0){ label += ' ('+Math.min(s.usedSecs,openDur)+'/'+openDur+'s)'; }
-          openBtn = '<button class="btn" data-act="use">'+ (s.usageStarted?'Check':'Open') +'</button>';
-        } else {
-          // timer fallback (no usage permission) or plain open
-          openBtn = '<button class="btn" data-act="open">Open</button>';
-        }
+        openBtn = (s.busy==='open')
+          ? '<button class="btn wait" data-act="none" disabled>'+ (s.remain||a.openSecs) +'s</button>'
+          : '<button class="btn" data-act="open">Open</button>';
       }
-      steps+=stepRow(s.opened, stepNo, label, openBtn);
+      steps+=stepRow(s.opened, stepNo, "Open the app", openBtn);
     }
 
     // Step: promo
@@ -382,26 +325,8 @@
       toast("Install it, then come back here.");
     } else if(kind==="open"){
       if(s.busy) return;
-      var dur=(+a.usageSecs)>0 ? (+a.usageSecs) : (+a.openSecs);
       openLink(a.link);
-      startCountdown(a, "open", dur, function(){ s.opened=true; });
-    } else if(kind==="use"){
-      if(!usageOK()){ openUsageSettings(); return; }
-      if(s.usageStarted){
-        usageSeconds(a.package).then(function(sec){
-          s.usedSecs=sec;
-          if(sec >= (+a.usageSecs)){ s.opened=true; s.usageStarted=false; }
-          else toast("Keep using it — "+Math.min(sec,+a.usageSecs)+"/"+(+a.usageSecs)+"s so far.");
-          rerenderCard(a);
-        });
-      } else {
-        openLink(a.link);
-        s.usageStarted=true;
-        toast("Use it for "+(+a.usageSecs)+"s, then come back.");
-        rerenderCard(a);
-      }
-    } else if(kind==="grant"){
-      openUsageSettings();
+      startCountdown(a, "open", +a.openSecs, function(){ s.opened=true; });
     } else if(kind==="promo"){
       if(s.busy) return;
       copyCode(a.promo);
