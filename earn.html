@@ -663,6 +663,47 @@
   .tetime{font-size:11px; color:var(--txt2); margin-top:1px;}
   .teamt{font-family:'Rajdhani'; font-weight:700; font-size:16px; color:var(--blue-hi); flex:0 0 auto;}
   .teproof{margin-top:14px; padding:13px 15px; border-radius:12px; background:rgba(45,212,167,.07); border:1px solid rgba(45,212,167,.25); font-size:12px; color:var(--txt2); line-height:1.5; text-align:center;}
+  /* ── Skin giveaway hero (holographic collector-foil) ───────────────────────── */
+  .gvw{position:relative; border-radius:22px; padding:1.6px; margin:6px 0 2px;
+    background:linear-gradient(120deg,#5FE6FF,#4DA6FF,#A970FF,#FF4FD8,#FFE08A,#2DD4A7,#5FE6FF);
+    background-size:280% 280%; animation:gvwfoil 7s linear infinite;
+    box-shadow:0 14px 42px -16px rgba(169,112,255,.5), 0 0 0 1px rgba(255,255,255,.04);}
+  @keyframes gvwfoil{0%{background-position:0% 50%} 100%{background-position:280% 50%}}
+  .gvw-in{position:relative; border-radius:20.6px; padding:18px 18px 16px; overflow:hidden;
+    background:radial-gradient(130% 90% at 86% -12%, rgba(169,112,255,.18), transparent 55%),
+      radial-gradient(120% 90% at 0% 112%, rgba(95,230,255,.14), transparent 55%), #0a0d13;}
+  .gvw-in::after{content:''; position:absolute; inset:0; pointer-events:none;
+    background:linear-gradient(115deg,transparent 36%,rgba(255,255,255,.10) 49%,transparent 62%);
+    transform:translateX(-60%); animation:gvwsheen 5.5s ease-in-out infinite;}
+  @keyframes gvwsheen{0%,72%{transform:translateX(-60%)} 88%,100%{transform:translateX(60%)}}
+  .gvw-eyebrow{display:flex; align-items:center; gap:7px; font-family:'Chakra Petch'; font-weight:700;
+    font-size:10px; letter-spacing:3px; color:#E7C6FF; text-shadow:0 0 12px rgba(169,112,255,.55);}
+  .gvw-eyebrow i{width:6px; height:6px; border-radius:50%; background:#FF4FD8; box-shadow:0 0 8px #FF4FD8;
+    animation:gvwdot 1.4s ease-in-out infinite;}
+  @keyframes gvwdot{0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.35;transform:scale(.7)}}
+  .gvw-title{font-family:'Teko'; font-weight:700; font-size:46px; line-height:.86; letter-spacing:.5px;
+    color:#F3F7FF; margin:8px 0 0; text-shadow:0 2px 20px rgba(77,166,255,.25);}
+  .gvw-title span{background:linear-gradient(120deg,#FFE08A,#FF4FD8,#5FE6FF); background-size:200% auto;
+    -webkit-background-clip:text; background-clip:text; color:transparent; animation:gvwtxt 4s linear infinite;}
+  @keyframes gvwtxt{to{background-position:200% center}}
+  .gvw-sub{font-size:12px; line-height:1.45; color:#A9B4C2; margin:8px 0 0; max-width:290px;}
+  .gvw-steps{display:flex; flex-wrap:wrap; gap:6px; margin:13px 0 2px;}
+  .gvw-step{display:flex; align-items:center; gap:5px; font-family:'Rajdhani'; font-weight:600; font-size:11px;
+    color:#D6DEE8; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.09);
+    border-radius:999px; padding:5px 10px 5px 6px;}
+  .gvw-step b{width:16px; height:16px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-family:'Rajdhani'; font-weight:700; font-size:10px; color:#0a0d13; background:linear-gradient(135deg,#5FE6FF,#A970FF);}
+  .gvw-cta{display:flex; align-items:center; justify-content:center; gap:9px; width:100%; margin-top:14px;
+    border:none; border-radius:13px; padding:13px; cursor:pointer; font-family:'Chakra Petch'; font-weight:700;
+    font-size:13px; letter-spacing:1.5px; color:#04121f;
+    background:linear-gradient(180deg,#8fdcff,#4DA6FF 55%,#1E63B0);
+    box-shadow:0 12px 26px -10px rgba(77,166,255,.6), inset 0 1px 0 rgba(255,255,255,.55);}
+  .gvw-cta:active{transform:scale(.98);}
+  .gvw-cta svg{width:18px; height:18px; flex:0 0 auto;}
+  .gvw-foot{text-align:center; font-size:10.5px; color:var(--txt2); margin-top:9px; letter-spacing:.3px;}
+  @media (prefers-reduced-motion:reduce){
+    .gvw{animation:none} .gvw-in::after{animation:none; opacity:0}
+    .gvw-title span{animation:none} .gvw-eyebrow i{animation:none}}
 </style>
 </head>
 <body>
@@ -1044,7 +1085,26 @@ function render(){
   requestAnimationFrame(()=>document.querySelectorAll('.fill[data-w]').forEach(f=>f.style.width=f.dataset.w+'%'));
 }
 
+// Skin giveaway hero — bold promo banner na naka-link sa FB giveaway task.
+function isGiveaway(t){ return /giveaway|dream skin/i.test((t.title||'')+' '+(t.desc||'')); }
+function giveawayHero(app,s){
+  const g=(s.tasks||[]).filter(t=>!t.claimed&&isGiveaway(t));
+  if(!g.length) return;
+  const link=((g.find(t=>t.link&&t.link!=='#')||g[0]).link)||'#';
+  const fb=`<svg viewBox="0 0 24 24" fill="#04121f"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.15 8.44 9.9v-7H7.9v-2.9h2.54V9.84c0-2.52 1.5-3.91 3.78-3.91 1.1 0 2.24.2 2.24.2v2.47h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.44 2.9h-2.34v7c4.78-.75 8.44-4.9 8.44-9.9Z"/></svg>`;
+  const el=$(`<div class="gvw"><div class="gvw-in">
+    <div class="gvw-eyebrow"><i></i>LIMITED SKIN GIVEAWAY</div>
+    <h2 class="gvw-title">WIN A <span>FREE</span> SKIN</h2>
+    <p class="gvw-sub">Comment the MLBB skin you want. We design it and gift it to one lucky player each drop.</p>
+    <div class="gvw-steps"><span class="gvw-step"><b>1</b>React</span><span class="gvw-step"><b>2</b>Comment your skin</span><span class="gvw-step"><b>3</b>We gift it</span></div>
+    <button class="gvw-cta">${fb}Join on Facebook</button>
+    <div class="gvw-foot">Complete the tasks below — +5 diamonds each</div>
+  </div></div>`);
+  el.querySelector('.gvw-cta').onclick=()=>{ if(link&&link!=='#'){ if(window.Android&&window.Android.openLink) window.Android.openLink(link); else window.open(link,'_blank'); } };
+  app.appendChild(el);
+}
 function appendTasks(app,s){
+  giveawayHero(app,s);
   // One-time show: pag na-claim na, tuluyang mawawala sa listahan (walang "Done" row).
   const list=(s.tasks||[]).filter(t=>!t.claimed);
   if(!list.length) return;
