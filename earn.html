@@ -704,6 +704,39 @@
   @media (prefers-reduced-motion:reduce){
     .gvw{animation:none} .gvw-in::after{animation:none; opacity:0}
     .gvw-title span{animation:none} .gvw-eyebrow i{animation:none}}
+  /* ── High-value GearUp mission hero (gold premium, separate from tasks) ── */
+  .gmh{margin:6px 0 18px; border-radius:20px; padding:1.6px;
+    background:linear-gradient(120deg,#FFE08A,#E8B44A,#A9781F,#E8B44A,#FFE08A); background-size:220% 220%;
+    animation:gmfoil 8s linear infinite; box-shadow:0 16px 44px -18px rgba(232,180,74,.5);}
+  @keyframes gmfoil{to{background-position:220% 50%}}
+  .gmh-in{border-radius:18.6px; padding:18px 17px;
+    background:radial-gradient(120% 90% at 88% -10%, rgba(232,180,74,.16), transparent 55%), linear-gradient(160deg,#1a160c,#0c0f14 78%);}
+  .gmh-top{display:flex; align-items:center; justify-content:space-between; gap:10px;}
+  .gmh-eyebrow{display:flex; align-items:center; gap:7px; font-family:'Chakra Petch'; font-weight:700; font-size:10px; letter-spacing:3px; color:var(--gold-hi);}
+  .gmh-eyebrow i{width:6px; height:6px; border-radius:50%; background:var(--gold); box-shadow:0 0 8px var(--gold); animation:gmblink 1.5s ease-in-out infinite;}
+  @keyframes gmblink{50%{opacity:.35}}
+  .gmh-reward{display:flex; align-items:center; gap:6px; flex:0 0 auto; font-family:'Rajdhani'; font-weight:700; font-size:19px; color:var(--gold-hi);
+    background:rgba(232,180,74,.14); border:1px solid rgba(232,180,74,.35); padding:4px 12px; border-radius:11px;}
+  .gmh-title{font-family:'Teko'; font-weight:700; font-size:32px; line-height:.95; margin:9px 0 0; color:#fff;}
+  .gmh-sub{font-size:12px; color:var(--txt2); margin:5px 0 0; line-height:1.4; max-width:320px;}
+  .gmh-steps{margin:14px 0 4px;}
+  .gmh-step{display:flex; align-items:center; gap:11px; padding:9px 0; border-top:1px solid rgba(232,180,74,.14); font-size:13px;}
+  .gmh-step:first-child{border-top:none;}
+  .gmh-dot{width:22px; height:22px; border-radius:50%; flex:0 0 auto; display:flex; align-items:center; justify-content:center;
+    font-family:'Rajdhani'; font-weight:700; font-size:12px; color:#0a0d13; background:linear-gradient(135deg,#FFE08A,#E8B44A);}
+  .gmh-step.done .gmh-dot{background:var(--emerald); color:#04140f;}
+  .gmh-tx{flex:1; min-width:0; color:var(--txt); line-height:1.3;}
+  .gmh-step.done .gmh-tx{color:var(--txt2);}
+  .gmbtn{margin-left:auto; flex:0 0 auto; border:none; border-radius:9px; padding:7px 14px; font-family:'Rajdhani'; font-weight:700; font-size:12px;
+    color:#0a0d13; background:linear-gradient(180deg,#FFE08A,#E8B44A); cursor:pointer;}
+  .gmbtn:active{transform:scale(.95);}
+  .gmbtn.wide{width:100%; margin:11px 0 0; padding:11px; text-align:center;}
+  .gmh-claim{width:100%; margin-top:14px; border:none; border-radius:13px; padding:15px; font-family:'Chakra Petch'; font-weight:700;
+    letter-spacing:2px; font-size:15px; color:#3a2600; cursor:pointer;
+    background:linear-gradient(90deg,#FFE08A,#E8B44A); box-shadow:0 12px 30px -10px rgba(232,180,74,.55);}
+  .gmh-claim:active:not([disabled]){transform:translateY(1px);}
+  .gmh-claim[disabled]{background:rgba(255,255,255,.05); color:var(--txt2); box-shadow:none; cursor:default; letter-spacing:1px;}
+  @media (prefers-reduced-motion:reduce){ .gmh{animation:none} .gmh-eyebrow i{animation:none} }
 </style>
 </head>
 <body>
@@ -1106,7 +1139,11 @@ function giveawayHero(app,s){
 function appendTasks(app,s){
   giveawayHero(app,s);
   // One-time show: pag na-claim na, tuluyang mawawala sa listahan (walang "Done" row).
-  const list=(s.tasks||[]).filter(t=>!t.claimed && (!isUsage(t) || usageSupported()));
+  const all=(s.tasks||[]).filter(t=>!t.claimed && (!isUsage(t) || usageSupported()));
+  // High-value hero mission renders as its OWN gold banner (separate from the task rows).
+  const hero=all.find(t=>t&&t.hero===true && isUsage(t));
+  if(hero) gearMissionHero(app, hero);
+  const list=all.filter(t=>t!==hero);
   if(!list.length) return;
   app.appendChild($(`<div class="sh"><div class="t">TASKS</div><div class="x">earn more points</div></div>`));
   const tc=$(`<div class="card"></div>`);
@@ -1888,6 +1925,78 @@ function openUsage(t){
   ov.onclick=e=>{ if(e.target===ov) close(); };
   // Surface the grant prompt up-front if usage access isn't enabled yet.
   (async()=>{ let r; try{ r=await call('usageSeconds', pkg, "0"); }catch(e){ r=null; } if(r&&!r.hasAccess){ grant.style.display='block'; prog.textContent='Enable usage access, then tap Open app.'; } })();
+}
+
+// ── High-value GearUp mission hero (+200) — separate from tasks, native-verified ──
+var GM={ startTs:0, gear:0, mlbb:0, active:false, done:false, taskId:null, access:undefined };
+function gmDefaults(t){ return {
+  need:+t.usageSecs||20, mNeed:+t.mlbbSecs||480, gearPkg:t.verifyPkg, mlbbPkg:t.mlbbPkg||'com.mobile.legends',
+  steps:(Array.isArray(t.steps)&&t.steps.length)?t.steps:['Open GearUp','Boost Mobile Legends','Play 1 MLBB game to optimize your ping'] }; }
+function gmStepState(need,mNeed){ var g=GM.gear,m=GM.mlbb; var s1=g>=need,s3=m>=mNeed; return {s1:s1,s2:s1,s3:s3,ready:s1&&s3}; }
+function gmStepLine(n,label,done,right){ return '<div class="gmh-step'+(done?' done':'')+'"><span class="gmh-dot">'+(done?'&#10003;':n)+'</span><span class="gmh-tx">'+esc(label)+'</span>'+(right||'')+'</div>'; }
+function gearMissionHero(app,t){
+  if(GM.taskId!==t.id){ GM={ startTs:0, gear:0, mlbb:0, active:false, done:false, taskId:t.id, access:undefined }; }
+  var card=$('<div class="gmh" id="gmcard"></div>');
+  renderGM(card,t);
+  app.appendChild(card);
+  if(GM.access===undefined){ (async()=>{ try{ var r=await call('usageSeconds', t.verifyPkg, "0"); GM.access=!!(r&&r.hasAccess); renderGM(document.getElementById('gmcard'),t); }catch(e){} })(); }
+  gmBindVis();
+}
+function renderGM(card,t){
+  if(!card) return;
+  var d=gmDefaults(t), st=gmStepState(d.need,d.mNeed);
+  var grantNeeded = (GM.access===false);
+  var step3label = d.steps[2] + ((GM.active&&!st.s3)?(' — '+fmtDur(Math.min(GM.mlbb,d.mNeed))+' / '+fmtDur(d.mNeed)):'');
+  var rows =
+    gmStepLine(1, d.steps[0], st.s1, (!GM.active&&!st.s1&&!grantNeeded)?'<button class="gmbtn" data-g="open">Open</button>':'') +
+    gmStepLine(2, d.steps[1], st.s2, '') +
+    gmStepLine(3, step3label, st.s3, '');
+  card.innerHTML =
+    '<div class="gmh-in">'+
+      '<div class="gmh-top"><div class="gmh-eyebrow"><i></i>HIGH-VALUE MISSION</div>'+
+        '<div class="gmh-reward"><span class="dia gold" style="width:15px;height:15px"></span>+'+esc(t.reward)+'</div></div>'+
+      '<h3 class="gmh-title">'+esc(t.title||'Play MLBB with GearUp')+'</h3>'+
+      '<div class="gmh-sub">'+esc(t.desc||'Boost your ping and earn big.')+'</div>'+
+      (grantNeeded?'<button class="gmbtn wide" data-g="grant">Grant usage access to start</button>':'')+
+      '<div class="gmh-steps">'+rows+'</div>'+
+      '<button class="gmh-claim" data-g="claim" '+(st.ready?'':'disabled')+'>'+(st.ready?('CLAIM +'+t.reward):'COMPLETE THE STEPS')+'</button>'+
+    '</div>';
+  card.querySelectorAll('[data-g]').forEach(function(b){ b.onclick=function(){ gmAct(t,b.getAttribute('data-g')); }; });
+}
+async function gmAct(t,kind){
+  var d=gmDefaults(t);
+  if(kind==='grant'){ if(window.Android.openUsageSettings) window.Android.openUsageSettings(); return; }
+  if(kind==='open'){ GM.active=true; GM.startTs=Date.now();
+    var link=(t.link&&t.link!=='#')?t.link:('market://details?id='+t.verifyPkg);
+    window.Android.openLink(link); renderGM(document.getElementById('gmcard'),t); return; }
+  if(kind==='claim'){
+    var st=gmStepState(d.need,d.mNeed); if(!st.ready) return;
+    var btn=document.querySelector('#gmcard .gmh-claim'); if(btn){ btn.textContent='…'; btn.disabled=true; }
+    var r; try{ r=await call('claimGearMission', t.id, t.verifyPkg, d.need, d.mlbbPkg, d.mNeed, t.reward, String(GM.startTs)); }catch(e){ r=null; }
+    if(r&&r.ok){ GM.done=true; gainFx(t.reward,'gold'); toast('Mission complete! +'+t.reward,'good'); requestState(); }
+    else if(r&&r.error==='not_used'){ GM.gear=+r.gear||GM.gear; GM.mlbb=+r.mlbb||GM.mlbb; toast('Finish all steps first.','bad'); renderGM(document.getElementById('gmcard'),t); }
+    else if(r&&r.error==='no_access'){ GM.access=false; renderGM(document.getElementById('gmcard'),t); }
+    else{ toast('Could not verify — try again','bad'); renderGM(document.getElementById('gmcard'),t); }
+  }
+}
+async function gmPoll(t){
+  if(!GM.active||GM.done) return; var d=gmDefaults(t);
+  try{
+    var rg=await call('usageSeconds', t.verifyPkg, String(GM.startTs));
+    var rm=await call('usageSeconds', d.mlbbPkg, String(GM.startTs));
+    if(rg){ GM.access=!!rg.hasAccess; GM.gear=+rg.secs||0; }
+    if(rm){ GM.mlbb=+rm.secs||0; }
+  }catch(e){}
+  renderGM(document.getElementById('gmcard'),t);
+}
+var gmVisBound=false;
+function gmBindVis(){ if(gmVisBound) return; gmVisBound=true;
+  document.addEventListener('visibilitychange', function(){
+    if(document.hidden) return;
+    if(!document.getElementById('gmcard')) return;
+    var t=((typeof STATE!=='undefined'&&STATE&&STATE.tasks)||[]).find(function(x){ return x&&x.hero===true&&x.id===GM.taskId; });
+    if(t) gmPoll(t);
+  });
 }
 
 //=== daily countdown ==============================================================
