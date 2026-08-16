@@ -1850,41 +1850,44 @@ function usageSupported(){ return isNative && window.Android && typeof window.An
 function fmtDur(s){ s=+s||0; return (s>=60&&s%60===0)?(s/60)+' min':(s>=60?Math.floor(s/60)+'m '+(s%60)+'s':s+'s'); }
 function openUsage(t){
   const need=+t.usageSecs, pkg=t.verifyPkg;
+  let startTs=0, busy=false;
   const ov=$(`<div class="ov"><div class="modal">
     <h3>${esc(t.title)}</h3>
     <p>Tap <b>Open app</b>, then actually use it for <b>${fmtDur(need)}</b>. Come back and claim <b>+${t.reward}</b> diamonds. We verify real usage — no shortcuts.</p>
     <div class="err" id="ue"></div>
-    <div id="uprog" style="font-size:13px;color:var(--txt2);margin:8px 0 2px"></div>
+    <div id="uprog" style="font-size:13px;color:var(--txt2);margin:8px 0 2px">Tap Open app to start.</div>
     <div id="ugrant" style="display:none;margin:8px 0"><button class="btn" id="ugrantb" style="width:100%">Grant usage access</button></div>
     <div class="mrow"><button class="btn ghost" id="uopen">Open app</button><button class="btn go" id="uok" disabled>Use ${fmtDur(need)}</button></div></div></div>`);
   document.body.appendChild(ov);
   const ok=ov.querySelector('#uok'), prog=ov.querySelector('#uprog'), grant=ov.querySelector('#ugrant');
-  let opened=false, busy=false;
+  // Progress display only — the CLAIM is re-verified natively (claimUsageTask), so a stale
+  // display can never grant the reward. usageSeconds counts only from startTs (fresh session).
   async function refresh(){
-    if(busy) return; busy=true;
-    let r; try{ r=await call('usageSeconds', pkg); }catch(e){ r=null; } busy=false;
-    if(!r || !r.hasAccess){
-      grant.style.display='block'; ok.disabled=true; ok.textContent='Use '+fmtDur(need);
-      prog.textContent='Enable usage access so we can verify your time.'; return;
-    }
+    if(busy||!startTs) return;
+    let r; try{ r=await call('usageSeconds', pkg, String(startTs)); }catch(e){ r=null; }
+    if(!r || !r.hasAccess){ grant.style.display='block'; ok.disabled=true; prog.textContent='Enable usage access so we can verify your time.'; return; }
     grant.style.display='none';
     const secs=Math.max(0, Math.min(+r.secs||0, need));
     if(secs>=need){ ok.disabled=false; ok.textContent='Claim +'+t.reward; prog.textContent='Verified '+fmtDur(need)+' — you can claim now.'; }
-    else{ ok.disabled=true; ok.textContent='Use '+fmtDur(need); prog.textContent=opened?('Used '+fmtDur(secs)+' / '+fmtDur(need)+' — keep using the app, then come back.'):''; }
+    else{ ok.disabled=true; ok.textContent='Use '+fmtDur(need); prog.textContent='Used '+fmtDur(secs)+' / '+fmtDur(need)+' — keep the app open, then come back.'; }
   }
-  ov.querySelector('#uopen').onclick=()=>{ opened=true; const link=(t.link&&t.link!=='#')?t.link:('market://details?id='+pkg); window.Android.openLink(link); };
+  ov.querySelector('#uopen').onclick=()=>{ startTs=Date.now(); const link=(t.link&&t.link!=='#')?t.link:('market://details?id='+pkg); window.Android.openLink(link); prog.textContent='Timing started — use the app for '+fmtDur(need)+', then come back.'; };
   ov.querySelector('#ugrantb').onclick=()=>{ if(window.Android.openUsageSettings) window.Android.openUsageSettings(); };
-  ok.onclick=async()=>{ if(ok.disabled) return; ok.textContent='…'; ok.disabled=true;
-    const r=await call('claimTask',t.id,t.reward);
-    if(r.ok){ close(); gainFx(t.reward,'gold'); toast('Verified! +'+t.reward,'good'); }
-    else{ close(); toast(r.error==='already_claimed'?'Already claimed':'Could not verify — use the app first','bad'); }
-    requestState();
+  ok.onclick=async()=>{
+    if(ok.disabled||busy) return; busy=true; ok.textContent='…'; ok.disabled=true;
+    let r; try{ r=await call('claimUsageTask', t.id, pkg, need, t.reward, String(startTs)); }catch(e){ r=null; }
+    busy=false;
+    if(r&&r.ok){ close(); gainFx(t.reward,'gold'); toast('Verified! +'+t.reward,'good'); requestState(); return; }
+    if(r&&r.error==='not_used'){ prog.textContent='Only '+fmtDur(Math.min(+r.secs||0,need))+' so far — use the app for the full '+fmtDur(need)+'.'; refresh(); }
+    else if(r&&r.error==='no_access'){ grant.style.display='block'; ok.disabled=true; ok.textContent='Use '+fmtDur(need); prog.textContent='Enable usage access to verify.'; }
+    else{ close(); toast(r&&r.error==='already_claimed'?'Already claimed':'Could not verify — try again','bad'); requestState(); }
   };
   const onVis=()=>{ if(!document.hidden && document.body.contains(ov)) refresh(); };
   document.addEventListener('visibilitychange', onVis);
   function close(){ document.removeEventListener('visibilitychange', onVis); ov.remove(); }
   ov.onclick=e=>{ if(e.target===ov) close(); };
-  refresh();
+  // Surface the grant prompt up-front if usage access isn't enabled yet.
+  (async()=>{ let r; try{ r=await call('usageSeconds', pkg, "0"); }catch(e){ r=null; } if(r&&!r.hasAccess){ grant.style.display='block'; prog.textContent='Enable usage access, then tap Open app.'; } })();
 }
 
 //=== daily countdown ==============================================================
