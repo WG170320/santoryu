@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Santoryu — Unlock</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Rajdhani:wght@500;600;700&family=Teko:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --gold:#E8B44A; --gold-hi:#FFE08A; --gold-deep:#A9781F;
+    --blue:#4DA6FF; --blue-hi:#9BD4FF; --blue-deep:#1E63B0; --cyan:#5FE6FF;
+    --emerald:#2DD4A7;
+    --bg:#07090C; --surf:#11151B; --surf2:#161B22; --line:#222a34;
+    --txt:#EDF1F5; --txt2:#8A95A3; --danger:#FF5E6C; --amber:#F5B445;
+  }
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-font-smoothing:antialiased; -webkit-tap-highlight-color:transparent;
+    -webkit-user-select:none; user-select:none; -webkit-touch-callout:none;}
+  html,body{background:var(--bg);}
+  body{font-family:'Inter',sans-serif; color:var(--txt); padding:16px 14px 40px; max-width:440px; margin:0 auto;
+    background:radial-gradient(120% 34% at 50% -4%, rgba(45,212,167,.07), transparent 60%), var(--bg);}
+  .hide{display:none !important;}
+
+  /* header */
+  .head{display:flex; align-items:center; gap:11px; padding:4px 2px 0; margin-bottom:16px;}
+  .head .logo{width:36px;height:36px;border-radius:10px; display:flex;align-items:center;justify-content:center; flex:0 0 auto;
+    background:linear-gradient(150deg,#1c2128,#0c0f14); border:1px solid rgba(45,212,167,.4); box-shadow:0 4px 14px -4px rgba(45,212,167,.4);}
+  .head .logo svg{width:20px;height:20px;}
+  .head .ht{flex:1;min-width:0;}
+  .head h1{font-family:'Chakra Petch'; font-weight:700; font-size:19px; letter-spacing:.5px; line-height:1;}
+  .head small{display:block; font-family:'Rajdhani'; font-weight:600; font-size:10px; letter-spacing:3px; color:var(--txt2); margin-top:3px;}
+
+  /* hero */
+  .hero{position:relative; overflow:hidden; border-radius:20px; padding:18px 17px; margin-bottom:18px;
+    background:radial-gradient(94% 130% at 88% 2%, rgba(45,212,167,.20), transparent 60%), linear-gradient(135deg,#101a16,#0b0f13 70%);
+    border:1px solid rgba(45,212,167,.42); box-shadow:0 14px 40px -18px rgba(45,212,167,.4), inset 0 1px 0 rgba(255,255,255,.05);}
+  .hero .eyebrow{font-family:'Chakra Petch'; font-weight:700; font-size:10px; letter-spacing:3px; color:#5ff0c8; display:flex; align-items:center; gap:7px;}
+  .hero .dot{width:7px;height:7px;border-radius:50%;background:#2EE08C;box-shadow:0 0 9px #2EE08C;animation:blink 1.6s ease-in-out infinite;}
+  @keyframes blink{50%{opacity:.3;}}
+  .hero h2{font-family:'Teko'; font-weight:700; font-size:34px; line-height:.95; margin-top:8px;}
+  .hero .sub{font-size:12px; color:var(--txt2); margin-top:6px; line-height:1.5; max-width:300px;}
+
+  /* section heading */
+  .sh{display:flex; align-items:center; justify-content:space-between; margin:4px 2px 12px;}
+  .sh .t{position:relative; font-family:'Chakra Petch'; font-weight:700; font-size:11.5px; letter-spacing:2.5px; color:var(--txt); padding-left:13px;}
+  .sh .t::before{content:''; position:absolute; left:0; top:50%; transform:translateY(-50%); width:4px; height:14px; border-radius:2px;
+    background:linear-gradient(180deg,#5ff0c8,var(--emerald)); box-shadow:0 0 9px rgba(45,212,167,.65);}
+
+  /* app card */
+  .app{position:relative; background:linear-gradient(160deg,#18222e,#0d1218 82%); border:1px solid rgba(255,255,255,.07);
+    border-radius:18px; padding:15px; margin-bottom:13px; box-shadow:0 12px 32px -18px rgba(0,0,0,.85), inset 0 1px 0 rgba(255,255,255,.045);}
+  .app::before{content:''; position:absolute; top:0; left:18px; right:18px; height:1.5px; border-radius:2px;
+    background:linear-gradient(90deg,transparent,rgba(45,212,167,.4),transparent);}
+  .app.ready{border-color:rgba(45,212,167,.45); box-shadow:0 0 0 1px rgba(45,212,167,.28), 0 14px 34px -16px rgba(45,212,167,.35);}
+  .arow{display:flex; align-items:center; gap:12px;}
+  .alogo{width:46px;height:46px;border-radius:13px;background:#0d1117;object-fit:cover;flex:0 0 auto;border:1px solid var(--line);overflow:hidden;
+    display:flex;align-items:center;justify-content:center;}
+  .alogo svg{width:22px;height:22px;color:var(--txt2);}
+  .aname{flex:1;min-width:0;}
+  .aname .n{font-family:'Rajdhani'; font-weight:700; font-size:17px; line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .aname .promo{font-size:11px; color:var(--txt2); margin-top:2px;}
+  .abadge{display:flex; align-items:center; gap:5px; flex:0 0 auto; font-family:'Rajdhani'; font-weight:700; color:var(--gold-hi); font-size:14px;
+    background:rgba(232,180,74,.12); border:1px solid rgba(232,180,74,.28); padding:6px 11px; border-radius:10px;}
+
+  .steps{margin-top:13px;}
+  .step{display:flex; align-items:center; gap:11px; padding:10px 0; border-top:1px solid rgba(34,42,52,.6); font-size:13px;}
+  .step .stx{flex:1; min-width:0; color:var(--txt); line-height:1.3;}
+  .step.done .stx{color:var(--txt2);}
+  .dot{width:22px;height:22px;border-radius:50%;border:1px solid var(--line);flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+    font-family:'Rajdhani';font-weight:700;font-size:12px;color:var(--txt2);background:#0d1117;}
+  .step.done .dot{background:var(--emerald);color:#04140f;border-color:var(--emerald);}
+  .code{font-family:'Chakra Petch'; font-weight:700; color:var(--emerald); letter-spacing:1px;}
+
+  .btn{margin-left:auto; flex:0 0 auto; border:none; border-radius:10px; padding:9px 15px; font-family:'Rajdhani'; font-weight:700; font-size:13px;
+    letter-spacing:.5px; cursor:pointer; color:#04121f; background:linear-gradient(180deg,var(--blue-hi),var(--blue) 45%,var(--blue-deep));
+    box-shadow:0 6px 16px -8px rgba(77,166,255,.5), inset 0 1px 0 rgba(255,255,255,.4); transition:transform .12s; min-width:58px; text-align:center;}
+  .btn:active{transform:scale(.94);}
+  .btn.wait{background:var(--surf2); color:var(--txt2); box-shadow:none; cursor:default; font-family:'Chakra Petch';}
+  .btn.copyb{background:linear-gradient(180deg,#5ff0c8,var(--emerald) 55%,#0f9d76); color:#04231b;}
+
+  .unlock{position:relative; overflow:hidden; width:100%; margin-top:14px; border:none; border-radius:13px; padding:14px;
+    font-family:'Chakra Petch'; font-weight:700; letter-spacing:2px; font-size:14px; color:#04140f; cursor:pointer;
+    background:linear-gradient(90deg,var(--emerald),var(--gold)); box-shadow:0 10px 26px -8px rgba(45,212,167,.5), inset 0 1px 0 rgba(255,255,255,.45);}
+  .unlock:not([disabled])::after{content:''; position:absolute; top:0; bottom:0; left:-45%; width:32%; transform:skewX(-20deg);
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent); animation:sweep 3.4s ease-in-out infinite;}
+  @keyframes sweep{0%{left:-45%;}55%,100%{left:120%;}}
+  .unlock:not([disabled]):active{transform:translateY(1px);}
+  .unlock[disabled]{background:rgba(255,255,255,.05); color:var(--txt2); box-shadow:none; cursor:default; letter-spacing:1px;}
+
+  .empty{text-align:center; color:var(--txt2); font-size:13px; padding:44px 16px; line-height:1.6;}
+  .empty .spin{width:26px;height:26px;margin:0 auto 14px;border:2.5px solid var(--line);border-top-color:var(--emerald);border-radius:50%;animation:spin .8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .retry{margin-top:14px; background:var(--surf2); border:1px solid var(--line); color:var(--txt); font-family:'Rajdhani'; font-weight:700;
+    font-size:13px; letter-spacing:.5px; padding:10px 20px; border-radius:11px; cursor:pointer;}
+
+  .foot{text-align:center; color:var(--txt2); font-size:11px; margin-top:20px; line-height:1.5;}
+
+  /* toast */
+  #toasts{position:fixed; left:0; right:0; bottom:28px; display:flex; flex-direction:column; align-items:center; gap:8px; z-index:50; pointer-events:none;}
+  .ctoast{display:flex; align-items:center; gap:9px; background:#12161c; border:1px solid var(--line); color:var(--txt);
+    font-family:'Rajdhani'; font-weight:600; font-size:14px; padding:11px 16px; border-radius:13px; box-shadow:0 10px 30px rgba(0,0,0,.5);
+    animation:tin .3s cubic-bezier(.2,1.3,.4,1);}
+  .ctoast.good{border-color:rgba(45,212,167,.5);}
+  @keyframes tin{from{opacity:0; transform:translateY(16px);}to{opacity:1; transform:translateY(0);}}
+  .ctoast.out{animation:tout .3s ease forwards;}
+  @keyframes tout{to{opacity:0; transform:translateY(16px);}}
+
+  @keyframes rise{from{opacity:0; transform:translateY(10px);}to{opacity:1; transform:translateY(0);}}
+  #list>.app{animation:rise .4s ease both;}
+  @media (prefers-reduced-motion:reduce){*{animation:none !important;}}
+</style>
+</head>
+<body>
+  <div class="head">
+    <div class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#2DD4A7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+      </svg>
+    </div>
+    <div class="ht">
+      <h1>SANTORYU</h1>
+      <small>TOOLKIT ACCESS</small>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="eyebrow"><span class="dot"></span> ONE STEP AWAY</div>
+    <h2>UNLOCK THE TOOLKIT</h2>
+    <div class="sub">Install any one partner app below and finish its quick steps. Do just one to unlock everything. It takes under a minute.</div>
+  </div>
+
+  <div class="sh"><div class="t">PARTNER APPS</div></div>
+  <div id="list"><div class="empty"><div class="spin"></div>Loading unlock options…</div></div>
+  <div class="foot">Pick any single app. Completing one unlocks full access.</div>
+
+  <div id="toasts"></div>
+
+<script>
+(function(){
+  "use strict";
+  var FN="", CFG=null, INSTALLED={}, PENDING={}, RID=0;
+  // per-app step state: ST[id] = {opened:bool, promo:bool, busy:false|'open'|'promo'}
+  var ST={};
+
+  // ---- native bridge (guarded so the page also runs in a plain browser) ----
+  function bridge(){ return window.Android || null; }
+  function callBridge(fn, args){
+    var b=bridge();
+    if(b && typeof b[fn]==="function"){
+      try{ return b[fn].apply(b, args||[]); }catch(e){ /* swallow bridge errors */ }
+    }
+    return undefined;
+  }
+  function openLink(url){ callBridge("openLink",[url]); }
+  function copyCode(text){ callBridge("copyCode",[text]); }
+  function markUnlocked(id){ callBridge("markUnlocked",[id]); }
+  function nativeToast(msg){ callBridge("toast",[msg]); }
+
+  function isInstalled(pkg){
+    return new Promise(function(res){
+      var id="r"+(RID++);
+      PENDING[id]=res;
+      var b=bridge();
+      if(b && typeof b.isInstalled==="function"){
+        try{ b.isInstalled(id, pkg); }
+        catch(e){ delete PENDING[id]; res(false); }
+      } else {
+        // no native bridge (browser preview) — resolve false shortly
+        delete PENDING[id];
+        res(false);
+      }
+    });
+  }
+
+  // ---- native entry points ----
+  window.__unlockBoot=function(fnBase){ FN=fnBase||""; load(); };
+  window.__resumed=function(){ if(CFG && CFG.enabled) recheckAll(); };
+  window.__installed=function(reqId, val){
+    var p=PENDING[reqId];
+    if(p){ delete PENDING[reqId]; p(!!val); }
+  };
+
+  // ---- in-page toast fallback (mirrors native toast on preview) ----
+  function toast(msg, good){
+    nativeToast(msg);
+    if(bridge()) return; // native shows its own; skip duplicate in-app
+    var wrap=document.getElementById("toasts");
+    var t=document.createElement("div");
+    t.className="ctoast"+(good?" good":"");
+    t.textContent=msg;
+    wrap.appendChild(t);
+    setTimeout(function(){ t.classList.add("out"); setTimeout(function(){ t.remove(); }, 320); }, 2200);
+  }
+
+  function st(id){ return ST[id] || (ST[id]={opened:false, promo:false, busy:false}); }
+
+  // ---- data ----
+  function load(){
+    setLoading();
+    fetch(FN+"/unlockConfig", {cache:"no-store"})
+      .then(function(r){ return r.json(); })
+      .then(function(json){
+        CFG=json||{};
+        if(!CFG.enabled){ markUnlocked("gearup"); return; }
+        recheckAll();
+      })
+      .catch(function(){ setError(); });
+  }
+
+  function recheckAll(){
+    if(!CFG || !CFG.apps || !CFG.apps.length){ render(); return; }
+    var apps=CFG.apps;
+    Promise.all(apps.map(function(a){
+      return isInstalled(a.package).then(function(v){ INSTALLED[a.id]=v; });
+    })).then(render);
+  }
+
+  // ---- rendering ----
+  function setLoading(){
+    document.getElementById("list").innerHTML='<div class="empty"><div class="spin"></div>Loading unlock options…</div>';
+  }
+  function setError(){
+    var el=document.getElementById("list");
+    el.innerHTML='<div class="empty">Could not load unlock options.<br>Check your connection and try again.'+
+      '<br><button class="retry" id="retryBtn">Retry</button></div>';
+    var b=document.getElementById("retryBtn");
+    if(b) b.onclick=load;
+  }
+
+  var LOGO_FALLBACK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+
+    '<rect x="4" y="2" width="16" height="20" rx="3"></rect><line x1="10" y1="18" x2="14" y2="18"></line></svg>';
+
+  function render(){
+    var el=document.getElementById("list");
+    if(!CFG || !CFG.apps || !CFG.apps.length){
+      el.innerHTML='<div class="empty">No unlock apps are available right now.<br>Please check back soon.</div>';
+      return;
+    }
+    el.innerHTML="";
+    CFG.apps.forEach(function(a){
+      el.appendChild(buildCard(a));
+    });
+  }
+
+  function buildCard(a){
+    var s=st(a.id);
+    var inst=!!INSTALLED[a.id];
+    var needOpen=(+a.openSecs)>0;
+    var needPromo=!!(a.promo && String(a.promo).length);
+    var ready = inst && (!needOpen || s.opened) && (!needPromo || s.promo);
+
+    var card=document.createElement("div");
+    card.className="app"+(ready?" ready":"");
+    card.setAttribute("data-app", a.id);
+
+    var logo = a.logo
+      ? '<img class="alogo" src="'+esc(a.logo)+'" alt="" onerror="this.style.display=\'none\'">'
+      : '<div class="alogo">'+LOGO_FALLBACK+'</div>';
+
+    var head='<div class="arow">'+logo+
+      '<div class="aname"><div class="n">'+esc(a.name||"App")+'</div>'+
+        (needPromo?'<div class="promo">Bonus code inside</div>':'')+'</div>'+
+      (a.reward?'<div class="abadge">+'+esc(a.reward)+'</div>':'')+'</div>';
+
+    var stepNo=0;
+    var steps='<div class="steps">';
+
+    // Step: install
+    stepNo++;
+    steps+=stepRow(inst, stepNo, "Download and install", inst
+      ? ''
+      : '<button class="btn" data-act="dl">Get</button>');
+
+    // Step: open
+    if(needOpen){
+      stepNo++;
+      var openBtn='';
+      if(inst && !s.opened){
+        openBtn = (s.busy==='open')
+          ? '<button class="btn wait" data-act="none" disabled>'+ (s.remain||a.openSecs) +'s</button>'
+          : '<button class="btn" data-act="open">Open</button>';
+      }
+      steps+=stepRow(s.opened, stepNo, "Open the app", openBtn);
+    }
+
+    // Step: promo
+    if(needPromo){
+      stepNo++;
+      var promoBtn='';
+      if(!s.promo){
+        promoBtn = (s.busy==='promo')
+          ? '<button class="btn wait" data-act="none" disabled>'+ (s.remain||3) +'s</button>'
+          : '<button class="btn copyb" data-act="promo">Copy</button>';
+      }
+      steps+=stepRow(s.promo, stepNo, 'Use code <span class="code">'+esc(a.promo)+'</span>', promoBtn);
+    }
+
+    steps+='<button class="unlock" data-act="unlock" '+(ready?'':'disabled')+'>'+
+      (ready?'UNLOCK NOW':'FINISH STEPS TO UNLOCK')+'</button></div>';
+
+    card.innerHTML=head+steps;
+
+    card.querySelectorAll('[data-act]').forEach(function(btn){
+      var act=btn.getAttribute('data-act');
+      if(act==='none') return;
+      btn.onclick=function(){ handleAct(a, act); };
+    });
+    return card;
+  }
+
+  function stepRow(done, n, label, right){
+    return '<div class="step'+(done?' done':'')+'">'+
+      '<span class="dot">'+(done?'&#10003;':n)+'</span>'+
+      '<span class="stx">'+label+'</span>'+
+      (right||'')+'</div>';
+  }
+
+  // ---- actions ----
+  function handleAct(a, kind){
+    var s=st(a.id);
+    if(kind==="dl"){
+      openLink(a.link);
+      toast("Install it, then come back here.");
+    } else if(kind==="open"){
+      if(s.busy) return;
+      openLink(a.link);
+      startCountdown(a, "open", +a.openSecs, function(){ s.opened=true; });
+    } else if(kind==="promo"){
+      if(s.busy) return;
+      copyCode(a.promo);
+      toast("Code copied.", true);
+      startCountdown(a, "promo", 3, function(){ s.promo=true; });
+    } else if(kind==="unlock"){
+      markUnlocked(a.id);
+    }
+  }
+
+  // ---- clean countdown: no reliance on global `event`. ----
+  // Tracks state on ST[id]; re-renders only the affected card each tick so the
+  // specific button shows the remaining seconds, then finalizes + re-renders.
+  function startCountdown(a, phase, secs, onDone){
+    var s=st(a.id);
+    if(s.busy) return;
+    var remain=Math.max(1, secs|0);
+    s.busy=phase;
+    s.remain=remain;
+    rerenderCard(a);
+
+    var iv=setInterval(function(){
+      remain--;
+      s.remain=remain;
+      if(remain<=0){
+        clearInterval(iv);
+        s.busy=false;
+        s.remain=0;
+        onDone();
+        rerenderCard(a);
+      } else {
+        rerenderCard(a);
+      }
+    }, 1000);
+  }
+
+  // Replace one card in place (keeps other cards' scroll/animation stable).
+  function rerenderCard(a){
+    var fresh=buildCard(a);
+    var old=document.querySelector('.app[data-app="'+cssEsc(a.id)+'"]');
+    if(old && old.parentNode){
+      fresh.style.animation="none";
+      old.parentNode.replaceChild(fresh, old);
+    }
+  }
+
+  // ---- small helpers ----
+  function esc(v){
+    return String(v==null?"":v)
+      .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+  }
+  function cssEsc(v){ return String(v==null?"":v).replace(/["\\]/g,"\\$&"); }
+
+  // ---- browser-preview bootstrap (no native bridge present) ----
+  if(!bridge()){
+    // Allow a manual mock via window.__MOCK_CFG for local screenshots.
+    window.addEventListener("load", function(){
+      if(window.__unlockBooted) return;
+      if(window.__MOCK_CFG){
+        window.__unlockBooted=true;
+        CFG=window.__MOCK_CFG;
+        if(!CFG.enabled){ render(); return; }
+        recheckAll();
+      }
+    });
+  }
+})();
+</script>
+</body>
+</html>
