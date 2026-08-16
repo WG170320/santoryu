@@ -737,6 +737,26 @@
   .gmh-claim:active:not([disabled]){transform:translateY(1px);}
   .gmh-claim[disabled]{background:rgba(255,255,255,.05); color:var(--txt2); box-shadow:none; cursor:default; letter-spacing:1px;}
   @media (prefers-reduced-motion:reduce){ .gmh{animation:none} .gmh-eyebrow i{animation:none} }
+  /* GearUp mission detail page */
+  .gmpage{padding:4px 2px 30px;}
+  .gmp-hero{position:relative; overflow:hidden; border-radius:18px; padding:20px 18px; margin-bottom:16px;
+    background:radial-gradient(120% 100% at 90% -10%, rgba(232,180,74,.20), transparent 55%), linear-gradient(160deg,#1a160c,#0c0f14 80%);
+    border:1px solid rgba(232,180,74,.35); box-shadow:0 14px 40px -18px rgba(232,180,74,.4);}
+  .gmp-eyebrow{font-family:'Chakra Petch'; font-weight:700; font-size:10px; letter-spacing:3px; color:var(--gold-hi);}
+  .gmp-reward{display:flex; align-items:center; gap:9px; font-family:'Teko'; font-weight:700; font-size:48px; line-height:1;
+    color:var(--gold-hi); margin:8px 0 6px; text-shadow:0 2px 18px rgba(232,180,74,.4);}
+  .gmp-note{font-size:12.5px; color:var(--txt2); line-height:1.5;}
+  .gmp-steps{margin:2px 0 4px;}
+  .gmp-step{display:flex; gap:13px; padding:14px; margin-bottom:10px; border-radius:14px; background:var(--surf); border:1px solid var(--line);}
+  .gmp-step.done{border-color:rgba(45,212,167,.4); background:linear-gradient(180deg,rgba(45,212,167,.08),var(--surf));}
+  .gmp-dot{width:28px; height:28px; border-radius:50%; flex:0 0 auto; display:flex; align-items:center; justify-content:center;
+    font-family:'Rajdhani'; font-weight:700; font-size:14px; color:#0a0d13; background:linear-gradient(135deg,#FFE08A,#E8B44A);}
+  .gmp-step.done .gmp-dot{background:var(--emerald); color:#04140f;}
+  .gmp-txt{flex:1; min-width:0;}
+  .gmp-t{font-family:'Rajdhani'; font-weight:700; font-size:16px; color:var(--txt); line-height:1.15;}
+  .gmp-step.done .gmp-t{color:var(--txt2);}
+  .gmp-d{font-size:12.5px; color:var(--txt2); margin-top:3px; line-height:1.4;}
+  .gmp-open{margin-bottom:12px;}
 </style>
 </head>
 <body>
@@ -1934,49 +1954,72 @@ function gmDefaults(t){ return {
   steps:(Array.isArray(t.steps)&&t.steps.length)?t.steps:['Open GearUp','Boost Mobile Legends','Play 1 MLBB game to optimize your ping'] }; }
 function gmStepState(need,mNeed){ var g=GM.gear,m=GM.mlbb; var s1=g>=need,s3=m>=mNeed; return {s1:s1,s2:s1,s3:s3,ready:s1&&s3}; }
 function gmStepLine(n,label,done,right){ return '<div class="gmh-step'+(done?' done':'')+'"><span class="gmh-dot">'+(done?'&#10003;':n)+'</span><span class="gmh-tx">'+esc(label)+'</span>'+(right||'')+'</div>'; }
+// Compact banner (separate from tasks) → opens a full detail PAGE.
 function gearMissionHero(app,t){
   if(GM.taskId!==t.id){ GM={ startTs:0, gear:0, mlbb:0, active:false, done:false, taskId:t.id, access:undefined }; }
-  var card=$('<div class="gmh" id="gmcard"></div>');
-  renderGM(card,t);
-  app.appendChild(card);
-  if(GM.access===undefined){ (async()=>{ try{ var r=await call('usageSeconds', t.verifyPkg, "0"); GM.access=!!(r&&r.hasAccess); renderGM(document.getElementById('gmcard'),t); }catch(e){} })(); }
-  gmBindVis();
-}
-function renderGM(card,t){
-  if(!card) return;
   var d=gmDefaults(t), st=gmStepState(d.need,d.mNeed);
-  var grantNeeded = (GM.access===false);
-  var step3label = d.steps[2] + ((GM.active&&!st.s3)?(' — '+fmtDur(Math.min(GM.mlbb,d.mNeed))+' / '+fmtDur(d.mNeed)):'');
-  var rows =
-    gmStepLine(1, d.steps[0], st.s1, (!GM.active&&!st.s1&&!grantNeeded)?'<button class="gmbtn" data-g="open">Open</button>':'') +
-    gmStepLine(2, d.steps[1], st.s2, '') +
-    gmStepLine(3, step3label, st.s3, '');
-  card.innerHTML =
+  var status = st.ready ? 'All steps done — tap to claim your reward.'
+             : GM.active ? ('In progress · MLBB '+fmtDur(Math.min(GM.mlbb,d.mNeed))+' / '+fmtDur(d.mNeed))
+             : '3 steps · we verify real play — no shortcuts.';
+  var cta = st.ready ? ('CLAIM +'+t.reward) : GM.active ? 'CONTINUE MISSION' : 'START MISSION';
+  var card=$('<div class="gmh"></div>');
+  card.innerHTML=
     '<div class="gmh-in">'+
       '<div class="gmh-top"><div class="gmh-eyebrow"><i></i>HIGH-VALUE MISSION</div>'+
         '<div class="gmh-reward"><span class="dia gold" style="width:15px;height:15px"></span>+'+esc(t.reward)+'</div></div>'+
       '<h3 class="gmh-title">'+esc(t.title||'Play MLBB with GearUp')+'</h3>'+
-      '<div class="gmh-sub">'+esc(t.desc||'Boost your ping and earn big.')+'</div>'+
-      (grantNeeded?'<button class="gmbtn wide" data-g="grant">Grant usage access to start</button>':'')+
-      '<div class="gmh-steps">'+rows+'</div>'+
-      '<button class="gmh-claim" data-g="claim" '+(st.ready?'':'disabled')+'>'+(st.ready?('CLAIM +'+t.reward):'COMPLETE THE STEPS')+'</button>'+
+      '<div class="gmh-sub">'+esc(status)+'</div>'+
+      '<button class="gmh-claim">'+cta+' &rsaquo;</button>'+
     '</div>';
-  card.querySelectorAll('[data-g]').forEach(function(b){ b.onclick=function(){ gmAct(t,b.getAttribute('data-g')); }; });
+  card.querySelector('.gmh-claim').onclick=function(){ openMissionPage(t); };
+  app.appendChild(card);
+  gmBindVis();
 }
+// Full mission page (slide-in): explains each step + shows live progress + claim.
+function openMissionPage(t){
+  if(GM.taskId!==t.id){ GM={ startTs:0, gear:0, mlbb:0, active:false, done:false, taskId:t.id, access:undefined }; }
+  openPage(t.title||'GearUp Mission', function(body){ body.className='gmpage'; body.id='gmpagebody'; renderGMPage(body,t); });
+  if(GM.access===undefined){ (async()=>{ try{ var r=await call('usageSeconds', t.verifyPkg, "0"); GM.access=!!(r&&r.hasAccess); gmRerender(t); }catch(e){} })(); }
+}
+function renderGMPage(body,t){
+  if(!body) return;
+  var d=gmDefaults(t), st=gmStepState(d.need,d.mNeed);
+  var grantNeeded=(GM.access===false);
+  var descs=['Launch the GearUp Booster app.','Inside GearUp, tap Boost on Mobile Legends.','Play one full match — GearUp optimizes your ping.'];
+  var done=[st.s1,st.s2,st.s3];
+  var prog=['','',(GM.active&&!st.s3)?(fmtDur(Math.min(GM.mlbb,d.mNeed))+' / '+fmtDur(d.mNeed)):''];
+  var stepHtml='';
+  for(var i=0;i<3;i++){
+    stepHtml+='<div class="gmp-step'+(done[i]?' done':'')+'">'+
+      '<span class="gmp-dot">'+(done[i]?'&#10003;':(i+1))+'</span>'+
+      '<div class="gmp-txt"><div class="gmp-t">'+esc(d.steps[i])+'</div>'+
+      '<div class="gmp-d">'+esc(descs[i])+(prog[i]?(' <b style="color:var(--gold-hi)">'+prog[i]+'</b>'):'')+'</div></div></div>';
+  }
+  body.innerHTML=
+    '<div class="gmp-hero"><div class="gmp-eyebrow">HIGH-VALUE MISSION</div>'+
+      '<div class="gmp-reward"><span class="dia gold" style="width:24px;height:24px"></span>+'+esc(t.reward)+'</div>'+
+      '<div class="gmp-note">Do every step with real gameplay. We check GearUp and Mobile Legends usage, so shortcuts won’t count.</div></div>'+
+    (grantNeeded?'<button class="gmbtn wide" data-g="grant">Grant usage access to start</button>':'')+
+    '<div class="gmp-steps">'+stepHtml+'</div>'+
+    '<button class="gmbtn wide gmp-open" data-g="open">'+(GM.active?'Re-open GearUp':'Open GearUp to start')+'</button>'+
+    '<button class="gmh-claim" data-g="claim" '+(st.ready?'':'disabled')+'>'+(st.ready?('CLAIM +'+t.reward):'COMPLETE ALL STEPS')+'</button>';
+  body.querySelectorAll('[data-g]').forEach(function(b){ b.onclick=function(){ gmAct(t,b.getAttribute('data-g')); }; });
+}
+function gmRerender(t){ var b=document.getElementById('gmpagebody'); if(b) renderGMPage(b,t); }
 async function gmAct(t,kind){
   var d=gmDefaults(t);
   if(kind==='grant'){ if(window.Android.openUsageSettings) window.Android.openUsageSettings(); return; }
-  if(kind==='open'){ GM.active=true; GM.startTs=Date.now();
+  if(kind==='open'){ GM.active=true; if(!GM.startTs) GM.startTs=Date.now();
     var link=(t.link&&t.link!=='#')?t.link:('market://details?id='+t.verifyPkg);
-    window.Android.openLink(link); renderGM(document.getElementById('gmcard'),t); return; }
+    window.Android.openLink(link); gmRerender(t); return; }
   if(kind==='claim'){
     var st=gmStepState(d.need,d.mNeed); if(!st.ready) return;
-    var btn=document.querySelector('#gmcard .gmh-claim'); if(btn){ btn.textContent='…'; btn.disabled=true; }
+    var btn=document.querySelector('#gmpagebody .gmh-claim'); if(btn){ btn.textContent='…'; btn.disabled=true; }
     var r; try{ r=await call('claimGearMission', t.id, t.verifyPkg, d.need, d.mlbbPkg, d.mNeed, t.reward, String(GM.startTs)); }catch(e){ r=null; }
-    if(r&&r.ok){ GM.done=true; gainFx(t.reward,'gold'); toast('Mission complete! +'+t.reward,'good'); requestState(); }
-    else if(r&&r.error==='not_used'){ GM.gear=+r.gear||GM.gear; GM.mlbb=+r.mlbb||GM.mlbb; toast('Finish all steps first.','bad'); renderGM(document.getElementById('gmcard'),t); }
-    else if(r&&r.error==='no_access'){ GM.access=false; renderGM(document.getElementById('gmcard'),t); }
-    else{ toast('Could not verify — try again','bad'); renderGM(document.getElementById('gmcard'),t); }
+    if(r&&r.ok){ GM.done=true; gainFx(t.reward,'gold'); toast('Mission complete! +'+t.reward,'good'); try{history.back();}catch(e){} requestState(); return; }
+    if(r&&r.error==='not_used'){ GM.gear=+r.gear||GM.gear; GM.mlbb=+r.mlbb||GM.mlbb; toast('Finish all steps first.','bad'); gmRerender(t); }
+    else if(r&&r.error==='no_access'){ GM.access=false; gmRerender(t); }
+    else{ toast('Could not verify — try again','bad'); gmRerender(t); }
   }
 }
 async function gmPoll(t){
@@ -1987,13 +2030,13 @@ async function gmPoll(t){
     if(rg){ GM.access=!!rg.hasAccess; GM.gear=+rg.secs||0; }
     if(rm){ GM.mlbb=+rm.secs||0; }
   }catch(e){}
-  renderGM(document.getElementById('gmcard'),t);
+  gmRerender(t);
 }
 var gmVisBound=false;
 function gmBindVis(){ if(gmVisBound) return; gmVisBound=true;
   document.addEventListener('visibilitychange', function(){
     if(document.hidden) return;
-    if(!document.getElementById('gmcard')) return;
+    if(!document.getElementById('gmpagebody')) return;
     var t=((typeof STATE!=='undefined'&&STATE&&STATE.tasks)||[]).find(function(x){ return x&&x.hero===true&&x.id===GM.taskId; });
     if(t) gmPoll(t);
   });
