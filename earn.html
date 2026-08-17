@@ -877,11 +877,29 @@
     background:rgba(232,180,74,.14); border:1px solid rgba(232,180,74,.35); padding:4px 12px; border-radius:11px;}
   .tgh-title{font-family:'Teko'; font-weight:700; font-size:32px; line-height:.95; margin:9px 0 0; color:#fff;}
   .tgh-sub{font-size:12px; color:var(--txt2); margin:5px 0 0; line-height:1.4; max-width:320px;}
-  .tgh-claim{width:100%; margin-top:14px; border:none; border-radius:13px; padding:15px; font-family:'Chakra Petch'; font-weight:700;
-    letter-spacing:2px; font-size:15px; color:#3a2600; cursor:pointer;
+  .tgh-in::before{content:'\2660'; position:absolute; left:-10px; bottom:-40px; font-size:150px; line-height:1; z-index:0;
+    color:rgba(232,180,74,.06); pointer-events:none; transform:rotate(-14deg);}
+  .tgh-reward{text-shadow:0 2px 14px rgba(232,180,74,.4);}
+  /* 6-step progress ladder — the mission's real sequence */
+  .tgh-track{position:relative; z-index:1; display:flex; gap:5px; margin-top:14px;}
+  .tgh-seg{flex:1; height:6px; border-radius:3px; background:rgba(255,255,255,.08); overflow:hidden;}
+  .tgh-seg.on{background:linear-gradient(90deg,#FFE08A,#E8B44A); box-shadow:0 0 9px rgba(232,180,74,.55);}
+  .tgh-seg.cur{background:rgba(232,180,74,.22); position:relative;}
+  .tgh-seg.cur::after{content:''; position:absolute; inset:0; transform-origin:left; border-radius:3px;
+    background:linear-gradient(90deg,#FFE08A,#E8B44A); animation:tghfill 1.6s ease-in-out infinite;}
+  @keyframes tghfill{0%{transform:scaleX(.14);opacity:.6}50%{transform:scaleX(.72);opacity:1}100%{transform:scaleX(.14);opacity:.6}}
+  .tgh-steplbl{position:relative; z-index:1; display:flex; justify-content:space-between; margin-top:8px;
+    font-family:'Rajdhani'; font-weight:700; font-size:11px; letter-spacing:.4px; color:var(--txt2); text-transform:uppercase;}
+  .tgh-steplbl b{color:var(--gold-hi);}
+  .tgh-claim{position:relative; overflow:hidden; width:100%; margin-top:14px; border:none; border-radius:13px; padding:15px;
+    font-family:'Chakra Petch'; font-weight:700; letter-spacing:2px; font-size:15px; color:#3a2600; cursor:pointer;
     background:linear-gradient(90deg,#FFE08A,#E8B44A); box-shadow:0 12px 30px -10px rgba(232,180,74,.55);}
+  .tgh-claim::after{content:''; position:absolute; top:0; left:-55%; width:34%; height:100%; pointer-events:none;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent); transform:skewX(-20deg);
+    animation:tghshine 2.8s ease-in-out infinite;}
+  @keyframes tghshine{0%{left:-55%}55%,100%{left:135%}}
   .tgh-claim:active{transform:translateY(1px);}
-  @media (prefers-reduced-motion:reduce){ .tgh{animation:none} .tgh-eyebrow i{animation:none} }
+  @media (prefers-reduced-motion:reduce){ .tgh{animation:none} .tgh-eyebrow i{animation:none} .tgh-seg.cur::after{animation:none} .tgh-claim::after{display:none} }
   /* Tongits Go detail page — 6-step ladder */
   .tgpage{padding:4px 2px 30px;}
   .tgp-hero{position:relative; overflow:hidden; border-radius:18px; padding:20px 18px; margin-bottom:16px;
@@ -2432,11 +2450,19 @@ function tongitsHero(app,s){
   else status='Day '+p.nextDay+' of '+p.daysTotal+' · play & claim now';
   const started=p.installed||p.reg!=='none';
   const cta=started?'CONTINUE MISSION':'START MISSION';
+  // 6-step ladder: install + register + each day. Filled = completed steps.
+  const totalSteps=2+(p.daysTotal||0);
+  const doneSteps=(p.installed?1:0)+(p.regApproved?1:0)+Math.min(p.streak||0, p.daysTotal||0);
+  let segs='';
+  for(let k=0;k<totalSteps;k++){ const cl=k<doneSteps?'on':((k===doneSteps&&!p.done)?'cur':''); segs+='<div class="tgh-seg '+cl+'"></div>'; }
+  const stepTxt=p.done?'All steps complete':('Step <b>'+Math.min(doneSteps+1,totalSteps)+'</b> of '+totalSteps);
   const card=$(`<div class="tgh"><div class="tgh-in">
     <div class="tgh-top"><div class="tgh-eyebrow"><i></i>HIGH-VALUE MISSION</div>
       <div class="tgh-reward"><span class="dia gold" style="width:15px;height:15px"></span>+${total}</div></div>
     <h3 class="tgh-title">${esc(c.title||'Tongits Go')}</h3>
     <div class="tgh-sub">${status}</div>
+    <div class="tgh-track">${segs}</div>
+    <div class="tgh-steplbl"><span>${stepTxt}</span><span>${doneSteps}/${totalSteps} done</span></div>
     <button class="tgh-claim">${cta} &rsaquo;</button>
   </div></div>`);
   card.querySelector('.tgh-claim').onclick=()=>openTongitsPage(s);
