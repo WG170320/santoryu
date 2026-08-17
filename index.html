@@ -3,240 +3,298 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0b0d10">
-  <meta name="description" content="Santoryu Toolkit for Android — anime skin toolkit with a built-in community chat. Free, no ads. Download the latest APK.">
-  <title>Santoryu Toolkit – Apps on Santoryu</title>
+  <meta name="theme-color" content="#06080A">
+  <meta name="description" content="Santoryu Toolkit for Android — a three-sword skin toolkit for Mobile Legends with a live catalog, a backup-first apply flow, and a built-in community. Free, no ads. Download the latest APK.">
+  <title>Santoryu Toolkit</title>
   <link rel="icon" href="assets/logo-round.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Teko:wght@500;600;700&family=Chakra+Petch:wght@600;700&family=Rajdhani:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root{
-      --bg:#0b0d10; --card:#16191e; --card2:#1d2127; --line:#2a2f37;
-      --text:#e9edf1; --muted:#9aa3ad; --green:#34d39b; --green-2:#1fae7e;
-      --gold:#e8b44a; --star:#34d39b; --shadow:0 12px 32px rgba(0,0,0,.36);
+      --void:#06080A; --panel:#0F141A; --panel-2:#141B23; --line:#222b35;
+      --ink:#EAF0F4; --steel:#AEB9C5; --steel-dim:#6E7986;
+      --emerald:#2DD4A7; --emerald-dim:#1c9c7d; --emerald-deep:#0c3b31;
+      --gold:#E8B44A; --gold-hi:#FFE08A;
+      --cut:18px;
+      --f-display:'Teko',sans-serif; --f-label:'Chakra Petch',sans-serif;
+      --f-num:'Rajdhani',sans-serif; --f-body:'Inter',sans-serif;
     }
     *{box-sizing:border-box}
     html{scroll-behavior:smooth}
-    body{margin:0;background:var(--bg);color:var(--text);
-      font-family:Roboto,"Segoe UI",ui-sans-serif,system-ui,-apple-system,sans-serif;line-height:1.5}
+    body{margin:0;background:var(--void);color:var(--ink);
+      font-family:var(--f-body);line-height:1.6;-webkit-font-smoothing:antialiased;
+      background-image:
+        radial-gradient(120% 60% at 82% -8%, rgba(45,212,167,.10), transparent 60%),
+        radial-gradient(90% 50% at 8% 4%, rgba(232,180,74,.06), transparent 55%);
+      background-attachment:fixed;}
     img,svg{display:block}
     a{color:inherit;text-decoration:none}
-    .wrap{width:min(980px,calc(100% - 32px));margin:0 auto}
+    .wrap{width:min(1020px,calc(100% - 34px));margin:0 auto}
 
-    /* top bar */
-    .topbar{position:sticky;top:0;z-index:20;background:rgba(11,13,16,.92);
-      backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
-    .topbar-in{display:flex;align-items:center;gap:14px;min-height:58px}
-    .topbar-in .logo{width:30px;height:30px;border-radius:8px}
-    .topbar-in b{font-size:18px;font-weight:800}
-    .topbar-in b span{color:var(--green)}
-    .topbar .spacer{flex:1}
-    .mini-install{display:inline-flex;align-items:center;height:36px;padding:0 16px;
-      border-radius:18px;background:var(--green);color:#06110d;font-weight:800;font-size:14px}
+    /* angular blade-cut: chamfered top-left + bottom-right */
+    .cut{clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));}
 
-    /* app header */
-    .head{padding:28px 0 8px}
-    .head-row{display:flex;gap:22px;align-items:flex-start}
-    .app-icon{width:96px;height:96px;border-radius:22px;flex:0 0 auto;
-      box-shadow:var(--shadow);border:1px solid var(--line)}
-    .app-id h1{margin:0 0 4px;font-size:30px;font-weight:800;letter-spacing:-.5px}
-    .dev{color:var(--green);font-weight:700;font-size:15px}
-    .sub{color:var(--muted);font-size:13px;margin-top:2px}
-    @media(max-width:560px){
-      .app-icon{width:72px;height:72px;border-radius:18px}
-      .app-id h1{font-size:23px}
+    .eyebrow{font-family:var(--f-label);font-weight:700;font-size:11px;letter-spacing:.32em;
+      color:var(--gold-hi);text-transform:uppercase;display:inline-flex;align-items:center;gap:9px}
+    .eyebrow::before{content:"";width:20px;height:1.5px;background:linear-gradient(90deg,var(--gold),transparent)}
+
+    /* ── top bar ── */
+    .topbar{position:sticky;top:0;z-index:30;background:rgba(6,8,10,.72);
+      backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+    .topbar-in{display:flex;align-items:center;gap:13px;min-height:60px}
+    .brand{display:flex;align-items:center;gap:11px}
+    .brand img{width:32px;height:32px;border-radius:9px}
+    .brand b{font-family:var(--f-display);font-weight:600;font-size:25px;letter-spacing:.5px;line-height:1}
+    .brand b i{color:var(--emerald);font-style:normal}
+    .spacer{flex:1}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;cursor:pointer;
+      font-family:var(--f-label);font-weight:700;letter-spacing:.06em;border:0}
+    .btn-go{height:38px;padding:0 20px;font-size:13px;color:#04120d;
+      background:linear-gradient(180deg,var(--emerald),var(--emerald-dim));
+      box-shadow:0 8px 22px -8px rgba(45,212,167,.6);--cut:11px}
+    .btn-go:hover{filter:brightness(1.07)}
+
+    /* ── hero ── */
+    .hero{padding:64px 0 30px;position:relative;overflow:hidden}
+    .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:38px;align-items:center}
+    .hero .eyebrow{margin-bottom:20px}
+    .hero h1{font-family:var(--f-display);font-weight:700;line-height:.86;margin:0;
+      font-size:clamp(58px,10vw,112px);letter-spacing:.5px;text-transform:uppercase}
+    .hero h1 .l2{display:block;color:transparent;-webkit-text-stroke:1.5px var(--steel-dim);
+      background:linear-gradient(180deg,var(--emerald),var(--emerald-dim));-webkit-background-clip:text;background-clip:text;-webkit-text-stroke:0}
+    .hero .thesis{color:var(--steel);font-size:16.5px;max-width:34ch;margin:20px 0 0;line-height:1.65}
+    .hero .thesis b{color:var(--ink);font-weight:600}
+    .cta{display:flex;gap:13px;flex-wrap:wrap;align-items:center;margin:30px 0 16px}
+    .install{height:54px;padding:0 34px;font-size:15px;color:#04120d;
+      background:linear-gradient(180deg,var(--emerald),var(--emerald-dim));
+      box-shadow:0 16px 36px -12px rgba(45,212,167,.55);--cut:14px}
+    .install:hover{filter:brightness(1.07)}
+    .install svg{width:19px;height:19px}
+    .verchip{font-family:var(--f-num);font-weight:700;font-size:14px;color:var(--steel);
+      display:inline-flex;align-items:center;gap:8px}
+    .verchip .dot{width:7px;height:7px;border-radius:50%;background:var(--emerald);box-shadow:0 0 9px var(--emerald)}
+    .fineprint{color:var(--steel-dim);font-size:12.5px;margin:4px 0 0}
+
+    /* hero emblem */
+    .emblem{position:relative;display:grid;place-items:center;aspect-ratio:1;max-width:340px;justify-self:center;width:100%}
+    .emblem .glow{position:absolute;inset:6%;border-radius:50%;
+      background:radial-gradient(circle,rgba(45,212,167,.32),transparent 62%);filter:blur(18px)}
+    .emblem .ring{position:absolute;inset:0;border-radius:50%;
+      border:1px solid rgba(45,212,167,.22);
+      mask:linear-gradient(#000,#000);animation:spin 34s linear infinite}
+    .emblem .ring::before{content:"";position:absolute;inset:-1px;border-radius:50%;
+      border:1px dashed rgba(232,180,74,.28)}
+    .emblem .ring2{position:absolute;inset:11%;border-radius:50%;border:1px solid rgba(232,180,74,.16);animation:spin 48s linear infinite reverse}
+    .emblem img{width:56%;border-radius:26px;position:relative;z-index:2;
+      box-shadow:0 26px 60px -18px rgba(45,212,167,.5),0 0 0 1px var(--line)}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    @media(max-width:780px){
+      .hero{padding:44px 0 24px}
+      .hero-grid{grid-template-columns:1fr;gap:30px}
+      .emblem{order:-1;max-width:210px}
+      .hero h1{font-size:clamp(52px,17vw,80px)}
+      .hero .thesis{max-width:none}
     }
 
-    /* metrics */
-    .metrics{display:flex;gap:0;margin:22px 0 6px;border:1px solid var(--line);
-      border-radius:14px;overflow:hidden;background:var(--card)}
-    .metric{flex:1;text-align:center;padding:14px 8px;border-right:1px solid var(--line)}
-    .metric:last-child{border-right:0}
-    .metric b{display:flex;align-items:center;justify-content:center;gap:4px;font-size:16px;font-weight:800}
-    .metric small{display:block;color:var(--muted);font-size:12px;margin-top:3px}
-    .metric .ic{width:15px;height:15px}
-    .age-box{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;
-      padding:0 5px;border:1.5px solid var(--muted);border-radius:5px;font-size:12px;font-weight:800;color:var(--text)}
-    @media(max-width:560px){
-      .metrics{flex-wrap:wrap}
-      .metric{flex:1 1 33%;border-bottom:1px solid var(--line)}
-      .metric:nth-child(3){border-right:0}
+    /* ── trust strip ── */
+    .trust{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);
+      background:linear-gradient(180deg,var(--panel),rgba(15,20,26,.4));--cut:16px}
+    .tcell{padding:18px 12px;text-align:center;border-right:1px solid var(--line)}
+    .tcell:last-child{border-right:0}
+    .tcell b{font-family:var(--f-num);font-weight:700;font-size:22px;display:flex;align-items:center;justify-content:center;gap:5px;line-height:1}
+    .tcell small{display:block;color:var(--steel-dim);font-size:11.5px;letter-spacing:.05em;margin-top:6px;text-transform:uppercase}
+    .tcell .star{color:var(--gold)}
+    @media(max-width:560px){.trust{grid-template-columns:1fr 1fr}.tcell:nth-child(2){border-right:0}.tcell:nth-child(1),.tcell:nth-child(2){border-bottom:1px solid var(--line)}}
+
+    /* ── section frame ── */
+    .band{padding:58px 0}
+    .band .head2{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:26px}
+    .band h2{font-family:var(--f-display);font-weight:600;font-size:clamp(30px,5vw,44px);
+      letter-spacing:.5px;margin:8px 0 0;text-transform:uppercase;line-height:.95}
+
+    /* ── three blades (signature) ── */
+    .blades{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .blade{--cut:20px;background:linear-gradient(150deg,rgba(45,212,167,.55),rgba(45,212,167,.05) 42%,var(--line));
+      padding:1.5px;transition:transform .25s ease}
+    .blade-in{--cut:19px;background:linear-gradient(165deg,var(--panel-2),var(--panel) 82%);
+      padding:26px 22px 28px;height:100%;position:relative;overflow:hidden}
+    .blade-in::after{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;
+      background:linear-gradient(180deg,var(--emerald),transparent 70%)}
+    .blade:hover{transform:translateY(-5px)}
+    .blade .num{font-family:var(--f-display);font-weight:700;font-size:30px;line-height:1;
+      color:var(--gold-hi);letter-spacing:.06em}
+    .blade .swords{display:flex;gap:3px;margin:14px 0 16px}
+    .blade .swords i{width:3px;height:26px;border-radius:2px;transform:skewX(-16deg);
+      background:linear-gradient(180deg,var(--emerald),var(--emerald-dim))}
+    .blade h3{font-family:var(--f-label);font-weight:700;font-size:16px;letter-spacing:.02em;margin:0 0 8px;color:var(--ink)}
+    .blade p{margin:0;color:var(--steel);font-size:13.5px;line-height:1.6}
+    @media(max-width:720px){.blades{grid-template-columns:1fr}}
+
+    /* ── whats new ── */
+    .news{border:1px solid var(--line);background:var(--panel);padding:26px 26px 22px;--cut:16px}
+    .news .rel{font-family:var(--f-num);font-weight:700;color:var(--emerald);font-size:14px;letter-spacing:.05em;margin-bottom:14px}
+    .news ul{list-style:none;margin:0;padding:0;display:grid;gap:11px}
+    .news li{display:flex;gap:12px;color:#cdd6de;font-size:14.5px;align-items:flex-start}
+    .news li::before{content:"";flex:0 0 auto;width:7px;height:7px;margin-top:8px;transform:rotate(45deg);
+      background:var(--gold);box-shadow:0 0 8px rgba(232,180,74,.5)}
+
+    /* ── reviews ── */
+    .rate-row{display:flex;gap:34px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+    .rate-big{text-align:center;min-width:120px}
+    .rate-big .n{font-family:var(--f-display);font-weight:700;font-size:76px;line-height:.8;color:var(--ink)}
+    .rate-big .stars{color:var(--gold);font-size:16px;letter-spacing:3px;margin-top:6px}
+    .rate-big small{color:var(--steel-dim);font-size:12.5px;display:block;margin-top:4px}
+    .bars{flex:1;min-width:230px;display:grid;gap:7px}
+    .bar{display:flex;align-items:center;gap:11px}
+    .bar i{font-family:var(--f-num);color:var(--steel-dim);font-size:13px;width:8px;font-style:normal}
+    .bar .track{flex:1;height:8px;background:var(--panel-2);overflow:hidden;border-radius:1px}
+    .bar .fill{height:100%;background:linear-gradient(90deg,var(--emerald-dim),var(--emerald))}
+    .revs{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}
+    .review{border:1px solid var(--line);background:var(--panel);padding:18px;--cut:14px}
+    .review .rh{display:flex;align-items:center;gap:11px;margin-bottom:9px}
+    .review .av{width:36px;height:36px;border-radius:9px;display:grid;place-items:center;
+      color:#04120d;font-family:var(--f-label);font-weight:700;font-size:15px;
+      background:linear-gradient(135deg,var(--emerald),var(--gold))}
+    .review .rn{font-weight:600;font-size:14px}
+    .review .rs{color:var(--gold);font-size:11px;letter-spacing:1px}
+    .review p{margin:0;color:#cdd6de;font-size:13.5px;line-height:1.6}
+    @media(max-width:600px){.revs{grid-template-columns:1fr}}
+
+    /* ── safety + info ── */
+    .split{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .panel{border:1px solid var(--line);background:var(--panel);padding:24px;--cut:16px}
+    .panel h3{font-family:var(--f-label);font-weight:700;font-size:13px;letter-spacing:.16em;
+      text-transform:uppercase;color:var(--steel-dim);margin:0 0 16px}
+    .safety-row{display:flex;gap:13px;align-items:flex-start}
+    .safety-row svg{width:22px;height:22px;color:var(--emerald);flex:0 0 auto;margin-top:2px}
+    .safety-row b{display:block;margin-bottom:5px;font-size:15px}
+    .safety-row span{color:var(--steel);font-size:13.5px}
+    .info{display:grid;grid-template-columns:1fr 1fr;gap:16px 20px}
+    .info div span{display:block;color:var(--steel-dim);font-size:12px;letter-spacing:.04em;text-transform:uppercase}
+    .info div b{font-family:var(--f-num);font-weight:700;font-size:16px;margin-top:2px;display:block}
+    @media(max-width:720px){.split{grid-template-columns:1fr}}
+
+    /* ── footer ── */
+    footer{border-top:1px solid var(--line);padding:34px 0 44px;color:var(--steel-dim);font-size:13px}
+    .foot-brand{display:flex;align-items:center;gap:11px;color:var(--ink);margin-bottom:10px}
+    .foot-brand img{width:28px;height:28px;border-radius:8px}
+    .foot-brand b{font-family:var(--f-display);font-weight:600;font-size:22px;letter-spacing:.5px}
+    .foot-brand b i{color:var(--emerald);font-style:normal}
+
+    /* motion */
+    .rise{opacity:0;transform:translateY(18px);animation:rise .7s cubic-bezier(.2,.7,.2,1) forwards}
+    .d1{animation-delay:.05s}.d2{animation-delay:.15s}.d3{animation-delay:.25s}.d4{animation-delay:.35s}
+    @keyframes rise{to{opacity:1;transform:none}}
+    @media(prefers-reduced-motion:reduce){
+      .rise{animation:none;opacity:1;transform:none}
+      .emblem .ring,.emblem .ring2{animation:none}
+      html{scroll-behavior:auto}
     }
-
-    /* install */
-    .cta{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0 6px}
-    .install{display:inline-flex;align-items:center;justify-content:center;gap:9px;
-      height:48px;padding:0 40px;border-radius:24px;background:var(--green);color:#06110d;
-      font-weight:800;font-size:16px;box-shadow:0 14px 30px rgba(52,211,155,.28);border:0;cursor:pointer}
-    .install:hover{background:var(--green-2)}
-    .ghost{display:inline-flex;align-items:center;justify-content:center;gap:9px;height:48px;padding:0 22px;
-      border-radius:24px;border:1px solid var(--line);background:transparent;color:var(--text);font-weight:700}
-    .ghost svg{width:18px;height:18px}
-    .note{color:var(--muted);font-size:12.5px;margin-top:6px}
-    @media(max-width:560px){.install{flex:1;padding:0 20px}}
-
-    /* generic section */
-    .sec{padding:26px 0;border-top:1px solid var(--line)}
-    .sec h2{margin:0 0 14px;font-size:20px;font-weight:800}
-    .sec .more{float:right;color:var(--green);font-weight:700;font-size:14px}
-
-    /* screenshots */
-    .shots{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x mandatory;
-      -webkit-overflow-scrolling:touch}
-    .shots img{height:440px;border-radius:16px;border:1px solid var(--line);scroll-snap-align:start;flex:0 0 auto}
-    .shots::-webkit-scrollbar{height:8px}
-    .shots::-webkit-scrollbar-thumb{background:var(--card2);border-radius:8px}
-    @media(max-width:560px){.shots img{height:360px}}
-
-    /* about */
-    .about p{color:#cdd5dd;margin:0 0 14px}
-    .tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
-    .tag{border:1px solid var(--line);background:var(--card);border-radius:16px;padding:6px 13px;
-      font-size:13px;color:var(--muted);font-weight:600}
-
-    /* feature list */
-    .flist{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
-    .fitem{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;
-      padding:14px;background:var(--card)}
-    .fitem .fi{width:38px;height:38px;border-radius:10px;flex:0 0 auto;display:grid;place-items:center;
-      background:rgba(52,211,155,.14)}
-    .fitem .fi svg{width:20px;height:20px;color:var(--green)}
-    .fitem b{display:block;font-size:14.5px}
-    .fitem span{color:var(--muted);font-size:13px}
-    @media(max-width:560px){.flist{grid-template-columns:1fr}}
-
-    /* ratings */
-    .rate-row{display:flex;gap:26px;align-items:center;flex-wrap:wrap}
-    .rate-big{text-align:center}
-    .rate-big .n{font-size:54px;font-weight:800;line-height:1}
-    .rate-big .stars{color:var(--star);font-size:16px;letter-spacing:2px}
-    .rate-big small{color:var(--muted);font-size:13px}
-    .bars{flex:1;min-width:220px;display:grid;gap:6px}
-    .bar{display:flex;align-items:center;gap:10px}
-    .bar i{color:var(--muted);font-size:12px;width:8px}
-    .bar .track{flex:1;height:9px;border-radius:6px;background:var(--card2);overflow:hidden}
-    .bar .fill{height:100%;background:var(--green);border-radius:6px}
-
-    .review{border:1px solid var(--line);border-radius:12px;padding:15px;background:var(--card);margin-top:12px}
-    .review .rh{display:flex;align-items:center;gap:10px;margin-bottom:7px}
-    .review .av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--gold));
-      display:grid;place-items:center;color:#06110d;font-weight:800;font-size:14px}
-    .review .rn{font-weight:700;font-size:14px}
-    .review .rs{color:var(--star);font-size:12px;letter-spacing:1px}
-    .review p{margin:0;color:#cdd5dd;font-size:14px}
-
-    /* info table */
-    .info{display:grid;grid-template-columns:1fr 1fr;gap:14px 28px}
-    .info div span{display:block;color:var(--muted);font-size:13px}
-    .info div b{font-size:14.5px}
-    @media(max-width:560px){.info{grid-template-columns:1fr}}
-
-    /* safety */
-    .safety{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--card);
-      display:flex;gap:13px;align-items:flex-start}
-    .safety svg{width:22px;height:22px;color:var(--green);flex:0 0 auto;margin-top:2px}
-    .safety b{display:block;margin-bottom:4px}
-    .safety span{color:var(--muted);font-size:13.5px}
-
-    footer{padding:26px 0;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
-    footer .fb{display:flex;align-items:center;gap:10px;color:var(--text);font-weight:800;margin-bottom:6px}
-    footer .fb img{width:26px;height:26px;border-radius:7px}
+    :focus-visible{outline:2px solid var(--emerald);outline-offset:3px}
   </style>
 </head>
 <body id="top">
   <header class="topbar">
     <div class="wrap topbar-in">
-      <img class="logo" src="assets/logo-round.png" alt="">
-      <b>Santoryu<span> Store</span></b>
+      <a class="brand" href="#top"><img src="assets/logo-round.png" alt=""><b>SANTO<i>RYU</i></b></a>
       <span class="spacer"></span>
-      <a class="mini-install" href="./Santoryu.apk" download>Install</a>
+      <a class="btn btn-go cut" href="./Santoryu.apk" download>Install</a>
     </div>
   </header>
 
   <main>
-    <!-- App header -->
-    <section class="wrap head">
-      <div class="head-row">
-        <img class="app-icon" src="assets/logo.png" alt="Santoryu Toolkit icon" width="96" height="96" fetchpriority="high">
-        <div class="app-id">
-          <h1>Santoryu Toolkit</h1>
-          <div class="dev">Santoryu Dev</div>
-          <div class="sub">Contains no ads · No in-app purchases · Free</div>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <span class="eyebrow rise d1">Three-Sword Style · Android</span>
+          <h1 class="rise d2">Santoryu<span class="l2">Toolkit</span></h1>
+          <p class="thesis rise d3">Three blades, one toolkit for Mobile Legends —
+            a <b>live skin catalog</b>, a <b>backup-first apply flow</b>, and a
+            <b>built-in squad chat</b>. Free, no ads, no sign-up.</p>
+          <div class="cta rise d4">
+            <a class="btn install cut" href="./Santoryu.apk" download>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 16l-5-5h3V4h4v7h3l-5 5zm-7 2h14v2H5z"/></svg>
+              Install APK
+            </a>
+            <span class="verchip"><span class="dot"></span>v2.9 · 4 MB · Android 7+</span>
+          </div>
+          <p class="fineprint rise d4">Direct download. Turn on “Install unknown apps” for your browser if Android asks.</p>
         </div>
-      </div>
-
-      <!-- Metrics row (Play-style) -->
-      <div class="metrics">
-        <div class="metric">
-          <b>4.9 <svg class="ic" viewBox="0 0 24 24" fill="#34d39b"><path d="M12 17.3l-6.16 3.7 1.64-7.03L2 9.24l7.19-.61L12 2l2.81 6.63 7.19.61-5.48 4.73 1.64 7.03z"/></svg></b>
-          <small>2K reviews</small>
+        <div class="emblem rise d3" aria-hidden="true">
+          <div class="glow"></div>
+          <div class="ring"></div>
+          <div class="ring2"></div>
+          <img src="assets/logo.png" alt="Santoryu Toolkit icon" width="96" height="96" fetchpriority="high">
         </div>
-        <div class="metric">
-          <b>10K+</b>
-          <small>Downloads</small>
-        </div>
-        <div class="metric">
-          <b><span class="age-box">12+</span></b>
-          <small>Rated for 12+</small>
-        </div>
-        <div class="metric">
-          <b>13 MB</b>
-          <small>APK size</small>
-        </div>
-      </div>
-
-      <div class="cta">
-        <a class="install" href="./Santoryu.apk" download>Install</a>
-        <a class="ghost" href="#shots">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          Screenshots
-        </a>
-        <a class="ghost" href="#about">About</a>
-      </div>
-      <p class="note">Direct APK download. Enable “Install unknown apps” for your browser if prompted. Android 7.0+.</p>
-    </section>
-
-    <!-- Screenshots -->
-    <section class="wrap sec" id="shots">
-      <div class="shots">
-        <img src="assets/shot-skins.jpg" alt="Skins catalog" loading="lazy">
-        <img src="assets/shot-chat.jpg" alt="Community chat" loading="lazy">
-        <img src="assets/shot-setup.jpg" alt="Setup and permissions" loading="lazy">
       </div>
     </section>
 
-    <!-- About -->
-    <section class="wrap sec about" id="about">
-      <h2>About this app</h2>
-      <p>
-        Santoryu Toolkit is a lightweight anime skin toolkit for Mobile Legends with a built-in
-        community chat. Browse a live catalog, apply with a clean backup-first flow, and hang out
-        with the squad — all in a dark emerald &amp; gold interface. Free, no ads.
-      </p>
-      <div class="flist">
-        <div class="fitem"><span class="fi"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg></span><div><b>Live skin catalog</b><span>Browse and apply the latest skins, updated remotely.</span></div></div>
-        <div class="fitem"><span class="fi"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C7 3 3 6.6 3 11c0 2.1.9 4 2.5 5.4L5 21l4.2-1.6c.9.2 1.8.3 2.8.3 5 0 9-3.6 9-8s-4-8-9-8z"/></svg></span><div><b>Community chat</b><span>Realtime chat, reactions, polls, pinned posts &amp; moderation.</span></div></div>
-        <div class="fitem"><span class="fi"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l9 4v6c0 5-3.8 9.7-9 11-5.2-1.3-9-6-9-11V5z"/></svg></span><div><b>Safe apply flow</b><span>Backup-first injection with SAF or Shizuku access.</span></div></div>
-        <div class="fitem"><span class="fi"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h7l-1 8 10-12h-7z"/></svg></span><div><b>Fast &amp; light</b><span>Tiny APK, smooth UI, low data — works on Android 7+.</span></div></div>
-      </div>
-      <div class="tags">
-        <span class="tag">Tools</span><span class="tag">Anime</span><span class="tag">Mobile Legends</span>
-        <span class="tag">Community</span><span class="tag">Free</span><span class="tag">No ads</span>
+    <!-- TRUST STRIP -->
+    <section class="wrap">
+      <div class="trust cut">
+        <div class="tcell"><b>4.9 <span class="star">★</span></b><small>Rating</small></div>
+        <div class="tcell"><b>10K+</b><small>Downloads</small></div>
+        <div class="tcell"><b>4 MB</b><small>APK size</small></div>
+        <div class="tcell"><b>Free</b><small>No ads</small></div>
       </div>
     </section>
 
-    <!-- What's new -->
-    <section class="wrap sec">
-      <h2>What’s new</h2>
-      <p class="about" style="color:#cdd5dd;margin:0">
-        • Fixed the withdrawal issue — you can now cash out your diamonds reliably<br>
-        • Cleaner Earn page with a clear withdrawal goal that updates as you progress<br>
-        • New Upcoming previews &amp; a community FAQ bot<br>
-        • Stability and performance improvements
-      </p>
+    <!-- THREE BLADES (signature) -->
+    <section class="band wrap" id="blades">
+      <div class="head2">
+        <div>
+          <span class="eyebrow">The three-sword style</span>
+          <h2>One toolkit,<br>three blades</h2>
+        </div>
+      </div>
+      <div class="blades">
+        <div class="blade cut">
+          <div class="blade-in cut">
+            <div class="num">I</div>
+            <div class="swords"><i></i></div>
+            <h3>Live skin catalog</h3>
+            <p>Browse hero skins, upgrades, and battle effects. The catalog updates remotely — new drops appear without a reinstall.</p>
+          </div>
+        </div>
+        <div class="blade cut">
+          <div class="blade-in cut">
+            <div class="num">II</div>
+            <div class="swords"><i></i><i></i></div>
+            <h3>Backup-first apply</h3>
+            <p>Every apply backs up first, then swaps cleanly through SAF or Shizuku. Roll back anytime — nothing is overwritten blind.</p>
+          </div>
+        </div>
+        <div class="blade cut">
+          <div class="blade-in cut">
+            <div class="num">III</div>
+            <div class="swords"><i></i><i></i><i></i></div>
+            <h3>Built-in squad chat</h3>
+            <p>Realtime chat, reactions, polls, and pinned posts — anonymous device identity, no login, kept clean by moderation.</p>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <!-- Ratings & reviews -->
-    <section class="wrap sec">
-      <h2>Ratings &amp; reviews</h2>
+    <!-- WHAT'S NEW -->
+    <section class="band wrap">
+      <div class="head2"><div><span class="eyebrow">Latest release</span><h2>What’s new</h2></div></div>
+      <div class="news cut">
+        <div class="rel">Version 2.9 · August 2026</div>
+        <ul>
+          <li>A high-value Earn mission — play Mobile Legends with GearUp to bank a bonus.</li>
+          <li>New Skins tab with an injectable list and live apply progress.</li>
+          <li>Faster catalog loading and a cleaner, sharper interface.</li>
+          <li>Stability and performance improvements across the app.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- RATINGS -->
+    <section class="band wrap">
+      <div class="head2"><div><span class="eyebrow">From the squad</span><h2>Ratings &amp; reviews</h2></div></div>
       <div class="rate-row">
         <div class="rate-big">
           <div class="n">4.9</div>
@@ -251,45 +309,49 @@
           <div class="bar"><i>1</i><div class="track"><div class="fill" style="width:0.5%"></div></div></div>
         </div>
       </div>
-      <div class="review">
-        <div class="rh"><div class="av">J</div><div><div class="rn">Joshua G.</div><div class="rs">★★★★★</div></div></div>
-        <p>Sobrang smooth at malinis ang UI. Yung community chat hindi ko in-expect, ang ganda — premium feel!</p>
-      </div>
-      <div class="review">
-        <div class="rh"><div class="av">M</div><div><div class="rn">Mark A.</div><div class="rs">★★★★★</div></div></div>
-        <p>Light na app, mabilis mag-apply ng skins, at walang ads. Solid para sa tropa.</p>
-      </div>
-    </section>
-
-    <!-- Data safety -->
-    <section class="wrap sec">
-      <h2>Data safety</h2>
-      <div class="safety">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l9 4v6c0 5-3.8 9.7-9 11-5.2-1.3-9-6-9-11V5z"/></svg>
-        <div>
-          <b>No ads · No selling of data</b>
-          <span>Chat uses an anonymous device identity — no login, no email, no phone number required. Community moderation keeps the chat safe.</span>
+      <div class="revs">
+        <div class="review cut">
+          <div class="rh"><div class="av">J</div><div><div class="rn">Joshua G.</div><div class="rs">★★★★★</div></div></div>
+          <p>Sobrang smooth at malinis ang UI. Yung community chat hindi ko in-expect — ang ganda, premium feel!</p>
+        </div>
+        <div class="review cut">
+          <div class="rh"><div class="av">M</div><div><div class="rn">Mark A.</div><div class="rs">★★★★★</div></div></div>
+          <p>Light na app, mabilis mag-apply ng skins, at walang ads. Solid talaga para sa tropa.</p>
         </div>
       </div>
     </section>
 
-    <!-- App info -->
-    <section class="wrap sec">
-      <h2>App info</h2>
-      <div class="info">
-        <div><span>Version</span><b>2.3</b></div>
-        <div><span>Updated on</span><b>July 2026</b></div>
-        <div><span>Requires Android</span><b>7.0 and up</b></div>
-        <div><span>Downloads</span><b>10,000+</b></div>
-        <div><span>Offered by</span><b>Santoryu Dev</b></div>
-        <div><span>Content rating</span><b>Rated for 12+</b></div>
+    <!-- SAFETY + INFO -->
+    <section class="band wrap">
+      <div class="split">
+        <div class="panel cut">
+          <h3>Data safety</h3>
+          <div class="safety-row">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l9 4v6c0 5-3.8 9.7-9 11-5.2-1.3-9-6-9-11V5z"/></svg>
+            <div>
+              <b>No ads · No selling of data</b>
+              <span>Chat runs on an anonymous device identity — no login, email, or phone number. Moderation keeps it safe.</span>
+            </div>
+          </div>
+        </div>
+        <div class="panel cut">
+          <h3>App info</h3>
+          <div class="info">
+            <div><span>Version</span><b>2.9</b></div>
+            <div><span>Updated</span><b>Aug 2026</b></div>
+            <div><span>Requires</span><b>Android 7+</b></div>
+            <div><span>Size</span><b>4 MB</b></div>
+            <div><span>Downloads</span><b>10,000+</b></div>
+            <div><span>Offered by</span><b>Santoryu Dev</b></div>
+          </div>
+        </div>
       </div>
     </section>
   </main>
 
   <footer>
     <div class="wrap">
-      <div class="fb"><img src="assets/logo-round.png" alt=""> Santoryu Toolkit</div>
+      <div class="foot-brand"><img src="assets/logo-round.png" alt=""><b>SANTO<i>RYU</i></b></div>
       <div>© 2026 Santoryu Dev · Distributed as a direct APK · Not affiliated with Google Play or Mobile Legends.</div>
     </div>
   </footer>
