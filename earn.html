@@ -797,6 +797,14 @@
   .gmp-step.done .gmp-t{color:var(--txt2);}
   .gmp-d{font-size:12.5px; color:var(--txt2); margin-top:3px; line-height:1.4;}
   .gmp-open{margin-bottom:12px;}
+  .gmp-rw{flex:0 0 auto; align-self:flex-start; font-family:'Rajdhani'; font-weight:800; font-size:13px; color:var(--gold-hi);
+    background:rgba(232,180,74,.12); border:1px solid rgba(232,180,74,.3); padding:3px 9px; border-radius:8px;}
+  .gmp-step.done .gmp-rw{color:var(--emerald); background:rgba(45,212,167,.12); border-color:rgba(45,212,167,.3);}
+  .gmp-code{display:inline-flex; align-items:center; gap:7px; margin-top:9px; cursor:pointer;
+    font-family:'Rajdhani'; font-weight:800; font-size:14px; letter-spacing:1.5px; color:#231704;
+    background:linear-gradient(135deg,#FFF0C4,#FFD980 45%,#E8B44A); border:none; border-radius:9px; padding:8px 14px;}
+  .gmp-code:active{transform:scale(.97);}
+  .gmp-code svg{width:14px; height:14px; stroke:#231704;}
   /* ── Withdraw banner (dashboard) → opens full Withdraw page. Blue = cash-out. ── */
   .wbanner{position:relative; overflow:hidden; margin:14px 0 4px; padding:16px 16px 14px; border-radius:18px;
     background:linear-gradient(155deg,#0e2740 0%,#0b1017 62%); border:1px solid rgba(77,166,255,.32);
@@ -2324,15 +2332,18 @@ function renderGMPage(body,t){
   if(!body) return;
   var d=gmDefaults(t), st=gmStepState(d.need,d.mNeed);
   var grantNeeded=(GM.access===false);
-  var descs=['Launch the GearUp Booster app.','Inside GearUp, tap Boost on Mobile Legends.','Play one full match — GearUp optimizes your ping.'];
+  var descs=['Tap “Download” to install GearUp Booster.','Open GearUp and enter code WARLITO for your bonus.','In GearUp, tap Boost on Mobile Legends — then play one full game.'];
+  var stepR=[10,10,20];
   var done=[st.s1,st.s2,st.s3];
   var prog=['','',(GM.active&&!st.s3)?(fmtDur(Math.min(GM.mlbb,d.mNeed))+' / '+fmtDur(d.mNeed)):''];
   var stepHtml='';
   for(var i=0;i<3;i++){
+    var codeBtn=(i===1)?'<button class="gmp-code" data-g="copycode">WARLITO '+IC.copy+'</button>':'';
     stepHtml+='<div class="gmp-step'+(done[i]?' done':'')+'">'+
       '<span class="gmp-dot">'+(done[i]?'&#10003;':(i+1))+'</span>'+
       '<div class="gmp-txt"><div class="gmp-t">'+esc(d.steps[i])+'</div>'+
-      '<div class="gmp-d">'+esc(descs[i])+(prog[i]?(' <b style="color:var(--gold-hi)">'+prog[i]+'</b>'):'')+'</div></div></div>';
+      '<div class="gmp-d">'+esc(descs[i])+(prog[i]?(' <b style="color:var(--gold-hi)">'+prog[i]+'</b>'):'')+'</div>'+codeBtn+'</div>'+
+      '<div class="gmp-rw">+'+stepR[i]+'</div></div>';
   }
   body.innerHTML=
     '<div class="gmp-hero"><div class="gmp-eyebrow">HIGH-VALUE MISSION</div>'+
@@ -2347,6 +2358,7 @@ function renderGMPage(body,t){
 function gmRerender(t){ var b=document.getElementById('gmpagebody'); if(b) renderGMPage(b,t); }
 async function gmAct(t,kind){
   var d=gmDefaults(t);
+  if(kind==='copycode'){ if(window.Android&&window.Android.copy) window.Android.copy('WARLITO'); toast('Code copied: WARLITO','good'); return; }
   if(kind==='grant'){ if(window.Android.openUsageSettings) window.Android.openUsageSettings(); return; }
   if(kind==='open'){ GM.active=true; if(!GM.startTs) GM.startTs=Date.now();
     var link=(t.link&&t.link!=='#')?t.link:('market://details?id='+t.verifyPkg);
