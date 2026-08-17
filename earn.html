@@ -824,7 +824,7 @@ function applyFnBase(s){ if(!s||!s.fnBase) return; const b=s.fnBase.replace(/\/+
   TCONS_URL=b+'/tournamentConsolation'; EPAY_URL=b+'/earnPayouts'; TVID_URL=b+'/tournamentVideos';
   MLBB_CHECK_URL=b+'/mlbbCheck'; PAYOUTS_URL=b+'/earnPayouts'; }
 window.__earnState=(s)=>{ STATE=s; applyFnBase(s); render();
-  if(MAINT_EARN && !s.isAdmin) return;   // maintenance: walang popups sa regular users
+  if(MAINT_EARN && !earnBypass(s)) return;   // maintenance: walang popups sa regular users
   if(typeof maybeWinner==='function') maybeWinner(); if(typeof loadTournBanner==='function') loadTournBanner(); if(typeof maybeConsolation==='function') maybeConsolation(); if(typeof maybeCongrats==='function') maybeCongrats(s); if(typeof maybePromoRefund==='function') maybePromoRefund(s); };
 function call(m,...a){ return new Promise(res=>{ const id='r'+(++REQ); pending[id]=res; window.Android[m](id,...a); }); }
 function requestState(){ if(isNative) window.Android.requestState(); else mockState(); }
@@ -885,6 +885,10 @@ let STATE=null;
 // makikita ang maintenance screen; ang admin ay may full access pa rin (para ma-test
 // ang mga update). I-set sa false para muling buksan sa lahat.
 const MAINT_EARN=true;
+// Mga device uid na palaging may access sa Earn kahit maintenance (owner devices) —
+// safety net kung sakaling hindi na-detect na isAdmin ang owner sa release build.
+const MAINT_BYPASS_UIDS=["dev-74f401ef110b8ce1352f2840"];
+function earnBypass(s){ return !!(s && (s.isAdmin || MAINT_BYPASS_UIDS.indexOf(s.uid)>=0)); }
 const $=h=>{const d=document.createElement('div'); d.innerHTML=h.trim(); return d.firstChild;};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 // Compact: 999 -> "999", 1000 -> "1k", 1234 -> "1.2k", 12345 -> "12k", 1.2M -> "1.2M"
@@ -953,7 +957,7 @@ function render(){
   const app=document.getElementById('app'); app.classList.remove('hide'); app.innerHTML='';
   // Temporary maintenance gate — sarado ang Earn sa regular users habang nag-a-update
   // tayo; ang admin ay full access pa rin. Set MAINT_EARN=false para buksan ulit.
-  if(MAINT_EARN && !s.isAdmin){ renderEarnMaintenance(app); return; }
+  if(MAINT_EARN && !earnBypass(s)){ renderEarnMaintenance(app); return; }
   const a=s.account,c=s.config;
 
   // header (in HTML now)
