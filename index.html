@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#06080A">
-  <meta name="description" content="Santoryu Toolkit for Android — a three-sword skin toolkit for Mobile Legends with a live catalog, a backup-first apply flow, and a built-in community. Free, no ads. Download the latest APK.">
+  <meta name="description" content="Santoryu Toolkit for Android — a complete skin toolkit for Mobile Legends with a live catalog, a backup-first apply flow, and a built-in community. Free, no ads. Download the latest APK.">
   <title>Santoryu Toolkit</title>
   <link rel="icon" href="assets/logo-round.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -44,7 +44,7 @@
       backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
     .topbar-in{display:flex;align-items:center;gap:13px;min-height:60px}
     .brand{display:flex;align-items:center;gap:11px}
-    .brand img{width:32px;height:32px;border-radius:9px}
+    .brand img{width:32px;height:32px;object-fit:contain;border-radius:9px}
     .brand b{font-family:var(--f-display);font-weight:600;font-size:25px;letter-spacing:.5px;line-height:1}
     .brand b i{color:var(--emerald);font-style:normal}
     .spacer{flex:1}
@@ -86,7 +86,7 @@
     .emblem .ring::before{content:"";position:absolute;inset:-1px;border-radius:50%;
       border:1px dashed rgba(232,180,74,.28)}
     .emblem .ring2{position:absolute;inset:11%;border-radius:50%;border:1px solid rgba(232,180,74,.16);animation:spin 48s linear infinite reverse}
-    .emblem img{width:56%;border-radius:26px;position:relative;z-index:2;
+    .emblem img{width:56%;height:auto;aspect-ratio:1;object-fit:contain;border-radius:26px;position:relative;z-index:2;
       box-shadow:0 26px 60px -18px rgba(45,212,167,.5),0 0 0 1px var(--line)}
     @keyframes spin{to{transform:rotate(360deg)}}
 
@@ -124,10 +124,8 @@
       background:linear-gradient(180deg,var(--emerald),transparent 70%)}
     .blade:hover{transform:translateY(-5px)}
     .blade .num{font-family:var(--f-display);font-weight:700;font-size:30px;line-height:1;
-      color:var(--gold-hi);letter-spacing:.06em}
-    .blade .swords{display:flex;gap:3px;margin:14px 0 16px}
-    .blade .swords i{width:3px;height:26px;border-radius:2px;transform:skewX(-16deg);
-      background:linear-gradient(180deg,var(--emerald),var(--emerald-dim))}
+      color:var(--gold-hi);letter-spacing:.06em;margin:0 0 16px;
+      padding-bottom:14px;border-bottom:2px solid rgba(45,212,167,.35);display:inline-block}
     .blade h3{font-family:var(--f-label);font-weight:700;font-size:16px;letter-spacing:.02em;margin:0 0 8px;color:var(--ink)}
     .blade p{margin:0;color:var(--steel);font-size:13.5px;line-height:1.6}
     @media(max-width:720px){.blades{grid-template-columns:1fr}}
@@ -179,7 +177,7 @@
     /* ── footer ── */
     footer{border-top:1px solid var(--line);padding:34px 0 44px;color:var(--steel-dim);font-size:13px}
     .foot-brand{display:flex;align-items:center;gap:11px;color:var(--ink);margin-bottom:10px}
-    .foot-brand img{width:28px;height:28px;border-radius:8px}
+    .foot-brand img{width:28px;height:28px;object-fit:contain;border-radius:8px}
     .foot-brand b{font-family:var(--f-display);font-weight:600;font-size:22px;letter-spacing:.5px}
     .foot-brand b i{color:var(--emerald);font-style:normal}
 
@@ -209,9 +207,9 @@
     <section class="hero">
       <div class="wrap hero-grid">
         <div>
-          <span class="eyebrow rise d1">Three-Sword Style · Android</span>
+          <span class="eyebrow rise d1">Skin Toolkit · Android</span>
           <h1 class="rise d2">Santoryu<span class="l2">Toolkit</span></h1>
-          <p class="thesis rise d3">Three blades, one toolkit for Mobile Legends —
+          <p class="thesis rise d3">One toolkit for Mobile Legends —
             a <b>live skin catalog</b>, a <b>backup-first apply flow</b>, and a
             <b>built-in squad chat</b>. Free, no ads, no sign-up.</p>
           <div class="cta rise d4">
@@ -219,7 +217,7 @@
               <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 16l-5-5h3V4h4v7h3l-5 5zm-7 2h14v2H5z"/></svg>
               Install APK
             </a>
-            <span class="verchip"><span class="dot"></span>v2.9 · 4 MB · Android 7+</span>
+            <span class="verchip"><span class="dot"></span>v3.0 · 4 MB · Android 7+</span>
           </div>
           <p class="fineprint rise d4">Direct download. Turn on “Install unknown apps” for your browser if Android asks.</p>
         </div>
@@ -242,19 +240,18 @@
       </div>
     </section>
 
-    <!-- THREE BLADES (signature) -->
-    <section class="band wrap" id="blades">
+    <!-- WHAT'S INSIDE (signature) -->
+    <section class="band wrap" id="features">
       <div class="head2">
         <div>
-          <span class="eyebrow">The three-sword style</span>
-          <h2>One toolkit,<br>three blades</h2>
+          <span class="eyebrow">What's inside</span>
+          <h2>Everything in<br>one toolkit</h2>
         </div>
       </div>
       <div class="blades">
         <div class="blade cut">
           <div class="blade-in cut">
             <div class="num">I</div>
-            <div class="swords"><i></i></div>
             <h3>Live skin catalog</h3>
             <p>Browse hero skins, upgrades, and battle effects. The catalog updates remotely — new drops appear without a reinstall.</p>
           </div>
@@ -262,7 +259,6 @@
         <div class="blade cut">
           <div class="blade-in cut">
             <div class="num">II</div>
-            <div class="swords"><i></i><i></i></div>
             <h3>Backup-first apply</h3>
             <p>Every apply backs up first, then swaps cleanly through SAF or Shizuku. Roll back anytime — nothing is overwritten blind.</p>
           </div>
@@ -270,7 +266,6 @@
         <div class="blade cut">
           <div class="blade-in cut">
             <div class="num">III</div>
-            <div class="swords"><i></i><i></i><i></i></div>
             <h3>Built-in squad chat</h3>
             <p>Realtime chat, reactions, polls, and pinned posts — anonymous device identity, no login, kept clean by moderation.</p>
           </div>
@@ -282,11 +277,11 @@
     <section class="band wrap">
       <div class="head2"><div><span class="eyebrow">Latest release</span><h2>What’s new</h2></div></div>
       <div class="news cut">
-        <div class="rel">Version 2.9 · August 2026</div>
+        <div class="rel">Version 3.0 · August 2026</div>
         <ul>
-          <li>A high-value Earn mission — play Mobile Legends with GearUp to bank a bonus.</li>
-          <li>New Skins tab with an injectable list and live apply progress.</li>
-          <li>Faster catalog loading and a cleaner, sharper interface.</li>
+          <li>A new multi-day reward mission — complete simple steps to earn diamonds.</li>
+          <li>Redesigned Earn tab with invite rewards and redeemable promo codes.</li>
+          <li>Cleaner catalog and apply flow with faster loading.</li>
           <li>Stability and performance improvements across the app.</li>
         </ul>
       </div>
@@ -337,7 +332,7 @@
         <div class="panel cut">
           <h3>App info</h3>
           <div class="info">
-            <div><span>Version</span><b>2.9</b></div>
+            <div><span>Version</span><b>3.0</b></div>
             <div><span>Updated</span><b>Aug 2026</b></div>
             <div><span>Requires</span><b>Android 7+</b></div>
             <div><span>Size</span><b>4 MB</b></div>
