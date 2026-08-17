@@ -2227,7 +2227,7 @@ function renderTongitsPage(body){
     else if(i<p.nextDay){ desc='Locked.'; }
     else if(i===p.nextDay && p.claimedToday){ desc='Come back tomorrow for Day '+p.nextDay+'.'; }
     else if(i===p.nextDay){ cls=''; desc='Play '+esc(c.title||'Tongits Go')+' for at least 3 minutes, then claim.';
-      actions='<div class="tgp-actions"><button class="tgbtn ghost" data-tg="play">Play 3 min</button>'+
+      actions='<div class="tgp-actions"><button class="tgbtn ghost" data-tg="play" data-reward="'+dReward+'">Play 3 min</button>'+
         '<button class="tgbtn" data-tg="dayclaim" data-day="'+i+'" data-reward="'+dReward+'" '+(TG_START?'':'disabled')+'>Claim +'+dReward+'</button></div>'; }
     else{ desc='Unlocks after Day '+(i-1)+'.'; }
     html+=tongitsStepRow(2+i,'Day '+i+' — play & claim','+'+dReward, desc, cls, actions);
@@ -2253,7 +2253,12 @@ function callTimeout(m,ms,...a){
 async function tongitsAct(kind,btn){
   const c=STATE&&STATE.campaign; if(!c) return;
   if(kind==='open'){ if(window.Android&&window.Android.openTongitsLink) window.Android.openTongitsLink(); return; }
-  if(kind==='play'){ TG_START=Date.now(); if(window.Android&&window.Android.openTongitsLink) window.Android.openTongitsLink(); renderTongitsPage(document.getElementById('tgpagebody')); return; }
+  if(kind==='play'){ TG_START=Date.now(); const rw=+(btn&&btn.getAttribute('data-reward'))||0;
+    // tongitsStartPlay: buksan ang laro + floating overlay timer (bumibilang lang habang Tongits
+    // Go ang naka-foreground). Fallback sa openTongitsLink kung lumang app (walang bridge method).
+    if(window.Android&&window.Android.tongitsStartPlay) window.Android.tongitsStartPlay(rw, String(TG_START));
+    else if(window.Android&&window.Android.openTongitsLink) window.Android.openTongitsLink();
+    renderTongitsPage(document.getElementById('tgpagebody')); return; }
   if(kind==='installclaim'){
     if(btn){ btn.textContent='…'; btn.disabled=true; }
     let r; try{ r=await call('tongitsClaimInstall'); }catch(e){ r=null; }
