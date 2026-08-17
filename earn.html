@@ -758,6 +758,56 @@
   .gmp-step.done .gmp-t{color:var(--txt2);}
   .gmp-d{font-size:12.5px; color:var(--txt2); margin-top:3px; line-height:1.4;}
   .gmp-open{margin-bottom:12px;}
+  /* ── Tongits Go campaign hero (gold premium, owner-scoped during testing) ── */
+  .tgh{margin:6px 0 18px; border-radius:20px; padding:1.6px;
+    background:linear-gradient(120deg,#FFE08A,#E8B44A,#A9781F,#E8B44A,#FFE08A); background-size:220% 220%;
+    animation:gmfoil 8s linear infinite; box-shadow:0 16px 44px -18px rgba(232,180,74,.5);}
+  .tgh-in{border-radius:18.6px; padding:18px 17px;
+    background:radial-gradient(120% 90% at 88% -10%, rgba(232,180,74,.16), transparent 55%), linear-gradient(160deg,#1a160c,#0c0f14 78%);}
+  .tgh-top{display:flex; align-items:center; justify-content:space-between; gap:10px;}
+  .tgh-eyebrow{display:flex; align-items:center; gap:7px; font-family:'Chakra Petch'; font-weight:700; font-size:10px; letter-spacing:3px; color:var(--gold-hi);}
+  .tgh-eyebrow i{width:6px; height:6px; border-radius:50%; background:var(--gold); box-shadow:0 0 8px var(--gold); animation:gmblink 1.5s ease-in-out infinite;}
+  .tgh-reward{display:flex; align-items:center; gap:6px; flex:0 0 auto; font-family:'Rajdhani'; font-weight:700; font-size:19px; color:var(--gold-hi);
+    background:rgba(232,180,74,.14); border:1px solid rgba(232,180,74,.35); padding:4px 12px; border-radius:11px;}
+  .tgh-title{font-family:'Teko'; font-weight:700; font-size:32px; line-height:.95; margin:9px 0 0; color:#fff;}
+  .tgh-sub{font-size:12px; color:var(--txt2); margin:5px 0 0; line-height:1.4; max-width:320px;}
+  .tgh-claim{width:100%; margin-top:14px; border:none; border-radius:13px; padding:15px; font-family:'Chakra Petch'; font-weight:700;
+    letter-spacing:2px; font-size:15px; color:#3a2600; cursor:pointer;
+    background:linear-gradient(90deg,#FFE08A,#E8B44A); box-shadow:0 12px 30px -10px rgba(232,180,74,.55);}
+  .tgh-claim:active{transform:translateY(1px);}
+  @media (prefers-reduced-motion:reduce){ .tgh{animation:none} .tgh-eyebrow i{animation:none} }
+  /* Tongits Go detail page — 6-step ladder */
+  .tgpage{padding:4px 2px 30px;}
+  .tgp-hero{position:relative; overflow:hidden; border-radius:18px; padding:20px 18px; margin-bottom:16px;
+    background:radial-gradient(120% 100% at 90% -10%, rgba(232,180,74,.20), transparent 55%), linear-gradient(160deg,#1a160c,#0c0f14 80%);
+    border:1px solid rgba(232,180,74,.35); box-shadow:0 14px 40px -18px rgba(232,180,74,.4);}
+  .tgp-eyebrow{font-family:'Chakra Petch'; font-weight:700; font-size:10px; letter-spacing:3px; color:var(--gold-hi);}
+  .tgp-reward{display:flex; align-items:center; gap:9px; font-family:'Teko'; font-weight:700; font-size:44px; line-height:1;
+    color:var(--gold-hi); margin:8px 0 6px; text-shadow:0 2px 18px rgba(232,180,74,.4);}
+  .tgp-note{font-size:12.5px; color:var(--txt2); line-height:1.5;}
+  .tgp-steps{margin:2px 0 4px;}
+  .tgp-step{padding:14px; margin-bottom:10px; border-radius:14px; background:var(--surf); border:1px solid var(--line);}
+  .tgp-step.done{border-color:rgba(45,212,167,.4); background:linear-gradient(180deg,rgba(45,212,167,.08),var(--surf));}
+  .tgp-step.locked{opacity:.5;}
+  .tgp-row{display:flex; gap:13px; align-items:flex-start;}
+  .tgp-dot{width:28px; height:28px; border-radius:50%; flex:0 0 auto; display:flex; align-items:center; justify-content:center;
+    font-family:'Rajdhani'; font-weight:700; font-size:14px; color:#0a0d13; background:linear-gradient(135deg,#FFE08A,#E8B44A);}
+  .tgp-step.done .tgp-dot{background:var(--emerald); color:#04140f;}
+  .tgp-step.locked .tgp-dot{background:rgba(255,255,255,.08); color:var(--txt2);}
+  .tgp-txt{flex:1; min-width:0;}
+  .tgp-t{font-family:'Rajdhani'; font-weight:700; font-size:16px; color:var(--txt); line-height:1.15; display:flex; align-items:center; gap:8px; justify-content:space-between;}
+  .tgp-step.done .tgp-t{color:var(--txt2);}
+  .tgp-rw{font-family:'Rajdhani'; font-weight:700; font-size:13px; color:var(--gold-hi); flex:0 0 auto;}
+  .tgp-d{font-size:12.5px; color:var(--txt2); margin-top:3px; line-height:1.4;}
+  .tgp-actions{display:flex; gap:8px; margin-top:11px; flex-wrap:wrap;}
+  .tgbtn{flex:1 1 auto; min-width:110px; border:none; border-radius:9px; padding:10px 14px; font-family:'Rajdhani'; font-weight:700; font-size:12.5px;
+    color:#0a0d13; background:linear-gradient(180deg,#FFE08A,#E8B44A); cursor:pointer; text-align:center;}
+  .tgbtn:active:not([disabled]){transform:scale(.97);}
+  .tgbtn[disabled]{background:rgba(255,255,255,.06); color:var(--txt2); cursor:default;}
+  .tgbtn.ghost{background:rgba(255,255,255,.06); color:var(--txt);}
+  .tgp-pending{display:inline-flex; align-items:center; gap:6px; margin-top:11px; padding:6px 12px; border-radius:999px;
+    font-family:'Rajdhani'; font-weight:700; font-size:12px; letter-spacing:.5px; color:#E8B44A; background:rgba(232,180,74,.12); border:1px solid rgba(232,180,74,.3);}
+  .tgp-reject{margin-top:10px; padding:10px 12px; border-radius:10px; background:rgba(255,90,90,.1); border:1px solid rgba(255,90,90,.3); font-size:12px; color:#ffb3b3; line-height:1.4;}
 </style>
 </head>
 <body>
@@ -953,6 +1003,9 @@ function renderEarnMaintenance(app){
 }
 function render(){
   const s=STATE; if(!s) return;
+  // Keep an already-open Tongits Go detail page in sync with fresh campaignState pushes
+  // (native re-sends __earnState after every claim/upload) without tearing the page down.
+  const tgOpen=document.getElementById('tgpagebody'); if(tgOpen) renderTongitsPage(tgOpen);
   document.getElementById('loading').classList.add('hide');
   const app=document.getElementById('app'); app.classList.remove('hide'); app.innerHTML='';
   // Temporary maintenance gate — sarado ang Earn sa regular users habang nag-a-update
@@ -1186,6 +1239,7 @@ function giveawayHero(app,s){
 }
 function appendTasks(app,s){
   giveawayHero(app,s);
+  tongitsHero(app,s);
   // One-time show: pag na-claim na, tuluyang mawawala sa listahan (walang "Done" row).
   const all=(s.tasks||[]).filter(t=>!t.claimed && (!isUsage(t) || usageSupported()));
   // High-value hero mission renders as its OWN gold banner (separate from the task rows).
@@ -2071,6 +2125,171 @@ function gmBindVis(){ if(gmVisBound) return; gmVisBound=true;
     var t=((typeof STATE!=='undefined'&&STATE&&STATE.tasks)||[]).find(function(x){ return x&&x.hero===true&&x.id===GM.taskId; });
     if(t) gmPoll(t);
   });
+}
+
+// ── Tongits Go campaign (gold hero → 6-step ladder: install, register, day 1-4) ──
+// Owner-scoped via campaign.testUids while under test; native verifies everything server-side.
+let TG_START=0; // startTs for the day currently being played (reset per claim attempt)
+function tongitsOwnerOk(c,uid){ return !Array.isArray(c.testUids) || c.testUids.length===0 || c.testUids.indexOf(uid)>=0; }
+function tongitsEligible(s){
+  const c=s&&s.campaign;
+  return !!(c && c.enabled===true && usageSupported() && !(s.campaignState && s.campaignState.done) && tongitsOwnerOk(c, s.uid));
+}
+function tongitsTotalReward(c){
+  let t=(+((c.install||{}).reward)||0)+(+((c.register||{}).reward)||0);
+  (c.days||[]).forEach(d=>{ t+=(+((d||{}).reward)||0); });
+  return t;
+}
+function sameLocalDay(a,b){ a=new Date(+a||0); b=new Date(+b||0); return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate(); }
+// Derives the ladder's live UI state purely from campaign + campaignState (no polling needed).
+function tongitsProgress(c,cs){
+  cs=cs||{};
+  const installed=!!cs.installClaimedAt;
+  const reg=(cs.register&&cs.register.status)||'none';
+  const regApproved=reg==='approved';
+  const streak=(cs.streak&&cs.streak.current)||0;
+  const daysClaimed=cs.daysClaimed||{};
+  const daysTotal=(Array.isArray(c.days)&&c.days.length)?c.days.length:4;
+  const lastClaimTs=streak>0?daysClaimed[String(streak)]:0;
+  const claimedToday=streak>0 && !!lastClaimTs && sameLocalDay(lastClaimTs, Date.now());
+  const nextDay=Math.min(streak+1, daysTotal);
+  const allDaysDone=streak>=daysTotal;
+  const done=!!cs.done || (regApproved && allDaysDone);
+  return {installed,reg,regApproved,streak,daysClaimed,daysTotal,claimedToday,nextDay,allDaysDone,done};
+}
+// Compact gold banner (same visual language as the retired GearUp mission) → opens the ladder page.
+function tongitsHero(app,s){
+  if(!tongitsEligible(s)) return;
+  const c=s.campaign, cs=s.campaignState||{};
+  const p=tongitsProgress(c,cs);
+  const total=tongitsTotalReward(c);
+  let status;
+  if(!p.installed) status='Step 1 of 6 · Install '+esc(c.title||'Tongits Go')+' to begin';
+  else if(p.reg==='pending') status='Step 2 of 6 · Registration is pending review';
+  else if(p.reg==='rejected') status='Step 2 of 6 · Registration was declined — tap to re-upload';
+  else if(!p.regApproved) status='Step 2 of 6 · Upload your registration screenshot';
+  else if(p.claimedToday) status='Day '+p.nextDay+' of '+p.daysTotal+' unlocks tomorrow';
+  else status='Day '+p.nextDay+' of '+p.daysTotal+' · play & claim now';
+  const started=p.installed||p.reg!=='none';
+  const cta=started?'CONTINUE MISSION':'START MISSION';
+  const card=$(`<div class="tgh"><div class="tgh-in">
+    <div class="tgh-top"><div class="tgh-eyebrow"><i></i>HIGH-VALUE MISSION</div>
+      <div class="tgh-reward"><span class="dia gold" style="width:15px;height:15px"></span>+${total}</div></div>
+    <h3 class="tgh-title">${esc(c.title||'Tongits Go')}</h3>
+    <div class="tgh-sub">${status}</div>
+    <button class="tgh-claim">${cta} &rsaquo;</button>
+  </div></div>`);
+  card.querySelector('.tgh-claim').onclick=()=>openTongitsPage(s);
+  app.appendChild(card);
+}
+function openTongitsPage(s){
+  const c=s.campaign;
+  openPage(c.title||'Tongits Go', function(body){ body.className='tgpage'; body.id='tgpagebody'; TG_START=0; renderTongitsPage(body); });
+}
+function tongitsStepRow(n,title,rewardTxt,desc,cls,actionsHtml){
+  return '<div class="tgp-step '+cls+'"><div class="tgp-row"><span class="tgp-dot">'+(cls==='done'?'&#10003;':n)+'</span>'+
+    '<div class="tgp-txt"><div class="tgp-t"><span>'+esc(title)+'</span><span class="tgp-rw">'+rewardTxt+'</span></div>'+
+    '<div class="tgp-d">'+desc+'</div>'+(actionsHtml||'')+'</div></div></div>';
+}
+function renderTongitsPage(body){
+  if(!body || typeof STATE==='undefined' || !STATE || !STATE.campaign) return;
+  const c=STATE.campaign, cs=STATE.campaignState||{};
+  const p=tongitsProgress(c,cs);
+  const install=c.install||{reward:0}, register=c.register||{reward:0}, days=Array.isArray(c.days)?c.days:[];
+
+  // Step 1 — Install
+  let s1cls='', s1desc='', s1actions='';
+  if(p.installed){ s1cls='done'; s1desc='Installed and verified.'; }
+  else{
+    s1desc='Install '+esc(c.title||'Tongits Go')+', then confirm below.';
+    s1actions='<div class="tgp-actions"><button class="tgbtn ghost" data-tg="open">Get '+esc(c.title||'Tongits Go')+'</button>'+
+      '<button class="tgbtn" data-tg="installclaim">I\'ve installed it</button></div>';
+  }
+  let html=tongitsStepRow(1,'Install the app','+'+(install.reward||0), s1desc, s1cls, s1actions);
+
+  // Step 2 — Register
+  let s2cls=p.installed?'':'locked', s2desc='', s2actions='';
+  if(p.regApproved){ s2cls='done'; s2desc='Registration verified.'; }
+  else if(!p.installed){ s2desc='Unlocks after Step 1.'; }
+  else if(p.reg==='pending'){ s2desc='We\'re reviewing your screenshot.'; s2actions='<div class="tgp-pending">&#9679; Pending review</div>'; }
+  else if(p.reg==='rejected'){ s2desc='Please try again.'; s2actions='<div class="tgp-reject">'+esc(cs.register&&cs.register.reason||'Screenshot could not be verified.')+'</div>'+
+      '<div class="tgp-actions"><button class="tgbtn" data-tg="upload">Re-upload screenshot</button></div>'; }
+  else{ s2desc='Upload a screenshot of your Tongits Go account/registration.'; s2actions='<div class="tgp-actions"><button class="tgbtn" data-tg="upload">Upload screenshot</button></div>'; }
+  html+=tongitsStepRow(2,'Register your account','+'+(register.reward||0), s2desc, s2cls, s2actions);
+
+  // Steps 3-6 — Day 1..N
+  for(let i=1;i<=p.daysTotal;i++){
+    const dReward=(days[i-1]&&days[i-1].reward)||0;
+    const claimedTs=p.daysClaimed[String(i)];
+    let cls='locked', desc='', actions='';
+    if(claimedTs){ cls='done'; desc='Claimed '+ago(claimedTs)+'.'; }
+    else if(!p.regApproved){ desc='Unlocks after registration is approved.'; }
+    else if(i<p.nextDay){ desc='Locked.'; }
+    else if(i===p.nextDay && p.claimedToday){ desc='Come back tomorrow for Day '+p.nextDay+'.'; }
+    else if(i===p.nextDay){ cls=''; desc='Play '+esc(c.title||'Tongits Go')+' for at least 3 minutes, then claim.';
+      actions='<div class="tgp-actions"><button class="tgbtn ghost" data-tg="play">Play 3 min</button>'+
+        '<button class="tgbtn" data-tg="dayclaim" data-day="'+i+'" data-reward="'+dReward+'" '+(TG_START?'':'disabled')+'>Claim +'+dReward+'</button></div>'; }
+    else{ desc='Unlocks after Day '+(i-1)+'.'; }
+    html+=tongitsStepRow(2+i,'Day '+i+' — play & claim','+'+dReward, desc, cls, actions);
+  }
+
+  body.innerHTML=
+    '<div class="tgp-hero"><div class="tgp-eyebrow">HIGH-VALUE MISSION</div>'+
+      '<div class="tgp-reward"><span class="dia gold" style="width:22px;height:22px"></span>+'+tongitsTotalReward(c)+'</div>'+
+      '<div class="tgp-note">'+esc(c.subtitle||'Complete every step for the full reward. We verify install, registration, and real play — no shortcuts.')+'</div></div>'+
+    '<div class="tgp-steps">'+html+'</div>';
+  body.querySelectorAll('[data-tg]').forEach(b=>{ b.onclick=()=>tongitsAct(b.getAttribute('data-tg'), b); });
+}
+// Native bridge call with a hard timeout so a dropped picker/process-death never hangs the UI.
+function callTimeout(m,ms,...a){
+  return new Promise(resolve=>{
+    const id='r'+(++REQ); let done=false;
+    const timer=setTimeout(()=>{ if(done) return; done=true; delete pending[id]; resolve({ok:false,error:'timeout'}); }, ms);
+    pending[id]=r=>{ if(done) return; done=true; clearTimeout(timer); resolve(r); };
+    try{ window.Android[m](id,...a); }
+    catch(e){ if(done) return; done=true; clearTimeout(timer); delete pending[id]; resolve({ok:false,error:'bridge_error'}); }
+  });
+}
+async function tongitsAct(kind,btn){
+  const c=STATE&&STATE.campaign; if(!c) return;
+  if(kind==='open'){ if(window.Android&&window.Android.openTongitsLink) window.Android.openTongitsLink(); return; }
+  if(kind==='play'){ TG_START=Date.now(); if(window.Android&&window.Android.openTongitsLink) window.Android.openTongitsLink(); renderTongitsPage(document.getElementById('tgpagebody')); return; }
+  if(kind==='installclaim'){
+    if(btn){ btn.textContent='…'; btn.disabled=true; }
+    let r; try{ r=await call('tongitsClaimInstall'); }catch(e){ r=null; }
+    if(r&&r.ok){ gainFx(r.reward||(c.install&&c.install.reward)||0,'gold'); toast('Install verified!','good'); requestState(); }
+    else{ toast('Could not verify install — try again','bad'); renderTongitsPage(document.getElementById('tgpagebody')); }
+    return;
+  }
+  if(kind==='upload'){
+    if(btn){ btn.textContent='Uploading…'; btn.disabled=true; }
+    let r; try{ r=await callTimeout('tongitsSubmitShot', 90000); }catch(e){ r=null; }
+    if(r&&r.ok){ toast('Screenshot submitted — pending review','good'); requestState(); }
+    else{
+      const err=r&&r.error;
+      if(err==='timeout') toast('Upload timed out — try again','bad');
+      else if(err!=='cancelled') toast('Could not upload — try again','bad');
+      renderTongitsPage(document.getElementById('tgpagebody'));
+    }
+    return;
+  }
+  if(kind==='dayclaim'){
+    if(!TG_START){ toast('Play at least 3 minutes first','bad'); return; }
+    if(btn){ btn.textContent='…'; btn.disabled=true; }
+    let r; try{ r=await call('tongitsClaimDay', String(TG_START)); }catch(e){ r=null; }
+    if(r&&r.ok){ TG_START=0; gainFx(r.reward||+btn.getAttribute('data-reward')||0,'gold'); toast('Day '+(r.day||'')+' claimed!','good'); requestState(); }
+    else{
+      const err=r&&r.error;
+      if(err==='usage_required') toast('Play at least 3 minutes first','bad');
+      else if(err==='claimed_today') toast('Already claimed today','bad');
+      else if(err==='register_required') toast('Approve registration first','bad');
+      else if(err==='already_done') toast('Mission already complete','bad');
+      else if(err==='no_usage_access') toast('Enable usage access to verify play time','bad');
+      else toast('Could not verify — try again','bad');
+      renderTongitsPage(document.getElementById('tgpagebody'));
+    }
+    return;
+  }
 }
 
 //=== daily countdown ==============================================================
