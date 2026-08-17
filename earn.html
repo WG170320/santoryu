@@ -997,15 +997,19 @@ function render(){
   app.appendChild($(`<div class="sh"><div class="t">WITHDRAW</div><div class="x blue">tap to set your goal</div></div>`));
   app.appendChild(withdrawPanel(s));
 
-  // tournament banner (LIVE EVENT) — bukas ang buong page on tap
-  app.appendChild($(`<div class="sh"><div class="t">LIVE EVENT</div></div>`));
+  // tournament banner (LIVE EVENT) — naka-gate: nagpapakita LANG kapag may aktibong event
+  // (status==='open'). Kontrolado mula sa backend (`tournament/event/status`).
+  const tsec=$(`<div id="tsection"></div>`);
+  tsec.appendChild($(`<div class="sh"><div class="t">LIVE EVENT</div></div>`));
   const tb=$(`<div class="tbanner" id="tbanner">
     <div class="lbl"><span class="live"></span> TIKTOK TOURNAMENT</div>
     <h3 id="tbTitle">TikTok Highlight Cup</h3>
     <div class="ppl">PRIZE POOL</div><div class="pp" id="tbPrize">—</div>
     <div class="go">JOIN ›</div></div>`);
   tb.onclick=openTournament;
-  app.appendChild(tb);
+  tsec.appendChild(tb);
+  tsec.style.display='none';       // hidden hangga't hindi kumpirmadong aktibo ang event
+  app.appendChild(tsec);
   updateBanner();
 
   // Play & Earn (jogos) — highlighted hero. Lumalabas LANG kapag naka-enable sa config AT
@@ -1432,9 +1436,12 @@ function fmtViews(n){ n=+n||0; if(n>=1e6)return (n/1e6).toFixed(n>=1e7?0:1).repl
 function msLeft(ts){ return Math.max(0,(+ts||0)-Date.now()); }
 function prizeHTML(ev){const n=(+ev.prizePool||0).toLocaleString();return `<span class="dia blue" style="width:.72em;height:.72em;display:inline-block;vertical-align:-.04em;margin-right:.14em"></span>${n}<span class="ppd">MLBB DIAMONDS</span>`;}
 function updateBanner(){
+  const sec=document.getElementById('tsection');
+  const active = !!(TOURN && TOURN.event && TOURN.event.status==='open');
+  if(sec) sec.style.display = active ? '' : 'none';   // OFF backend = walang LIVE EVENT
+  if(!active) return;
   const t=document.getElementById('tbPrize'), ti=document.getElementById('tbTitle');
   if(!t) return;
-  if(!TOURN||!TOURN.event){ t.textContent='Coming soon'; return; }
   t.innerHTML=prizeHTML(TOURN.event);
   if(ti&&TOURN.event.title) ti.textContent=TOURN.event.title;
 }
