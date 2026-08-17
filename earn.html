@@ -758,6 +758,51 @@
   .gmp-step.done .gmp-t{color:var(--txt2);}
   .gmp-d{font-size:12.5px; color:var(--txt2); margin-top:3px; line-height:1.4;}
   .gmp-open{margin-bottom:12px;}
+  /* ── Invite hero (THE highlight) — recruitment ledger: pending / accepted / rejected ── */
+  .ivhero{position:relative; margin:16px 0 6px; padding:18px 16px 16px; border-radius:16px;
+    background:linear-gradient(158deg,#17140b 0%,#0d1117 58%); border:1px solid rgba(232,180,74,.28);
+    box-shadow:0 20px 44px -24px rgba(232,180,74,.4), inset 0 1px 0 rgba(255,224,138,.12);
+    clip-path:polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));}
+  .ivhero::before{content:''; position:absolute; left:0; right:0; top:0; height:2px;
+    background:linear-gradient(90deg,transparent,var(--gold),transparent); opacity:.75;}
+  .ivh-top{display:flex; align-items:flex-start; justify-content:space-between; gap:12px;}
+  .ivh-eyebrow{display:flex; align-items:center; gap:7px; font-size:11px; font-weight:800; letter-spacing:.18em; color:var(--gold);}
+  .ivh-eyebrow i{width:6px;height:6px;border-radius:50%;background:var(--gold); box-shadow:0 0 8px var(--gold);}
+  .ivh-title{margin-top:3px; font-family:'Chakra Petch',sans-serif; font-weight:700; font-size:19px; color:var(--txt);}
+  .ivh-reward{display:flex; align-items:baseline; gap:6px; font-family:'Teko','Rajdhani',sans-serif; font-weight:700; font-size:46px; line-height:.78; color:var(--gold-hi); text-shadow:0 2px 20px rgba(232,180,74,.42);}
+  .ivh-reward .dia{align-self:center;}
+  .ivh-per{font-family:'Rajdhani'; font-size:13px; font-weight:600; color:var(--txt2);}
+  .ivh-tag{margin-top:8px; font-size:12.5px; line-height:1.5; color:var(--txt2);}
+  .ivh-tag b{color:var(--gold-hi); font-weight:700;}
+  .ivh-code{display:flex; gap:8px; margin-top:14px;}
+  .ivh-codebox{flex:1; display:flex; align-items:center; gap:6px; background:#0b0f14; border:1px dashed rgba(45,212,167,.45); border-radius:11px; padding:11px 12px; min-width:0;}
+  .ivh-codeval{flex:1; font-family:'Chakra Petch'; font-weight:700; font-size:15px; letter-spacing:1.5px; color:var(--emerald); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .ivh-copy{background:none;border:none;color:var(--gold);font-family:'Rajdhani';font-weight:700;font-size:11px;letter-spacing:.06em;cursor:pointer;padding:4px 4px;flex:0 0 auto;}
+  .ivh-share{flex:0 0 auto; display:flex; align-items:center; gap:7px; background:linear-gradient(180deg,#5ff0c8,#1aa583); color:#04140f; border:none; border-radius:11px; padding:0 16px; font-family:'Rajdhani'; font-weight:700; font-size:14px; letter-spacing:.03em; cursor:pointer; box-shadow:0 8px 20px -8px rgba(45,212,167,.5);}
+  .ivh-share svg{width:15px;height:15px;stroke:#04140f;}
+  .ivh-ledger{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:14px;}
+  .ivh-stat{padding:12px 6px 10px; border-radius:12px; text-align:center; background:#0d1117; border:1px solid var(--line);}
+  .ivh-num{font-family:'Teko','Rajdhani',sans-serif; font-weight:600; font-size:32px; line-height:.85;}
+  .ivh-lbl{margin-top:4px; font-size:9.5px; font-weight:700; letter-spacing:.13em; text-transform:uppercase; color:var(--txt2);}
+  .ivh-stat.pending{border-color:rgba(245,180,69,.32);} .ivh-stat.pending .ivh-num{color:var(--amber);}
+  .ivh-stat.accepted{border-color:rgba(45,212,167,.4); background:linear-gradient(180deg,rgba(45,212,167,.08),#0d1117);} .ivh-stat.accepted .ivh-num{color:var(--emerald);}
+  .ivh-stat.rejected{border-color:rgba(255,94,108,.28);} .ivh-stat.rejected .ivh-num{color:var(--danger);}
+  .ivh-roster{width:100%; margin-top:11px; background:none; border:1px solid var(--line); border-radius:11px; padding:11px; color:var(--txt2); font-family:'Rajdhani'; font-weight:600; font-size:13px; cursor:pointer;}
+  .ivh-apply{margin-top:12px; padding-top:12px; border-top:1px solid var(--line);}
+  .ivh-applylbl{font-size:11.5px; color:var(--txt2); margin-bottom:8px;}
+  .ivh-applybox{display:flex; gap:8px;}
+  .ivh-applybox input{flex:1; background:#0b0f14; border:1px solid var(--line); border-radius:10px; padding:10px 12px; color:var(--txt); font-family:'Chakra Petch'; letter-spacing:1px; text-transform:uppercase; font-size:13px; min-width:0;}
+  .ivh-applybox input:focus{outline:none; border-color:var(--emerald);}
+  .ivh-applybox button{background:rgba(45,212,167,.15); border:1px solid rgba(45,212,167,.4); color:var(--emerald); font-family:'Rajdhani'; font-weight:700; padding:0 16px; border-radius:10px; cursor:pointer; flex:0 0 auto;}
+  .ivh-applied{display:flex; align-items:center; gap:10px; margin-top:12px; padding-top:12px; border-top:1px solid var(--line);}
+  .ivh-applied .ck{width:24px;height:24px;border-radius:50%;background:var(--emerald);color:#04140f;display:flex;align-items:center;justify-content:center;font-weight:800;flex:0 0 auto;}
+  .ivh-applied .apt{font-size:10px;letter-spacing:1.4px;color:var(--emerald);font-weight:700;font-family:'Chakra Petch';}
+  .ivh-applied .apc{font-size:13px;font-weight:700;color:var(--txt);letter-spacing:1px;}
+  /* invite roster status chips */
+  .ivchip{font-family:'Rajdhani';font-weight:700;font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:20px;flex:0 0 auto;}
+  .ivchip.pending{color:var(--amber);background:rgba(245,180,69,.13);border:1px solid rgba(245,180,69,.3);}
+  .ivchip.accepted{color:var(--emerald);background:rgba(45,212,167,.13);border:1px solid rgba(45,212,167,.35);}
+  .ivchip.rejected{color:var(--danger);background:rgba(255,94,108,.12);border:1px solid rgba(255,94,108,.3);}
   /* ── Tongits Go campaign hero (gold premium, owner-scoped during testing) ── */
   .tgh{margin:6px 0 18px; border-radius:20px; padding:1.6px;
     background:linear-gradient(120deg,#FFE08A,#E8B44A,#A9781F,#E8B44A,#FFE08A); background-size:220% 220%;
@@ -883,12 +928,12 @@ function requestState(){ if(isNative) window.Android.requestState(); else mockSt
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden) requestState(); });
 
 let MOCK={ uid:"dev-demo", code:"SANT-AB12-CD34", isAdmin:false,
-  config:{perInvite:5,inviteeBonus:5,welcomeBonus:5,dailyBonus:15,missionGoal:5,missionBonus:50,missionHours:24},
+  config:{perInvite:15,refQualify:10,inviteeBonus:5,welcomeBonus:5,dailyBonus:15,missionGoal:5,missionBonus:50,missionHours:24},
   tiers:[{mlbb:22,cost:80,firstOnly:true},{mlbb:112,cost:250,firstOnly:false},{mlbb:223,cost:470,firstOnly:false},{mlbb:336,cost:670,firstOnly:false},{mlbb:570,cost:1080,firstOnly:false},{mlbb:1163,cost:2050,firstOnly:false}],
   tasks:[{id:"download_cliptok",title:"Download ClipTok",desc:"Install our partner app — Video & Photo Saver.",link:"https://play.google.com/store/apps/details?id=com.warlito.clipto",logo:"",reward:10,claimed:false},{id:"rate_5star",title:"Rate us 5 stars",desc:"Write an honest review on Google Play.",link:"https://play.google.com/store/apps/details?id=com.warlito.clipto",logo:"",reward:5,claimed:false},{id:"fb_heart_post",title:"Heart our Facebook post",desc:"Tap the heart (like) on our Facebook post to support us.",link:"https://www.facebook.com/share/p/1UnZBCNUnZ/",logo:"",reward:5,claimed:false}],
   account:{balance:340,earned:560,referralCount:3,firstWithdrawUsed:true,earnBanned:false,welcomeClaimed:true,referred:false,lastDailyDay:0,missionStart:0,missionBaseline:0,name:"Kairi",avatarUrl:"https://kappa.lol/7Xnnlc",earned:1340},
   history:[{mlbb:22,cost:80,status:"fulfilled",ts:Date.now()-86400000,refunded:false},{mlbb:112,cost:250,status:"pending",ts:Date.now()-3600000,refunded:false}],
-  invited:[{name:"Justin",ts:Date.now()-7200000,avatarUrl:"https://kappa.lol/Z9cLjS"},{name:"Vince",ts:Date.now()-90000000,avatarUrl:""},{name:"Maher",ts:Date.now()-180000000,avatarUrl:"https://kappa.lol/oF8JPO"}],
+  invited:[{name:"Justin",ts:Date.now()-7200000,avatarUrl:"https://kappa.lol/Z9cLjS",status:"accepted"},{name:"Vince",ts:Date.now()-90000000,avatarUrl:"",status:"pending"},{name:"Maher",ts:Date.now()-180000000,avatarUrl:"https://kappa.lol/oF8JPO",status:"accepted"},{name:"BotFarm01",ts:Date.now()-260000000,avatarUrl:"",status:"rejected"}],
   dailyAvailable:true, dailyKnown:true, dailyMs:0 };
 function mockState(){ setTimeout(()=>window.__earnState(JSON.parse(JSON.stringify(MOCK))),60); }
 if(!isNative){ window.Android={
@@ -1069,6 +1114,9 @@ function render(){
   proof.onclick=openTopEarners;
   app.appendChild(proof);
 
+  // INVITE HERO — ang pinaka-highlight ng Earn (conditional +perInvite + status ledger).
+  inviteHero(app,s);
+
   // WITHDRAW — Codashop grid: piliin ang amount = goal mo na rin (makikita sa progress sa taas)
   app.appendChild($(`<div class="sh"><div class="t">WITHDRAW</div><div class="x blue">tap to set your goal</div></div>`));
   app.appendChild(withdrawPanel(s));
@@ -1174,25 +1222,7 @@ function render(){
   if(mReady) mCard.querySelector('#mb').onclick=async e=>{e.target.textContent='…'; const r=await call('claimMission',c.missionBonus,a.referralCount); if(r.ok) gainFx(c.missionBonus,'gold'); requestState();};
   app.appendChild(mCard);
 
-  // invite (code + copy + share code + share link + apply code)
-  app.appendChild($(`<div class="sh"><div class="t">INVITE FRIENDS</div><div class="x">+${c.perInvite} per friend</div></div>`));
-  const link='https://santoryutoolkit.com/?ref='+encodeURIComponent(s.code);
-  const iv=$(`<div class="card inv">
-    <div class="row1"><div class="code">${esc(s.code)}</div><button class="icb copy" id="cpy">${II('ic-copy')}</button></div>
-    <button class="sbtn code shareone" id="shc">${II('ic-share')}<span>Share my invite code</span></button>
-    ${a.referred
-      ? `<div class="appliedbox"><span class="ckc">✓</span><div class="apl"><div class="apt">FRIEND CODE APPLIED</div><div class="apc2">${esc(a.referredByCode||'—')}</div></div><span class="lock">🔒</span></div>`
-      : `<div class="applywrap"><div class="applylbl">Got a friend's code? Apply it for a bonus.</div><div class="applybox"><input id="apc" placeholder="Enter a friend's code" maxlength="20"><button id="apb">APPLY</button></div></div>`}
-  </div>`);
-  iv.querySelector('#cpy').onclick=()=>{window.Android.copy(s.code); toast('Code copied!','good');};
-  iv.querySelector('#shc').onclick=()=>window.Android.share('Join Santoryu Toolkit and get FREE MLBB diamonds! Use my code '+s.code+' — '+link);
-  if(!a.referred){ const ab=iv.querySelector('#apb'); ab.onclick=async()=>{
-    const v=iv.querySelector('#apc').value.trim().toUpperCase(); if(!v){toast('Enter a code','bad'); return;}
-    ab.textContent='…'; const r=await call('applyReferral',v);
-    if(r.ok) gainFx(c.inviteeBonus,'gold');
-    else toast(refErr(r.error),'bad'); requestState();
-  };}
-  app.appendChild(iv);
+  // (Invite code/share/apply ay nasa inviteHero na sa itaas — ang pinaka-highlight.)
 
   // history + invited → sariling pages (mas magaan ang main, mas mabilis)
   app.appendChild($(`<div class="sh"><div class="t">YOUR ACTIVITY</div></div>`));
@@ -1378,13 +1408,17 @@ async function fillRejectReasons(scope){
 }
 function openInvited(){
   openPage('Friends You Invited', b=>{
-    const inv=(STATE.invited)||[], per=STATE.config.perInvite;
-    b.appendChild($(`<div class="sh" style="margin-top:0"><div class="t">${inv.length} JOINED · +${per} EACH</div></div>`));
-    if(!inv.length){ b.appendChild($(`<div class="empty">No invites yet.<br>Share your code to earn ${per} points per friend.</div>`)); return; }
+    const inv=(STATE.invited)||[], per=STATE.config.perInvite, q=STATE.config.refQualify||10;
+    const stt=x=>(x&&x.status)||'pending';
+    const nA=inv.filter(x=>stt(x)==='accepted').length;
+    b.appendChild($(`<div class="sh" style="margin-top:0"><div class="t">${inv.length} INVITED · ${nA} QUALIFIED</div><div class="x">+${per} each</div></div>`));
+    if(!inv.length){ b.appendChild($(`<div class="empty">No invites yet.<br>Share your code — you earn ${per} once a friend reaches ${q} diamonds.</div>`)); return; }
+    const sub={pending:`Needs ${q} diamonds to qualify`, accepted:`Qualified — you earned +${per}`, rejected:'Rejected — flagged as a bot'};
     const c=$(`<div class="card"></div>`);
-    inv.forEach(f=>c.appendChild($(`<div class="litem"><div class="fav fini">${esc((f.name||'?')[0].toUpperCase())}${f.avatarUrl?`<img src="${esc(f.avatarUrl)}" alt="" onerror="this.remove()">`:''}</div>
-      <div class="gleft"><div class="nm">${esc(f.name||'Player')}</div><div class="sm">joined ${ago(f.ts)}</div></div>
-      <span class="badge"><span class="dia gold" style="width:13px;height:13px"></span><b>+${per}</b></span></div>`)));
+    inv.forEach(f=>{ const st=stt(f);
+      c.appendChild($(`<div class="litem"><div class="fav fini">${esc((f.name||'?')[0].toUpperCase())}${f.avatarUrl?`<img src="${esc(f.avatarUrl)}" alt="" onerror="this.remove()">`:''}</div>
+      <div class="gleft"><div class="nm">${esc(f.name||'Player')}</div><div class="sm">${sub[st]||sub.pending} · joined ${ago(f.ts)}</div></div>
+      <span class="ivchip ${st}">${st}</span></div>`)); });
     b.appendChild(c);
   });
 }
@@ -2158,6 +2192,46 @@ function tongitsProgress(c,cs){
   return {installed,reg,regApproved,streak,daysClaimed,daysTotal,claimedToday,nextDay,allDaysDone,done};
 }
 // Compact gold banner (same visual language as the retired GearUp mission) → opens the ladder page.
+// ── Invite hero (THE highlight): code + conditional +perInvite + status ledger ──
+function inviteHero(app,s){
+  const a=s.account,c=s.config,inv=s.invited||[];
+  const st=x=>(x&&x.status)||'pending';
+  const nP=inv.filter(x=>st(x)==='pending').length;
+  const nA=inv.filter(x=>st(x)==='accepted').length;
+  const nR=inv.filter(x=>st(x)==='rejected').length;
+  const q=c.refQualify||10;
+  const link='https://santoryutoolkit.com/?ref='+encodeURIComponent(s.code||'');
+  const card=$(`<div class="ivhero">
+    <div class="ivh-top">
+      <div><div class="ivh-eyebrow"><i></i>INVITE &amp; EARN</div>
+        <div class="ivh-title">Recruit real players</div></div>
+      <div class="ivh-reward"><span class="dia gold" style="width:20px;height:20px"></span>+${c.perInvite}<span class="ivh-per">/ friend</span></div>
+    </div>
+    <div class="ivh-tag">You earn <b>+${c.perInvite}</b> once a friend you invited reaches <b>${q} diamonds</b> — real players only, no bots.</div>
+    <div class="ivh-code">
+      <div class="ivh-codebox"><span class="ivh-codeval">${esc(s.code||'—')}</span><button class="ivh-copy" id="ivcpy">COPY</button></div>
+      <button class="ivh-share" id="ivshr">${II('ic-share')}<span>Share</span></button>
+    </div>
+    <div class="ivh-ledger">
+      <div class="ivh-stat pending"><div class="ivh-num">${nP}</div><div class="ivh-lbl">Pending</div></div>
+      <div class="ivh-stat accepted"><div class="ivh-num">${nA}</div><div class="ivh-lbl">Accepted</div></div>
+      <div class="ivh-stat rejected"><div class="ivh-num">${nR}</div><div class="ivh-lbl">Rejected</div></div>
+    </div>
+    <button class="ivh-roster" id="ivros">See all ${inv.length} invite${inv.length===1?'':'s'} &rsaquo;</button>
+    ${a.referred
+      ? `<div class="ivh-applied"><span class="ck">✓</span><div><div class="apt">FRIEND CODE APPLIED</div><div class="apc">${esc(a.referredByCode||'—')}</div></div></div>`
+      : `<div class="ivh-apply"><div class="ivh-applylbl">Got a friend's code? Apply it for a bonus.</div><div class="ivh-applybox"><input id="ivapc" placeholder="Enter a friend's code" maxlength="20"><button id="ivapb">APPLY</button></div></div>`}
+  </div>`);
+  card.querySelector('#ivcpy').onclick=()=>{ if(window.Android&&window.Android.copy) window.Android.copy(s.code); toast('Code copied!','good'); };
+  card.querySelector('#ivshr').onclick=()=>{ if(window.Android&&window.Android.share) window.Android.share('Join Santoryu Toolkit and get FREE MLBB diamonds! Use my code '+s.code+' — '+link); };
+  card.querySelector('#ivros').onclick=openInvited;
+  if(!a.referred){ const ab=card.querySelector('#ivapb'); ab.onclick=async()=>{
+    const v=card.querySelector('#ivapc').value.trim().toUpperCase(); if(!v){ toast('Enter a code','bad'); return; }
+    ab.textContent='…'; const r=await call('applyReferral',v);
+    if(r&&r.ok) gainFx(c.inviteeBonus,'gold'); else toast(refErr(r&&r.error),'bad'); requestState();
+  };}
+  app.appendChild(card);
+}
 function tongitsHero(app,s){
   if(!tongitsEligible(s)) return;
   const c=s.campaign, cs=s.campaignState||{};
