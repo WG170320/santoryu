@@ -819,6 +819,15 @@
   @keyframes gmpdlshine{0%{left:-60%;}55%,100%{left:130%;}}
   .gmp-dlhint{font-size:11.5px; color:var(--gold-hi); opacity:.9; text-align:center; margin:0 2px 14px; line-height:1.45;}
   @media (prefers-reduced-motion:reduce){.gmp-dl{animation:none;} .gmp-dl::after{display:none;}}
+  /* GearUp redeem visual guide (step 2) */
+  .gmp-guide{margin-top:11px; padding:11px; border-radius:11px; background:rgba(232,180,74,.06); border:1px solid rgba(232,180,74,.2);}
+  .gmp-gcap{font-size:11.5px; color:var(--txt2); line-height:1.5; margin-bottom:9px;}
+  .gmp-vip{display:inline-block; margin-bottom:9px; font-family:'Rajdhani',sans-serif; font-weight:800; font-size:11px; letter-spacing:.5px;
+    color:#231704; background:linear-gradient(135deg,#FFE08A,#E8B44A); padding:3px 10px; border-radius:999px;}
+  .gmp-gstep{display:flex; align-items:center; gap:8px; margin:0 0 6px; font-size:11.5px; color:var(--txt); font-weight:700;}
+  .gmp-gstep span{width:18px; height:18px; flex:none; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-size:10px; font-weight:800; color:#231704; background:var(--gold-hi);}
+  .gmp-gimg{display:block; width:100%; max-width:300px; border-radius:10px; border:1px solid var(--line); margin:0 0 10px;}
   /* ── Withdraw banner (dashboard) → opens full Withdraw page. Blue = cash-out. ── */
   .wbanner{position:relative; overflow:hidden; margin:14px 0 4px; padding:16px 16px 14px; border-radius:18px;
     background:linear-gradient(155deg,#0e2740 0%,#0b1017 62%); border:1px solid rgba(77,166,255,.32);
@@ -2353,10 +2362,18 @@ function renderGMPage(body,t){
   var stepHtml='';
   for(var i=0;i<3;i++){
     var codeBtn=(i===1)?'<button class="gmp-code" data-g="copycode">WARLITO '+IC.copy+'</button>':'';
+    var guide=(i===1)?'<div class="gmp-guide">'+
+      '<div class="gmp-vip">&#127881; FREE 1-DAY VIP</div>'+
+      '<div class="gmp-gcap">After installing, open GearUp and follow these:</div>'+
+      '<div class="gmp-gstep"><span>1</span>Tap <b style="margin-left:3px">Redeem</b></div>'+
+      '<img class="gmp-gimg" src="assets/gearup_redeem.jpg" alt="Tap Redeem in GearUp" loading="lazy">'+
+      '<div class="gmp-gstep"><span>2</span>Enter code <b style="margin-left:3px">WARLITO</b> &rarr; Redeem Now</div>'+
+      '<img class="gmp-gimg" src="assets/gearup_code.jpg" alt="Enter WARLITO code" loading="lazy">'+
+      '</div>':'';
     stepHtml+='<div class="gmp-step'+(done[i]?' done':'')+'">'+
       '<span class="gmp-dot">'+(done[i]?'&#10003;':(i+1))+'</span>'+
       '<div class="gmp-txt"><div class="gmp-t">'+esc(d.steps[i])+'</div>'+
-      '<div class="gmp-d">'+esc(descs[i])+(prog[i]?(' <b style="color:var(--gold-hi)">'+prog[i]+'</b>'):'')+'</div>'+codeBtn+'</div>'+
+      '<div class="gmp-d">'+esc(descs[i])+(prog[i]?(' <b style="color:var(--gold-hi)">'+prog[i]+'</b>'):'')+'</div>'+codeBtn+guide+'</div>'+
       '<div class="gmp-rw">+'+stepR[i]+'</div></div>';
   }
   body.innerHTML=
