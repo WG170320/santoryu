@@ -2806,7 +2806,20 @@ function callTimeout(m,ms,...a){
 async function tongitsAct(kind,btn){
   const c=STATE&&STATE.campaign; if(!c) return;
   if(kind==='open'){ if(window.Android&&window.Android.openTongitsLink) window.Android.openTongitsLink(); return; }
-  if(kind==='play'){ TG_START=Date.now(); const rw=+(btn&&btn.getAttribute('data-reward'))||0;
+  if(kind==='play'){ const rw=+(btn&&btn.getAttribute('data-reward'))||0;
+    // The floating play timer counts down from REAL Tongits Go foreground usage (UsageStats).
+    // Without Usage Access that reads 0 forever → the timer looks frozen AND the claim fails.
+    // Gate on it first (same permission the claim needs) so we never start a dead timer.
+    if(window.Android&&window.Android.usageSeconds){
+      try{ const u=await call('usageSeconds', (c&&c.package)||'', '0');
+        if(u && u.hasAccess===false){
+          toast('Turn on Usage access so the timer can count your play','bad');
+          if(window.Android.openUsageSettings) window.Android.openUsageSettings();
+          return;
+        }
+      }catch(e){}
+    }
+    TG_START=Date.now();
     // tongitsStartPlay: buksan ang laro + floating overlay timer (bumibilang lang habang Tongits
     // Go ang naka-foreground). Fallback sa openTongitsLink kung lumang app (walang bridge method).
     if(window.Android&&window.Android.tongitsStartPlay) window.Android.tongitsStartPlay(rw, String(TG_START));
