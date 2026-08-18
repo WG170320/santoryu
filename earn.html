@@ -819,6 +819,18 @@
   @keyframes gmpdlshine{0%{left:-60%;}55%,100%{left:130%;}}
   .gmp-dlhint{font-size:11.5px; color:var(--gold-hi); opacity:.9; text-align:center; margin:0 2px 14px; line-height:1.45;}
   @media (prefers-reduced-motion:reduce){.gmp-dl{animation:none;} .gmp-dl::after{display:none;}}
+  /* Usage-access grant — a QUIET blue verification notice (not a gold button), shown
+     just above Claim only when access is missing, so it never competes with DOWNLOAD. */
+  .gmp-grant{display:flex; align-items:center; gap:12px; padding:12px 13px; margin:14px 0 0; border-radius:13px;
+    background:rgba(77,166,255,.07); border:1px solid rgba(77,166,255,.28);}
+  .gmp-grant .gg-ic{width:34px; height:34px; flex:none; border-radius:10px; display:grid; place-items:center;
+    background:rgba(77,166,255,.14); border:1px solid rgba(77,166,255,.3);}
+  .gmp-grant .gg-ic svg{width:18px; height:18px; stroke:var(--blue-hi);}
+  .gmp-grant .gg-tx{flex:1; min-width:0; font-size:12px; color:var(--txt2); line-height:1.42;}
+  .gmp-grant .gg-tx b{display:block; font-family:'Rajdhani',sans-serif; font-size:13.5px; font-weight:700; color:var(--txt); margin-bottom:1px;}
+  .gmp-grant .gg-btn{flex:0 0 auto; border:1px solid rgba(77,166,255,.5); background:rgba(77,166,255,.14); color:var(--blue-hi);
+    font-family:'Rajdhani',sans-serif; font-weight:700; font-size:12.5px; padding:9px 13px; border-radius:10px; cursor:pointer; white-space:nowrap;}
+  .gmp-grant .gg-btn:active{transform:scale(.96);}
   /* GearUp redeem visual guide (step 2) */
   .gmp-guide{margin-top:11px; padding:11px; border-radius:11px; background:rgba(232,180,74,.06); border:1px solid rgba(232,180,74,.2);}
   .gmp-gcap{font-size:11.5px; color:var(--txt2); line-height:1.5; margin-bottom:9px;}
@@ -2438,10 +2450,12 @@ function renderGMPage(body,t){
     '<div class="gmp-hero"><div class="gmp-eyebrow">HIGH-VALUE MISSION</div>'+
       '<div class="gmp-reward"><span class="dia gold" style="width:24px;height:24px"></span>+'+esc(t.reward)+'</div>'+
       '<div class="gmp-note">Do every step with real gameplay. We check GearUp and Mobile Legends usage, so shortcuts won’t count.</div></div>'+
-    (grantNeeded?'<button class="gmbtn wide" data-g="grant">Grant usage access to start</button>':'')+
     '<button class="gmp-dl" data-g="open"><span class="dlic">&#11015;</span> '+(GM.active?'RE-OPEN GEARUP':'DOWNLOAD GEARUP HERE')+'</button>'+
     '<div class="gmp-dlhint">Install GearUp through this link to start earning &mdash; tap above, then finish the steps.</div>'+
     '<div class="gmp-steps">'+stepHtml+'</div>'+
+    (grantNeeded?('<div class="gmp-grant"><div class="gg-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg></div>'+
+      '<div class="gg-tx"><b>Turn on usage access</b>One-time toggle so we can confirm your GearUp &amp; MLBB play. Nothing else is read.</div>'+
+      '<button class="gg-btn" data-g="grant">Allow</button></div>'):'')+
     '<button class="gmh-claim" data-g="claim" '+(st.ready?'':'disabled')+'>'+(st.ready?('CLAIM +'+t.reward):'COMPLETE ALL STEPS')+'</button>';
   body.querySelectorAll('[data-g]').forEach(function(b){ b.onclick=function(){ gmAct(t,b.getAttribute('data-g')); }; });
 }
