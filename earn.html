@@ -828,6 +828,60 @@
   .gmp-gstep span{width:18px; height:18px; flex:none; border-radius:50%; display:flex; align-items:center; justify-content:center;
     font-size:10px; font-weight:800; color:#231704; background:var(--gold-hi);}
   .gmp-gimg{display:block; width:100%; max-width:300px; border-radius:10px; border:1px solid var(--line); margin:0 0 10px;}
+  /* ── Comment task (watch a YouTube video → post a generated Pinoy comment) ──────
+     YouTube-red accent for the priority watch/comment CTA; reward stays gold. */
+  .cmpage{padding:4px 2px 30px;}
+  .cmp-hero{position:relative; overflow:hidden; border-radius:18px; padding:20px 18px; margin-bottom:14px;
+    background:radial-gradient(120% 100% at 88% -12%, rgba(255,64,72,.20), transparent 55%), linear-gradient(160deg,#1b0e10,#0c0f14 80%);
+    border:1px solid rgba(255,64,72,.32); box-shadow:0 14px 40px -20px rgba(255,64,72,.42);}
+  .cmp-eyebrow{display:flex; align-items:center; gap:7px; font-family:'Chakra Petch'; font-weight:700; font-size:10px; letter-spacing:3px; color:#FF7A80;}
+  .cmp-eyebrow i{width:6px; height:6px; border-radius:50%; background:#FF404A; box-shadow:0 0 8px #FF404A;}
+  .cmp-reward{display:flex; align-items:center; gap:9px; font-family:'Teko','Rajdhani',sans-serif; font-weight:700; font-size:48px; line-height:1;
+    color:var(--gold-hi); margin:9px 0 6px; text-shadow:0 2px 18px rgba(232,180,74,.4);}
+  .cmp-note{font-size:12.5px; color:var(--txt2); line-height:1.5;}
+  /* Priority red CTA — opens the video (the click we want) */
+  .cmp-watch{display:flex; align-items:center; justify-content:center; gap:10px; width:100%; border:none; border-radius:13px;
+    padding:15px; margin-bottom:8px; cursor:pointer; font-family:'Chakra Petch',sans-serif; font-weight:700; letter-spacing:1px;
+    font-size:15.5px; color:#fff; position:relative; overflow:hidden;
+    background:linear-gradient(135deg,#FF6168,#FF2C3C 46%,#D2002A); box-shadow:0 10px 28px -8px rgba(255,44,60,.6);
+    animation:cmwpulse 1.9s ease-in-out infinite;}
+  .cmp-watch .ytplay{width:26px; height:26px; flex:none; border-radius:7px; background:rgba(0,0,0,.28); display:grid; place-items:center;}
+  .cmp-watch .ytplay svg{width:13px; height:13px; margin-left:1px;}
+  .cmp-watch.done{animation:none; background:linear-gradient(135deg,#2f3a30,#1a2620); color:var(--emerald); box-shadow:none; border:1px solid rgba(45,212,167,.35);}
+  .cmp-watch::after{content:''; position:absolute; top:0; left:-60%; width:38%; height:100%; pointer-events:none;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent); transform:skewX(-20deg); animation:cmwshine 2.6s ease-in-out infinite;}
+  .cmp-watch.done::after{display:none;}
+  @keyframes cmwpulse{0%,100%{box-shadow:0 10px 28px -8px rgba(255,44,60,.5);}50%{box-shadow:0 13px 36px -6px rgba(255,44,60,.95);}}
+  @keyframes cmwshine{0%{left:-60%;}55%,100%{left:130%;}}
+  .cmp-watchhint{font-size:11.5px; color:#FF9CA0; opacity:.92; text-align:center; margin:0 2px 14px; line-height:1.45;}
+  /* Signature: the comment generator — reads like a real comment being written */
+  .cmp-gen{border-radius:16px; background:linear-gradient(180deg,#12171e,#0d1117); border:1px solid var(--line); padding:15px 15px 16px; margin:2px 0 4px;}
+  .cmp-genhead{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px;}
+  .cmp-genlbl{font-family:'Chakra Petch'; font-weight:700; font-size:10px; letter-spacing:2.5px; color:var(--cyan);}
+  .cmp-gentag{font-size:10px; font-weight:700; letter-spacing:.5px; color:var(--txt2); background:rgba(255,255,255,.04);
+    border:1px solid var(--line); padding:3px 9px; border-radius:999px;}
+  .cmp-row{display:flex; gap:10px; align-items:flex-end;}
+  .cmp-av{width:34px; height:34px; flex:none; border-radius:50%; display:grid; place-items:center; font-family:'Rajdhani'; font-weight:700; font-size:15px;
+    color:#04140f; background:linear-gradient(135deg,#5FE6FF,#2DD4A7);}
+  .cmp-bubble{position:relative; flex:1; min-width:0; background:#1b2431; border:1px solid #26313f; border-radius:15px; border-bottom-left-radius:5px;
+    padding:12px 14px; font-family:'Inter',sans-serif; font-size:15px; line-height:1.5; color:var(--txt); word-break:break-word;
+    animation:cmpop .22s ease;}
+  .cmp-bubble::before{content:''; position:absolute; left:-6px; bottom:8px; width:12px; height:12px; background:#1b2431; border-left:1px solid #26313f; border-bottom:1px solid #26313f; transform:rotate(45deg);}
+  @keyframes cmpop{from{opacity:0; transform:translateY(4px) scale(.99);}to{opacity:1; transform:none;}}
+  .cmp-actions{display:flex; gap:9px; margin-top:13px;}
+  .cmp-regen{flex:0 0 auto; display:inline-flex; align-items:center; gap:7px; cursor:pointer; border-radius:11px; padding:12px 15px;
+    font-family:'Rajdhani',sans-serif; font-weight:700; font-size:13px; letter-spacing:.5px; color:var(--cyan);
+    background:rgba(95,230,255,.08); border:1px solid rgba(95,230,255,.28);}
+  .cmp-regen:active{transform:scale(.97);} .cmp-regen svg{width:15px; height:15px;}
+  .cmp-copy{flex:1; display:inline-flex; align-items:center; justify-content:center; gap:8px; cursor:pointer; border:none; border-radius:11px; padding:12px;
+    font-family:'Chakra Petch',sans-serif; font-weight:700; letter-spacing:.5px; font-size:13.5px; color:#231704;
+    background:linear-gradient(135deg,#FFF0C4,#FFD980 45%,#E8B44A); box-shadow:0 8px 20px -8px rgba(232,180,74,.55);}
+  .cmp-copy:active{transform:scale(.99);} .cmp-copy svg{width:15px; height:15px; stroke:#231704;}
+  .cmp-copy.copied{background:linear-gradient(135deg,#7ff0cf,#2DD4A7); color:#04140f; box-shadow:none;}
+  .cmp-copy.copied svg{stroke:#04140f;}
+  .cmp-genfoot{font-size:11.5px; color:var(--txt2); line-height:1.45; margin-top:11px; text-align:center;}
+  .cmp-sh{font-family:'Chakra Petch'; font-weight:700; font-size:10px; letter-spacing:2.5px; color:var(--txt2); margin:16px 2px 9px;}
+  @media (prefers-reduced-motion:reduce){.cmp-watch{animation:none;} .cmp-watch::after{display:none;} .cmp-bubble{animation:none;}}
   /* ── Withdraw banner (dashboard) → opens full Withdraw page. Blue = cash-out. ── */
   .wbanner{position:relative; overflow:hidden; margin:14px 0 4px; padding:16px 16px 14px; border-radius:18px;
     background:linear-gradient(155deg,#0e2740 0%,#0b1017 62%); border:1px solid rgba(77,166,255,.32);
@@ -1145,10 +1199,14 @@ function taskIcon(t){
   if(t.logo) return `<img src="${esc(t.logo)}" alt="">`;
   if(t.id.includes('rate')||/review|star/i.test(t.title)) return II('ic-rate');
   if(isSocial(t)) return `<svg viewBox="0 0 24 24" width="20" height="20" fill="#1877F2"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.15 8.44 9.9v-7H7.9v-2.9h2.54V9.84c0-2.52 1.5-3.91 3.78-3.91 1.1 0 2.24.2 2.24.2v2.47h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.44 2.9h-2.34v7c4.78-.75 8.44-4.9 8.44-9.9Z"/></svg>`;
+  if(isCommentTask(t)) return `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#5FE6FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z"/></svg>`;
   if(/video|watch/i.test(t.title)) return IC.play;
   return II('ic-daily');
 }
 function isReview(t){ return t.id.includes('rate')||/review|star/i.test(t.title); }
+// Comment task = watch a YouTube video, then post an auto-generated Pinoy comment.
+// Detected by an explicit id prefix (yt_comment*) or a YouTube link + "comment" in the title/id.
+function isCommentTask(t){ return !!(t && (/^yt[_-]?comment/i.test(t.id||'') || (/youtu\.?be|youtube\.com/i.test(t.link||'') && /comment/i.test((t.id||'')+' '+(t.title||''))))); }
 // Social dwell task (hal. i-heart ang FB post) — kailangang manatili ~10s bago mag-claim.
 function isSocial(t){ return /facebook\.com|fb\.watch|fb\.me/i.test(t.link||'')||/facebook|fb\b/i.test(t.title||''); }
 function dwellSecs(t){ return Number(t.dwell)>0?Number(t.dwell):10; }
@@ -1534,7 +1592,7 @@ function appendTasks(app,s){
     const right=`<button class="tclaim"><span class="dia gold" style="width:14px;height:14px"></span>+${t.reward}</button>`;
     const row=$(`<div class="taskrow"><div class="ti">${taskIcon(t)}</div>
       <div class="gleft"><div class="n">${esc(t.title)}</div><div class="d">${esc(t.desc)}</div></div>${right}</div>`);
-    row.querySelector('.tclaim').onclick=()=> isUsage(t)?(usageSupported()?openUsage(t):toast('Update the app to do this task','bad')): isReview(t)?openReview(t): isSocial(t)?openDwell(t): doTask(t);
+    row.querySelector('.tclaim').onclick=()=> isCommentTask(t)?openCommentPage(t): isUsage(t)?(usageSupported()?openUsage(t):toast('Update the app to do this task','bad')): isReview(t)?openReview(t): isSocial(t)?openDwell(t): doTask(t);
     tc.appendChild(row);
   });
   app.appendChild(tc);
@@ -2423,6 +2481,126 @@ function gmBindVis(){ if(gmVisBound) return; gmVisBound=true;
     var t=((typeof STATE!=='undefined'&&STATE&&STATE.tasks)||[]).find(function(x){ return x&&x.hero===true&&x.id===GM.taskId; });
     if(t) gmPoll(t);
   });
+}
+
+// ── Comment task: watch a YouTube video → post an auto-generated Pinoy comment ──
+// The comment generator is the signature. It builds a fresh, natural Taglish comment
+// every time (praise + skin/diamond requests, random emoji), and de-dupes within the
+// session so no two users copy the exact same line. All content lives here on purpose:
+// custom config fields are dropped by the app's RewardTask passthrough, so only the
+// task's id/title/desc/link/reward survive — everything else must be hardcoded.
+var CM={ taskId:null, opened:false, copied:false, current:'', used:{} };
+var CM_OPEN=["Wow","Grabe","Astig","Solid","Uy","Naks","Lupit","Sobrang galing","Ayos","Petmalu","Angas","Nice","Ang lupit","Sana all"];
+var CM_CORE=[
+  "ang ganda naman ng update","ang laki ng improvement ngayon","sobrang smooth na maglaro",
+  "laro na laro ko na 'to","ang saya maglaro ng Tongits Go","sulit yung oras dito sa Tongits",
+  "grabe yung graphics ngayon","ang bilis manalo dito","addicting talaga 'tong laro",
+  "the best na tongits app 'to","ang dami ko na napanalunan","ang ganda ng bagong features",
+  "napaka-legit ng laro","walang lag super smooth na","panalo yung bagong update",
+  "sobrang dali makahanap ng kalaban","ang ganda ng video bossing"];
+var CM_TAIL=["","","sana all","keep it up po","dagdagan pa updates","recommended 'to sa lahat",
+  "laro na kayo mga bossing","worth it maglaro nito","pinaka-solid na tongits ngayon","suki na 'ko dito"];
+var CM_REQ=[
+  "Bossing penge naman ng skin","Boss penge ng diamonds please","Idol pa-skin naman diyan",
+  "Penge diamonds boss pang-start ko lang","Pa-free skin naman po diyan bossing",
+  "Boss pahingi naman ng diamonds","Idol penge skin please first time ko lang",
+  "Bossing pa-load naman ng diamonds","Penge skin bossing paborito ko 'tong app",
+  "Boss sana mapansin penge diamonds","Bossing pa-skin naman sakin oh","Penge naman po ng skin idol",
+  "Boss free diamonds naman sana","Idol pwede pahingi ng skin"];
+var CM_REQPRE=["","","Uy ","Grabe ang ganda, ","Ang galing, ","Solid, "];
+var CM_EMO=["🔥","💯","😍","🤩","👑","💎","🙏","😎","🥰","⚡","✨","🎮","❤️","😁","🤙","🌟"];
+function cmPick(a){ return a[Math.floor(Math.random()*a.length)]; }
+function cmBuild(){
+  var s;
+  if(Math.random()<0.45){ // skin/diamond request
+    s=cmPick(CM_REQPRE)+cmPick(CM_REQ);
+  }else{ // praise
+    var join=Math.random()<0.4?", ":" ";
+    s=cmPick(CM_OPEN)+join+cmPick(CM_CORE);
+    var tail=cmPick(CM_TAIL); if(tail) s+=", "+tail;
+  }
+  // Random emoji: usually trailing (1, sometimes 2), occasionally leading.
+  if(Math.random()<0.78){
+    var e=cmPick(CM_EMO);
+    if(Math.random()<0.22){ s=e+" "+s; }
+    else{ s=s+" "+e; if(Math.random()<0.28){ var e2=cmPick(CM_EMO); if(e2!==e) s+=e2; } }
+  }
+  return s;
+}
+function genComment(){
+  var c="", tries=0;
+  do{ c=cmBuild(); tries++; }while(CM.used[c] && tries<14);
+  CM.used[c]=1; return c;
+}
+function openCommentPage(t){
+  if(CM.taskId!==t.id){ CM={ taskId:t.id, opened:false, copied:false, current:'', used:{} }; }
+  if(!CM.current) CM.current=genComment();
+  openPage(t.title||'Comment task', function(body){ body.className='cmpage'; body.id='cmpagebody'; renderCMPage(body,t); });
+}
+function renderCMPage(body,t){
+  if(!body) return;
+  var ready=CM.opened&&CM.copied;
+  var claimLbl=!CM.opened?'WATCH THE VIDEO FIRST':(!CM.copied?'COPY A COMMENT FIRST':('CLAIM +'+t.reward));
+  var steps=[
+    ['Watch the video','Tap the red button — it opens the Tongits Go video on YouTube.',CM.opened],
+    ['Copy a comment','Generate a comment below and copy it. Tap again for a different one.',CM.copied],
+    ['Paste it & post','Paste your comment on the video, then come back and claim.',false]
+  ];
+  var stepHtml='';
+  for(var i=0;i<steps.length;i++){
+    var dn=steps[i][2];
+    stepHtml+='<div class="gmp-step'+(dn?' done':'')+'">'+
+      '<span class="gmp-dot">'+(dn?'&#10003;':(i+1))+'</span>'+
+      '<div class="gmp-txt"><div class="gmp-t">'+esc(steps[i][0])+'</div>'+
+      '<div class="gmp-d">'+esc(steps[i][1])+'</div></div></div>';
+  }
+  body.innerHTML=
+    '<div class="cmp-hero"><div class="cmp-eyebrow"><i></i>COMMUNITY TASK</div>'+
+      '<div class="cmp-reward"><span class="dia gold" style="width:24px;height:24px"></span>+'+esc(t.reward)+'</div>'+
+      '<div class="cmp-note">Watch the Tongits Go video and drop a comment. Use the generated comment below so it looks natural &mdash; walang kopyahan, iba-iba ang lalabas sa bawat isa.</div></div>'+
+    '<button class="cmp-watch'+(CM.opened?' done':'')+'" data-c="watch">'+
+      (CM.opened?'&#10003; WATCH AGAIN':'<span class="ytplay"><svg viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></span> WATCH & COMMENT')+'</button>'+
+    '<div class="cmp-watchhint">'+(CM.opened?'Watched? Now copy a comment below and post it on the video.':'Opening the video is required &mdash; watch it, then post your comment.')+'</div>'+
+    '<div class="cmp-sh">HOW IT WORKS</div>'+
+    '<div class="gmp-steps">'+stepHtml+'</div>'+
+    '<div class="cmp-sh">YOUR COMMENT &mdash; TAP COPY, THEN PASTE ON THE VIDEO</div>'+
+    '<div class="cmp-gen">'+
+      '<div class="cmp-genhead"><span class="cmp-genlbl">AUTO-GENERATED</span><span class="cmp-gentag">natural &bull; iba-iba</span></div>'+
+      '<div class="cmp-row"><div class="cmp-av">You</div>'+
+        '<div class="cmp-bubble" id="cmbub">'+esc(CM.current)+'</div></div>'+
+      '<div class="cmp-actions">'+
+        '<button class="cmp-regen" data-c="regen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>New comment</button>'+
+        '<button class="cmp-copy'+(CM.copied?' copied':'')+'" data-c="copy">'+(CM.copied?
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Copied!':
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy comment')+'</button>'+
+      '</div>'+
+      '<div class="cmp-genfoot">Bawal mag-spam. Isang totoong komento lang &mdash; paste it, then claim your diamonds.</div>'+
+    '</div>'+
+    '<button class="gmh-claim" data-c="claim" '+(ready?'':'disabled')+'>'+claimLbl+'</button>';
+  body.querySelectorAll('[data-c]').forEach(function(b){ b.onclick=function(){ cmAct(t,b.getAttribute('data-c')); }; });
+}
+function cmRerender(t){ var b=document.getElementById('cmpagebody'); if(b) renderCMPage(b,t); }
+async function cmAct(t,kind){
+  if(kind==='watch'){ CM.opened=true;
+    var link=(t.link&&t.link!=='#')?t.link:'https://youtu.be/z11eSYs5WMY';
+    if(window.Android&&window.Android.openLink) window.Android.openLink(link); else window.open(link,'_blank');
+    cmRerender(t); return; }
+  if(kind==='regen'){ CM.current=genComment(); CM.copied=false;
+    var bub=document.getElementById('cmbub');
+    if(bub){ bub.textContent=CM.current; bub.style.animation='none'; void bub.offsetWidth; bub.style.animation=''; }
+    // reflect copy-reset + keep claim gating in sync
+    cmRerender(t); return; }
+  if(kind==='copy'){
+    if(window.Android&&window.Android.copy) window.Android.copy(CM.current);
+    else if(navigator.clipboard) { try{ navigator.clipboard.writeText(CM.current); }catch(e){} }
+    CM.copied=true; toast('Comment copied — paste it on the video','good'); cmRerender(t); return; }
+  if(kind==='claim'){
+    if(!(CM.opened&&CM.copied)){ toast(!CM.opened?'Watch the video first':'Copy a comment first','bad'); return; }
+    var btn=document.querySelector('#cmpagebody .gmh-claim'); if(btn){ btn.textContent='…'; btn.disabled=true; }
+    var r; try{ r=await call('claimTask', t.id, t.reward); }catch(e){ r=null; }
+    if(r&&r.ok){ gainFx(t.reward,'gold'); toast('Salamat sa comment! +'+t.reward,'good'); try{history.back();}catch(e){} requestState(); return; }
+    toast('Complete the task first','bad'); cmRerender(t);
+  }
 }
 
 // ── Tongits Go campaign (gold hero → 6-step ladder: install, register, day 1-4) ──
