@@ -805,6 +805,20 @@
     background:linear-gradient(135deg,#FFF0C4,#FFD980 45%,#E8B44A); border:none; border-radius:9px; padding:8px 14px;}
   .gmp-code:active{transform:scale(.97);}
   .gmp-code svg{width:14px; height:14px; stroke:#231704;}
+  /* GearUp DOWNLOAD HERE — the affiliate link is the priority */
+  .gmp-dl{display:flex; align-items:center; justify-content:center; gap:9px; width:100%; border:none; border-radius:13px;
+    padding:15px; margin-bottom:9px; cursor:pointer; font-family:'Chakra Petch',sans-serif; font-weight:700; letter-spacing:1px;
+    font-size:15.5px; color:#231704; position:relative; overflow:hidden;
+    background:linear-gradient(135deg,#FFF0C4,#FFD980 42%,#E8B44A); box-shadow:0 10px 28px -8px rgba(232,180,74,.6);
+    animation:gmpdlpulse 1.9s ease-in-out infinite;}
+  .gmp-dl .dlic{font-size:18px; line-height:1;}
+  .gmp-dl::after{content:''; position:absolute; top:0; left:-60%; width:38%; height:100%; pointer-events:none;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent); transform:skewX(-20deg);
+    animation:gmpdlshine 2.6s ease-in-out infinite;}
+  @keyframes gmpdlpulse{0%,100%{box-shadow:0 10px 28px -8px rgba(232,180,74,.5);}50%{box-shadow:0 13px 36px -6px rgba(232,180,74,.95);}}
+  @keyframes gmpdlshine{0%{left:-60%;}55%,100%{left:130%;}}
+  .gmp-dlhint{font-size:11.5px; color:var(--gold-hi); opacity:.9; text-align:center; margin:0 2px 14px; line-height:1.45;}
+  @media (prefers-reduced-motion:reduce){.gmp-dl{animation:none;} .gmp-dl::after{display:none;}}
   /* ── Withdraw banner (dashboard) → opens full Withdraw page. Blue = cash-out. ── */
   .wbanner{position:relative; overflow:hidden; margin:14px 0 4px; padding:16px 16px 14px; border-radius:18px;
     background:linear-gradient(155deg,#0e2740 0%,#0b1017 62%); border:1px solid rgba(77,166,255,.32);
@@ -2350,8 +2364,9 @@ function renderGMPage(body,t){
       '<div class="gmp-reward"><span class="dia gold" style="width:24px;height:24px"></span>+'+esc(t.reward)+'</div>'+
       '<div class="gmp-note">Do every step with real gameplay. We check GearUp and Mobile Legends usage, so shortcuts won’t count.</div></div>'+
     (grantNeeded?'<button class="gmbtn wide" data-g="grant">Grant usage access to start</button>':'')+
+    '<button class="gmp-dl" data-g="open"><span class="dlic">&#11015;</span> '+(GM.active?'RE-OPEN GEARUP':'DOWNLOAD GEARUP HERE')+'</button>'+
+    '<div class="gmp-dlhint">Install GearUp through this link to start earning &mdash; tap above, then finish the steps.</div>'+
     '<div class="gmp-steps">'+stepHtml+'</div>'+
-    '<button class="gmbtn wide gmp-open" data-g="open">'+(GM.active?'Re-open GearUp':'Open GearUp to start')+'</button>'+
     '<button class="gmh-claim" data-g="claim" '+(st.ready?'':'disabled')+'>'+(st.ready?('CLAIM +'+t.reward):'COMPLETE ALL STEPS')+'</button>';
   body.querySelectorAll('[data-g]').forEach(function(b){ b.onclick=function(){ gmAct(t,b.getAttribute('data-g')); }; });
 }
