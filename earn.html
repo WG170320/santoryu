@@ -1046,6 +1046,12 @@
     font-family:'Chakra Petch',sans-serif; font-weight:700; letter-spacing:.5px; font-size:13px; color:#04223f;
     background:linear-gradient(180deg,#66b8ff,#1e63b0); box-shadow:0 8px 20px -8px rgba(77,166,255,.6);}
   .tgp-gate .gt-btn:active{transform:scale(.98);}
+  /* Inline "allow usage to start" note on the active day step */
+  .tgp-gnote{display:flex; align-items:flex-start; gap:9px; margin-top:11px; padding:10px 12px; border-radius:11px;
+    background:rgba(77,166,255,.08); border:1px solid rgba(77,166,255,.28); font-size:12px; color:var(--txt2); line-height:1.4;}
+  .tgp-gnote .gt-ic{width:26px; height:26px; flex:none; border-radius:8px; display:grid; place-items:center;
+    background:rgba(77,166,255,.16); border:1px solid rgba(77,166,255,.3);}
+  .tgp-gnote .gt-ic svg{width:15px; height:15px; stroke:var(--blue-hi);}
   /* Detail-page hero — richer: title, steps badge, collected-diamonds bar, spade watermark */
   .tgp-hero::before{content:'\2660'; position:absolute; left:-14px; bottom:-48px; font-size:172px; line-height:1; z-index:0;
     color:rgba(232,180,74,.07); pointer-events:none; transform:rotate(-14deg);}
@@ -2785,16 +2791,10 @@ function renderTongitsPage(body){
   else{ s2desc='Upload a screenshot of your Tongits Go account/registration.'; s2actions='<div class="tgp-actions"><button class="tgbtn" data-tg="upload">Upload screenshot</button></div>'; }
   html+=tongitsStepRow(2,'Register your account','+'+(register.reward||0), s2desc, s2cls, s2actions);
 
-  // Required Usage-access gate — after register is approved, Day-play needs Usage Access
-  // (the play timer + claim both read real UsageStats). Show the gate + lock days until granted.
+  // Usage Access is required before Day play (the play timer + claim both read real
+  // UsageStats). On the ACTIVE day we show an "Allow usage access to start" button FIRST;
+  // only after it's granted do the two buttons (Play 3 min + Claim) unlock.
   const gate = p.regApproved && TG_ACCESS!==true;
-  if(gate){
-    const checking = TG_ACCESS===undefined;
-    html+='<div class="tgp-gate"><div class="gt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg></div>'+
-      '<div class="gt-tx"><div class="gt-t">Turn on Usage access</div>'+
-      '<div class="gt-d">'+(checking?'Checking permission&hellip;':'Required before you can play. This lets us count your real Tongits Go playtime so your daily claims work. Nothing else is read.')+'</div>'+
-      (checking?'':'<button class="gt-btn" data-tg="grantaccess">Allow usage access</button>')+'</div></div>';
-  }
 
   // Steps 3-6 — Day 1..N
   for(let i=1;i<=p.daysTotal;i++){
@@ -2803,12 +2803,21 @@ function renderTongitsPage(body){
     let cls='locked', desc='', actions='';
     if(claimedTs){ cls='done'; desc='Claimed '+ago(claimedTs)+'.'; }
     else if(!p.regApproved){ desc='Unlocks after registration is approved.'; }
-    else if(gate){ desc='Turn on Usage access above to unlock.'; }
     else if(i<p.nextDay){ desc='Locked.'; }
     else if(i===p.nextDay && p.claimedToday){ desc='Come back tomorrow for Day '+p.nextDay+'.'; }
+    else if(i===p.nextDay && gate){ cls=''; // active day, but Usage access not on yet
+      const checking = TG_ACCESS===undefined;
+      desc='First, allow Usage access &mdash; ito ang bumibilang ng totoong laro mo para gumana ang timer at claim.';
+      actions='<div class="tgp-gnote"><span class="gt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg></span>'+
+        '<span>Step 1: turn on Usage access to unlock Play &amp; Claim.</span></div>'+
+        '<div class="tgp-actions"><button class="tgbtn '+(checking?'':'dl')+'" data-tg="grantaccess" '+(checking?'disabled':'')+'>'+(checking?'Checking&hellip;':'Allow usage access to start')+'</button>'+
+        '<button class="tgbtn ghost" disabled>Play 3 min</button>'+
+        '<button class="tgbtn" disabled>Claim +'+dReward+'</button></div>';
+    }
     else if(i===p.nextDay){ cls=''; desc='Play '+esc(c.title||'Tongits Go')+' for at least 3 minutes, then claim.';
       actions='<div class="tgp-actions"><button class="tgbtn ghost" data-tg="play" data-reward="'+dReward+'">Play 3 min</button>'+
         '<button class="tgbtn" data-tg="dayclaim" data-day="'+i+'" data-reward="'+dReward+'" '+(TG_START?'':'disabled')+'>Claim +'+dReward+'</button></div>'; }
+    else if(gate){ desc='Allow Usage access on Day '+p.nextDay+' first.'; }
     else{ desc='Unlocks after Day '+(i-1)+'.'; }
     html+=tongitsStepRow(2+i,'Day '+i+' — play & claim','+'+dReward, desc, cls, actions);
   }
