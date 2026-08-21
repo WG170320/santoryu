@@ -78,6 +78,11 @@
     box-shadow:0 6px 16px -8px rgba(77,166,255,.5), inset 0 1px 0 rgba(255,255,255,.4); transition:transform .12s; min-width:58px; text-align:center;}
   .btn:active{transform:scale(.94);}
   .btn.wait{background:var(--surf2); color:var(--txt2); box-shadow:none; cursor:default; font-family:'Chakra Petch';}
+  .btn.wait.vf{display:inline-flex; align-items:center; gap:7px; min-width:0; white-space:nowrap; color:var(--emerald);
+    background:rgba(45,212,167,.10); border:1px solid rgba(45,212,167,.28); font-family:'Rajdhani'; font-weight:700; letter-spacing:.3px;}
+  .btn.wait.vf .vdot{width:9px; height:9px; border-radius:50%; flex:0 0 auto;
+    border:2px solid rgba(45,212,167,.35); border-top-color:var(--emerald); animation:vspin .7s linear infinite;}
+  @keyframes vspin{to{transform:rotate(360deg);}}
   .btn.copyb{background:linear-gradient(180deg,#5ff0c8,var(--emerald) 55%,#0f9d76); color:#04231b;}
 
   .unlock{position:relative; overflow:hidden; width:100%; margin-top:14px; border:none; border-radius:13px; padding:14px;
@@ -203,14 +208,29 @@
   function stepsFor(a){
     if(Array.isArray(a.steps) && a.steps.length){
       return a.steps.map(function(s){
-        return { label: esc(s.label||"Open the app"), secs:(+s.secs||0), kind:"open" };
+        return { label: esc(s.label||"Open the app"), secs:(+s.secs||0), kind:"open",
+          msgs: (Array.isArray(s.msgs) && s.msgs.length) ? s.msgs.map(String) : null };
       });
     }
     var out=[];
-    if((+a.openSecs)>0) out.push({ label:"Open the app", secs:(+a.openSecs), kind:"open" });
+    if((+a.openSecs)>0) out.push({ label:"Open the app", secs:(+a.openSecs), kind:"open", msgs:null });
     if(a.promo && String(a.promo).length)
-      out.push({ label:'Use code <span class="code">'+esc(a.promo)+'</span>', secs:3, kind:"promo" });
+      out.push({ label:'Use code <span class="code">'+esc(a.promo)+'</span>', secs:3, kind:"promo", msgs:null });
     return out;
+  }
+
+  // While a step is dwelling, apps can show staged "verification" status text instead of a
+  // bare seconds count (e.g. Checking… → Registered? Not yet → Success!). The messages are
+  // spread evenly across the step's real dwell; the last one lands as it completes. Falls
+  // back to "Ns" when a step defines no msgs.
+  function stepStatus(stp, remain){
+    var msgs = stp.msgs;
+    if(!msgs || !msgs.length) return esc((remain||stp.secs||3)+"s");
+    var secs = stp.secs || msgs.length;
+    var elapsed = secs - (remain||0);
+    var idx = Math.floor(elapsed / (secs / msgs.length));
+    if(idx<0) idx=0; if(idx>msgs.length-1) idx=msgs.length-1;
+    return '<span class="vdot"></span>'+esc(msgs[idx]);
   }
 
   // ---- data ----
@@ -302,7 +322,7 @@
         var lbl = stp.kind==="promo" ? "Copy" : "Open";
         var cls = stp.kind==="promo" ? "btn copyb" : "btn";
         right = isBusy
-          ? '<button class="btn wait" data-act="none" disabled>'+ (s.remain||stp.secs||3) +'s</button>'
+          ? '<button class="btn wait vf" data-act="none" disabled>'+ stepStatus(stp, s.remain) +'</button>'
           : '<button class="'+cls+'" data-act="s'+i+'">'+lbl+'</button>';
       }
       html+=stepRow(done, stepNo, stp.label, right);
