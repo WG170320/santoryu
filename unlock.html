@@ -194,7 +194,24 @@
     setTimeout(function(){ t.classList.add("out"); setTimeout(function(){ t.remove(); }, 320); }, 2200);
   }
 
-  function st(id){ return ST[id] || (ST[id]={opened:false, promo:false, busy:false}); }
+  function st(id){ return ST[id] || (ST[id]={done:{}, busy:false, remain:0}); }
+
+  // Normalize any app into an ordered list of action steps. New multi-step apps carry
+  // an explicit `steps` array (e.g. Temu: Open & Register → Accept Invite); each opens the
+  // app link and is dwell-gated. Legacy apps (openSecs/promo) map to the same shape so the
+  // renderer stays single-path.
+  function stepsFor(a){
+    if(Array.isArray(a.steps) && a.steps.length){
+      return a.steps.map(function(s){
+        return { label: esc(s.label||"Open the app"), secs:(+s.secs||0), kind:"open" };
+      });
+    }
+    var out=[];
+    if((+a.openSecs)>0) out.push({ label:"Open the app", secs:(+a.openSecs), kind:"open" });
+    if(a.promo && String(a.promo).length)
+      out.push({ label:'Use code <span class="code">'+esc(a.promo)+'</span>', secs:3, kind:"promo" });
+    return out;
+  }
 
   // ---- data ----
   function load(){
@@ -247,9 +264,10 @@
   function buildCard(a){
     var s=st(a.id);
     var inst=!!INSTALLED[a.id];
-    var needOpen=(+a.openSecs)>0;
-    var needPromo=!!(a.promo && String(a.promo).length);
-    var ready = inst && (!needOpen || s.opened) && (!needPromo || s.promo);
+    var steps=stepsFor(a);
+    var hasPromo=steps.some(function(x){ return x.kind==="promo"; });
+    var allDone=steps.every(function(_,i){ return !!s.done[i]; });
+    var ready = inst && allDone;
 
     var card=document.createElement("div");
     card.className="app"+(ready?" ready":"");
@@ -261,46 +279,39 @@
 
     var head='<div class="arow">'+logo+
       '<div class="aname"><div class="n">'+esc(a.name||"App")+'</div>'+
-        (needPromo?'<div class="promo">Bonus code inside</div>':'')+'</div>'+
+        (hasPromo?'<div class="promo">Bonus code inside</div>':'')+'</div>'+
       (a.reward?'<div class="abadge">+'+esc(a.reward)+'</div>':'')+'</div>';
 
     var stepNo=0;
-    var steps='<div class="steps">';
+    var html='<div class="steps">';
 
-    // Step: install
+    // Step 1 — install (auto-detected)
     stepNo++;
-    steps+=stepRow(inst, stepNo, "Download and install", inst
+    html+=stepRow(inst, stepNo, "Download and install", inst
       ? ''
       : '<button class="btn" data-act="dl">Get</button>');
 
-    // Step: open
-    if(needOpen){
+    // Steps 2..N — ordered action steps, gated sequentially (do them in order).
+    steps.forEach(function(stp, i){
       stepNo++;
-      var openBtn='';
-      if(inst && !s.opened){
-        openBtn = (s.busy==='open')
-          ? '<button class="btn wait" data-act="none" disabled>'+ (s.remain||a.openSecs) +'s</button>'
-          : '<button class="btn" data-act="open">Open</button>';
+      var done=!!s.done[i];
+      var prevDone = (i===0) || !!s.done[i-1];
+      var right='';
+      if(inst && !done && prevDone){
+        var isBusy = s.busy===("s"+i);
+        var lbl = stp.kind==="promo" ? "Copy" : "Open";
+        var cls = stp.kind==="promo" ? "btn copyb" : "btn";
+        right = isBusy
+          ? '<button class="btn wait" data-act="none" disabled>'+ (s.remain||stp.secs||3) +'s</button>'
+          : '<button class="'+cls+'" data-act="s'+i+'">'+lbl+'</button>';
       }
-      steps+=stepRow(s.opened, stepNo, "Open the app", openBtn);
-    }
+      html+=stepRow(done, stepNo, stp.label, right);
+    });
 
-    // Step: promo
-    if(needPromo){
-      stepNo++;
-      var promoBtn='';
-      if(!s.promo){
-        promoBtn = (s.busy==='promo')
-          ? '<button class="btn wait" data-act="none" disabled>'+ (s.remain||3) +'s</button>'
-          : '<button class="btn copyb" data-act="promo">Copy</button>';
-      }
-      steps+=stepRow(s.promo, stepNo, 'Use code <span class="code">'+esc(a.promo)+'</span>', promoBtn);
-    }
-
-    steps+='<button class="unlock" data-act="unlock" '+(ready?'':'disabled')+'>'+
+    html+='<button class="unlock" data-act="unlock" '+(ready?'':'disabled')+'>'+
       (ready?'UNLOCK NOW':'FINISH STEPS TO UNLOCK')+'</button></div>';
 
-    card.innerHTML=head+steps;
+    card.innerHTML=head+html;
 
     card.querySelectorAll('[data-act]').forEach(function(btn){
       var act=btn.getAttribute('data-act');
@@ -323,17 +334,24 @@
     if(kind==="dl"){
       openLink(a.link);
       toast("Install it, then come back here.");
-    } else if(kind==="open"){
+      return;
+    }
+    if(kind==="unlock"){ markUnlocked(a.id); return; }
+    if(kind.charAt(0)==="s"){
       if(s.busy) return;
-      openLink(a.link);
-      startCountdown(a, "open", +a.openSecs, function(){ s.opened=true; });
-    } else if(kind==="promo"){
-      if(s.busy) return;
-      copyCode(a.promo);
-      toast("Code copied.", true);
-      startCountdown(a, "promo", 3, function(){ s.promo=true; });
-    } else if(kind==="unlock"){
-      markUnlocked(a.id);
+      var i=+kind.slice(1);
+      var steps=stepsFor(a);
+      var stp=steps[i];
+      if(!stp) return;
+      if(!INSTALLED[a.id]) return;                 // install first
+      if(i>0 && !s.done[i-1]) return;              // do steps in order
+      if(stp.kind==="promo"){
+        copyCode(a.promo);
+        toast("Code copied.", true);
+      } else {
+        openLink(a.link);
+      }
+      startCountdown(a, "s"+i, stp.secs||3, function(){ s.done[i]=true; });
     }
   }
 
