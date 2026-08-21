@@ -6,7 +6,13 @@
 <title>Santoryu — Unlock</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Rajdhani:wght@500;600;700&family=Teko:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- Non-blocking web fonts: the page must paint instantly even if Google's font
+     servers are slow or throttled on the user's network (a render-blocking
+     stylesheet there is what left the WebView black for ~2 min). It loads as
+     print (ignored for screen), then flips to all once fetched; system-font
+     fallbacks in every stack carry the UI until then. -->
+<link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Rajdhani:wght@500;600;700&family=Teko:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Rajdhani:wght@500;600;700&family=Teko:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"></noscript>
 <style>
   :root{
     --gold:#E8B44A; --gold-hi:#FFE08A; --gold-deep:#A9781F;
