@@ -1238,6 +1238,24 @@
   .wd-dest input:focus{outline:none; border-color:var(--gold);}
   .wd-cta{width:100%; margin-top:18px; padding:15px; border:none; border-radius:var(--rad-sm); background:var(--blue); color:#052440; font-family:'Chakra Petch',sans-serif; font-weight:700; font-size:15px; letter-spacing:.02em; cursor:pointer;}
   .wd-cta.off{background:var(--surf3); color:var(--txt3); cursor:default;}
+
+  /* CONGRATULATIONS dialog — more exciting reward moment + bold gold button */
+  .modal.cg{max-width:352px; padding:36px 24px 22px;
+    background:radial-gradient(130% 85% at 50% -6%, rgba(255,206,90,.18), transparent 56%), linear-gradient(180deg,#171208,#0b0d10) !important;
+    border:1px solid rgba(255,206,90,.4) !important; box-shadow:0 40px 100px -34px rgba(232,180,74,.6) !important;}
+  .cg .cgburst{background:radial-gradient(circle, rgba(255,206,90,.4), rgba(45,212,167,.14) 46%, transparent 70%) !important;}
+  .cg .cgkick{color:var(--green);}
+  .cg .cgh{font-size:27px; background:linear-gradient(90deg,#FFE08A,#FFC24D 50%,#FFE08A) !important; -webkit-background-clip:text !important; background-clip:text !important; -webkit-text-fill-color:transparent !important;}
+  .cg .cgamt{font-size:34px; margin-top:2px;}
+  .cg .cgamt .cgnum{font-size:38px; font-family:'Teko','Rajdhani',sans-serif;}
+  .cg .cgamt span{font-size:12px;}
+  .cg .cgcta{background:linear-gradient(180deg,#FFE7A0,#F5B33C 52%,#E68A16) !important; color:#3a2400 !important; border:none !important;
+    font-family:'Chakra Petch',sans-serif; font-weight:800 !important; font-size:15.5px !important; letter-spacing:.02em; padding:16px !important; border-radius:14px !important;
+    box-shadow:0 14px 34px -10px rgba(232,180,74,.7), inset 0 1px 0 rgba(255,255,255,.45) !important; text-shadow:none !important;
+    animation:cgbtnpulse 1.9s ease-in-out infinite;}
+  .cg .cgcta:active{transform:scale(.985);}
+  @keyframes cgbtnpulse{0%,100%{transform:scale(1);}50%{transform:scale(1.025);}}
+  @media (prefers-reduced-motion:reduce){.cg .cgcta{animation:none;}}
 </style>
 </head>
 <body>
