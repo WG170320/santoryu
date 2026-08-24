@@ -1114,6 +1114,104 @@
   .tgbtn.confirm{width:100%; flex:none; background:rgba(255,255,255,.05); color:var(--txt);
     font-size:12.5px; font-weight:700; padding:12px; border:1px solid var(--line);}
   @media (prefers-reduced-motion: reduce){.tgbtn.dl{animation:none;} .tgbtn.dl::after{display:none;}}
+
+  /* =======================================================================
+     CLEAN REDESIGN LAYER (2026-08-24) — calm, trustworthy, less "gaming glow".
+     Overrides the busier gradients/neon above for a professional wallet feel.
+     ======================================================================= */
+  :root{
+    --bg:#0A0C10; --surf:#12151B; --surf2:#171B22; --surf3:#1E232C;
+    --line:#242A33; --line2:#2E3641; --hair:rgba(255,255,255,.055);
+    --txt:#F3F5F8; --txt2:#98A2B2; --txt3:#6B7482;
+    --gold:#E8B44A; --gold-hi:#FFD98A; --blue:#4DA6FF; --blue-hi:#8FC6FF; --green:#34D399;
+    --shadow:0 10px 30px -20px rgba(0,0,0,.7);
+    --rad:16px; --rad-sm:12px;
+  }
+  body{background:var(--bg); padding:12px 14px 40px;}
+  /* section headers — quiet, confident, no glow */
+  .sh{margin:22px 2px 12px;}
+  .sh .t{font-family:'Chakra Petch',sans-serif; font-weight:700; font-size:11.5px; letter-spacing:2px; color:var(--txt2); padding-left:12px;}
+  .sh .t::before{background:var(--gold); box-shadow:none; width:3px; height:13px; border-radius:2px;}
+  .sh .x{color:var(--txt2); font-weight:600;}
+  /* card — flat surface, hairline border, soft depth (no gradient top bar) */
+  .card{background:var(--surf); border:1px solid var(--hair); border-radius:var(--rad);
+    box-shadow:var(--shadow); padding:16px;}
+  .card::before{display:none !important; content:none !important;}
+  .fill{box-shadow:none !important;}
+  .empty{color:var(--txt2);}
+
+  /* HEADER — clean top bar */
+  .head{padding:6px 2px 2px; margin-bottom:18px;}
+  .brand h1{font-size:20px; letter-spacing:.4px;}
+  .brand small{color:var(--txt3); letter-spacing:2.4px;}
+  .brand .logo{background:var(--surf2); border:1px solid var(--line); box-shadow:none; border-radius:11px;}
+  .balpill{background:var(--surf2); border:1px solid var(--line); box-shadow:none; padding:9px 15px;}
+  .balpill .v{color:var(--gold-hi);}
+  .ckbtn{background:var(--surf2); border:1px solid var(--line);}
+
+  /* PROFILE — calm identity card, neutral hairline */
+  .profile{background:var(--surf); border:1px solid var(--hair); box-shadow:var(--shadow);
+    border-radius:var(--rad); padding:14px 16px; gap:14px;}
+  .pf-av{border:2px solid rgba(232,180,74,.55); box-shadow:none; background:var(--surf3);}
+  .pf-name{font-size:16px;}
+  .pf-sub{color:var(--txt2);} .pf-sub b{color:var(--gold-hi);}
+  .pf-stat{border-left:1px solid var(--line);}
+  .pf-sv{color:var(--blue-hi);}
+  .pf-sl{color:var(--txt3); letter-spacing:1.2px;}
+
+  /* BALANCE (wallet hero) — the trust anchor. Calm blue, confident number, clean track */
+  .wbanner{background:linear-gradient(160deg,#122232,#0E141C 70%); border:1px solid rgba(77,166,255,.22);
+    box-shadow:var(--shadow); border-radius:var(--rad); padding:18px 18px 16px; margin:8px 0 6px;}
+  .wbanner::before{display:none !important; content:none !important;}
+  .wb-eyebrow{color:var(--blue-hi); letter-spacing:.16em; font-size:10px;}
+  .wb-bal{font-size:44px; text-shadow:none; color:var(--txt); gap:10px;}
+  .wb-glabel{color:var(--txt3);}
+  .wb-gval{color:var(--blue-hi);}
+  .wb-track{height:7px; background:rgba(255,255,255,.06); border:none; margin-top:15px;}
+  .wb-track .fill{background:var(--blue); box-shadow:none !important;}
+  .wb-prog{color:var(--txt2); font-weight:600;}
+  .wb-cta{background:var(--blue); border:none; color:#052440; box-shadow:none; font-weight:700; padding:10px 18px; border-radius:11px;}
+  .wb-cta.ready{background:var(--blue); box-shadow:none;}
+
+  /* QUICK STATS — clean divided row */
+  .qstats{background:var(--surf); border:1px solid var(--hair); box-shadow:var(--shadow); padding:15px 6px;}
+  .qstat+.qstat::before{background:var(--line);}
+  .qstat .qv{color:var(--txt);} .qstat:first-child .qv{color:var(--gold-hi);}
+  .qstat .ql{color:var(--txt3);}
+
+  /* TAB BAR — calm */
+  .tabbar{background:var(--bg); border-bottom:1px solid var(--line); backdrop-filter:none;}
+  .tab{color:var(--txt3);} .tab.active{color:var(--txt); border-bottom-color:var(--gold);}
+
+  /* INVITE hero — calm gold, no foil bar */
+  .ivhero{background:linear-gradient(160deg,#1B1810,#0E141C 66%); border:1px solid rgba(232,180,74,.2);
+    box-shadow:var(--shadow); border-radius:var(--rad); padding:18px 16px 16px;}
+  .ivhero::before{display:none !important; content:none !important;}
+  .ivh-eyebrow{color:var(--gold);} .ivh-eyebrow i{box-shadow:none;}
+  .ivh-title{font-size:18px;}
+  .ivh-reward{color:var(--gold-hi); text-shadow:none;}
+  .ivh-codebox{background:var(--surf3); border:1px solid var(--line); border-radius:var(--rad-sm);}
+  .ivh-codeval{color:var(--gold-hi);}
+  .ivh-copy{color:var(--txt2);}
+  .ivh-share{background:var(--green); color:#052E22; box-shadow:none; border-radius:var(--rad-sm);}
+  .ivh-share svg{stroke:#052E22;}
+  .ivh-stat{background:var(--surf3); border:1px solid var(--line); border-radius:var(--rad-sm);}
+  .ivh-stat.accepted{background:var(--surf3);}
+  .ivh-lbl{color:var(--txt3);}
+  .ivh-roster,.ivh-applybox input,.ivh-apply{border-color:var(--line);}
+  .ivh-applybox input{background:var(--surf3);}
+  .ivh-applybox button{background:rgba(52,211,153,.12); border-color:rgba(52,211,153,.35); color:var(--green);}
+
+  /* CLIPPING hero — calm blue */
+  .cliphero{background:linear-gradient(160deg,#122232,#0E141C 68%); border:1px solid rgba(77,166,255,.2);
+    box-shadow:var(--shadow); border-radius:var(--rad);}
+  .ch-eyebrow{color:var(--blue-hi);} .ch-eyebrow span{box-shadow:none; background:var(--blue);}
+  .ch-step{background:var(--surf3); border:1px solid var(--line);} .ch-step b{background:var(--blue); color:#052440;}
+  .ch-cta{background:var(--surf3); border:1px solid var(--line); color:var(--txt3);}
+
+  /* TASK / nav rows — calm */
+  .taskrow{border-radius:var(--rad-sm);}
+  .tclaim{box-shadow:none;}
 </style>
 </head>
 <body>
