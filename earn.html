@@ -1444,7 +1444,12 @@ function renderTab(host){ host.innerHTML='';
 // Placeholders — filled by later tasks (Invite=Task3, Tasks=Task4, Clipping=Task6).
 function renderClipping(host){ host.appendChild($('<div class="sh"><div class="t">CLIPPING</div></div>'));
   host.appendChild($('<div class="card" style="text-align:center;padding:26px 18px;color:var(--txt2)">Clipping campaign is coming soon.</div>')); }
-function renderInvite(host){ host.appendChild($('<div class="card" style="padding:20px;color:var(--txt2)">Invite moves here in Task 3.</div>')); }
+function renderInvite(host){
+  const s=STATE;
+  inviteHero(host,s);
+  host.appendChild($(`<div class="sh"><div class="t">FRIENDS YOU INVITED</div></div>`));
+  inviteLedger(host);
+}
 function renderTasks(host){ host.appendChild($('<div class="card" style="padding:20px;color:var(--txt2)">Tasks move here in Task 4.</div>')); }
 
 function render(){ renderShell(); }
@@ -1521,8 +1526,7 @@ function renderHome(host){
   // na para malinis ang dashboard; earning-focused ang dashboard, cash-out ang page).
   withdrawBanner(app,s);
 
-  // INVITE HERO — ang pinaka-highlight ng Earn (conditional +perInvite + status ledger).
-  inviteHero(app,s);
+  // (INVITE HERO moved to the Invite tab — renderInvite.)
 
   // TONGITS GO — high-value campaign hero, prominent (di na nakabaon sa tasks).
   tongitsHero(app,s);
@@ -1613,9 +1617,7 @@ function renderHome(host){
   const navc=$(`<div class="card"></div>`);
   const r1=$(`<div class="navrow"><div class="di" style="width:38px;height:38px;background:rgba(95,160,255,.12)">${II('ic-history')}</div><div class="gl"><div class="n">Withdrawal history</div><div class="s">${(s.history||[]).length} total</div></div><div class="ch">›</div></div>`);
   r1.onclick=openHistory;
-  const r2=$(`<div class="navrow"><div class="di" style="width:38px;height:38px;background:rgba(45,212,167,.12)">${II('ic-friends')}</div><div class="gl"><div class="n">Friends you invited</div><div class="s">${(s.invited||[]).length} joined</div></div><div class="ch">›</div></div>`);
-  r2.onclick=openInvited;
-  navc.appendChild(r1); navc.appendChild(r2);
+  navc.appendChild(r1);
   app.appendChild(navc);
 
   // legal footer (Terms / Privacy / Delete account)
@@ -1790,22 +1792,22 @@ async function fillRejectReasons(scope){
     });
   }catch(e){}
 }
-function openInvited(){
-  openPage('Friends You Invited', b=>{
-    const inv=(STATE.invited)||[], per=STATE.config.perInvite, q=STATE.config.refQualify||10;
-    const stt=x=>(x&&x.status)||'pending';
-    const nA=inv.filter(x=>stt(x)==='accepted').length;
-    b.appendChild($(`<div class="sh" style="margin-top:0"><div class="t">${inv.length} INVITED · ${nA} QUALIFIED</div><div class="x">+${per} each</div></div>`));
-    if(!inv.length){ b.appendChild($(`<div class="empty">No invites yet.<br>Share your code — you earn ${per} once a friend reaches ${q} diamonds.</div>`)); return; }
-    const sub={pending:`Needs ${q} diamonds to qualify`, accepted:`Qualified — you earned +${per}`, rejected:'Rejected — flagged as a bot'};
-    const c=$(`<div class="card"></div>`);
-    inv.forEach(f=>{ const st=stt(f);
-      c.appendChild($(`<div class="litem"><div class="fav fini">${esc((f.name||'?')[0].toUpperCase())}${f.avatarUrl?`<img src="${esc(f.avatarUrl)}" alt="" onerror="this.remove()">`:''}</div>
-      <div class="gleft"><div class="nm">${esc(f.name||'Player')}</div><div class="sm">${sub[st]||sub.pending} · joined ${ago(f.ts)}</div></div>
-      <span class="ivchip ${st}">${st}</span></div>`)); });
-    b.appendChild(c);
-  });
+// Invited-friends ledger — reused by the Invite tab and the standalone page.
+function inviteLedger(b){
+  const inv=(STATE.invited)||[], per=STATE.config.perInvite, q=STATE.config.refQualify||10;
+  const stt=x=>(x&&x.status)||'pending';
+  const nA=inv.filter(x=>stt(x)==='accepted').length;
+  b.appendChild($(`<div class="sh" style="margin-top:0"><div class="t">${inv.length} INVITED · ${nA} QUALIFIED</div><div class="x">+${per} each</div></div>`));
+  if(!inv.length){ b.appendChild($(`<div class="empty">No invites yet.<br>Share your code — you earn ${per} once a friend reaches ${q} diamonds.</div>`)); return; }
+  const sub={pending:`Needs ${q} diamonds to qualify`, accepted:`Qualified — you earned +${per}`, rejected:'Rejected — flagged as a bot'};
+  const c=$(`<div class="card"></div>`);
+  inv.forEach(f=>{ const st=stt(f);
+    c.appendChild($(`<div class="litem"><div class="fav fini">${esc((f.name||'?')[0].toUpperCase())}${f.avatarUrl?`<img src="${esc(f.avatarUrl)}" alt="" onerror="this.remove()">`:''}</div>
+    <div class="gleft"><div class="nm">${esc(f.name||'Player')}</div><div class="sm">${sub[st]||sub.pending} · joined ${ago(f.ts)}</div></div>
+    <span class="ivchip ${st}">${st}</span></div>`)); });
+  b.appendChild(c);
 }
+function openInvited(){ openPage('Friends You Invited', b=>inviteLedger(b)); }
 
 //=== tournament ==================================================================
 let TOURN=null, tournBody=null, tcdT=null, tvCta=null;
