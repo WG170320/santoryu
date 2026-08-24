@@ -1277,6 +1277,10 @@
     background:linear-gradient(180deg,#FFE9A8,#FFC24D 55%,#E8901F); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; filter:drop-shadow(0 4px 16px rgba(232,180,74,.4));}
   .ch-per{font-family:'Chakra Petch',sans-serif; font-weight:700; font-size:19px; line-height:1.05; color:var(--txt);}
   .ch-per span{display:block; font-family:'Inter',sans-serif; font-weight:500; font-size:12px; color:var(--txt2); margin-top:3px;}
+  .ch-unli{position:relative; z-index:1; display:inline-flex; align-items:center; gap:7px; margin:10px 0 2px; padding:6px 12px; border-radius:20px;
+    font-family:'Chakra Petch',sans-serif; font-weight:700; font-size:11px; letter-spacing:.04em; color:var(--gold-hi);
+    background:linear-gradient(180deg,rgba(232,180,74,.16),rgba(232,180,74,.06)); border:1px solid rgba(232,180,74,.42);}
+  .ch-unli-i{width:6px; height:6px; border-radius:50%; background:var(--gold); box-shadow:0 0 8px var(--gold); animation:peblink 1.6s ease-in-out infinite;}
   .ch-lead{position:relative; z-index:1; font-size:12.5px; line-height:1.55; color:var(--txt2); margin:8px 0 16px; max-width:92%;}
   .ch-earn{position:relative; z-index:1; display:grid; grid-template-columns:repeat(3,1fr); gap:8px;}
   .ce{position:relative; text-align:center; padding:12px 6px 11px; border-radius:13px; background:rgba(255,255,255,.04); border:1px solid var(--line);}
@@ -1757,6 +1761,7 @@ function renderClipping(host){
     <div class="ch-glow"></div>
     <div class="ch-badge"><span class="ch-live"></span>CLIP &amp; EARN &middot; LIVE</div>
     <div class="ch-big"><div class="ch-num">${rate}</div><div class="ch-per">Diamonds<span>per 1,000 views</span></div></div>
+    <div class="ch-unli"><span class="ch-unli-i"></span>UNLIMITED POSTS &middot; the more clips you drop, the more you earn</div>
     <p class="ch-lead">Post a TikTok about Santoryu and earn Diamonds as the views climb — cash out to GCash, Roblox, or MLBB.</p>
     <div class="ch-earn">
       <div class="ce"><div class="ce-v">10K views</div><div class="ce-d">${D} ${ex(10000)}</div></div>
