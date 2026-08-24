@@ -1213,21 +1213,31 @@
   .taskrow{border-radius:var(--rad-sm);}
   .tclaim{box-shadow:none;}
 
-  /* WITHDRAW modal — clean 3-method cash-out */
-  .wd-modal{text-align:left;}
-  .wd-amt{font-size:13px; color:var(--txt2); margin:2px 0 14px;} .wd-amt b{color:var(--gold-hi);}
-  .wd-methods{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:14px;}
-  .wd-m{display:flex; flex-direction:column; align-items:center; gap:1px; padding:12px 4px; border-radius:var(--rad-sm);
-    background:var(--surf3); border:1px solid var(--line); color:var(--txt); font-family:'Chakra Petch',sans-serif; font-weight:700; font-size:13px; cursor:pointer; transition:border-color .15s,background .15s;}
-  .wd-m span{font-family:'Inter',sans-serif; font-weight:500; font-size:9.5px; letter-spacing:.04em; color:var(--txt3); text-transform:uppercase;}
-  .wd-m.sel{border-color:var(--gold); background:rgba(232,180,74,.08);}
-  .wd-m.sel span{color:var(--gold-hi);}
-  .wd-payout{font-size:13px; line-height:1.5; color:var(--txt2); background:var(--surf3); border:1px solid var(--line); border-radius:var(--rad-sm); padding:11px 13px; margin-bottom:12px;}
-  .wd-payout b{color:var(--txt);}
-  .wd-rate{display:block; margin-top:3px; font-size:11px; color:var(--txt3);}
-  .wd-modal label{display:block; font-size:10.5px; letter-spacing:.08em; color:var(--txt3); text-transform:uppercase; margin:10px 2px 5px; font-weight:700;}
-  .wd-modal input{width:100%; background:var(--surf3); border:1px solid var(--line); border-radius:var(--rad-sm); color:var(--txt); padding:12px 13px; font-size:14px;}
-  .wd-modal input:focus{outline:none; border-color:var(--gold);}
+  /* WITHDRAW page — full-page 3-method cash-out (no dialog). Sits ABOVE the sticky tab bar. */
+  .page{z-index:60 !important;}
+  .wd-hero{background:linear-gradient(160deg,#122232,#0E141C 70%); border:1px solid rgba(77,166,255,.22); border-radius:var(--rad); box-shadow:var(--shadow); padding:18px; margin-bottom:4px;}
+  .wd-heye{font-size:10px; font-weight:800; letter-spacing:.16em; color:var(--blue-hi);}
+  .wd-hbal{display:flex; align-items:center; gap:10px; font-family:'Teko','Rajdhani',sans-serif; font-weight:700; font-size:42px; line-height:.9; color:var(--txt); margin-top:5px;}
+  .wd-hsub{font-size:11.5px; color:var(--txt3); margin-top:9px;}
+  .wd-step{display:flex; align-items:center; gap:9px; margin:20px 2px 11px; font-family:'Chakra Petch',sans-serif; font-weight:700; font-size:13.5px; color:var(--txt);}
+  .wd-stepn{display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:50%; background:var(--gold); color:#1a1400; font-size:12px; font-weight:800;}
+  .wd-mlist{display:flex; flex-direction:column; gap:9px;}
+  .wd-m{display:flex; flex-direction:column; align-items:flex-start; gap:2px; text-align:left; padding:14px 16px; border-radius:var(--rad-sm); background:var(--surf); border:1px solid var(--line); cursor:pointer; transition:border-color .15s,background .15s;}
+  .wd-m.sel{border-color:var(--gold); background:rgba(232,180,74,.07);}
+  .wm-name{font-family:'Chakra Petch',sans-serif; font-weight:700; font-size:15px; color:var(--txt);}
+  .wm-rate{font-size:12px; color:var(--txt2);}
+  .wd-m.sel .wm-rate{color:var(--gold-hi);}
+  .wd-tiers{display:grid; grid-template-columns:repeat(3,1fr); gap:8px;}
+  .wd-tier{display:flex; flex-direction:column; align-items:center; gap:4px; padding:14px 4px; border-radius:var(--rad-sm); background:var(--surf); border:1px solid var(--line); cursor:pointer; transition:border-color .15s;}
+  .wd-tier.sel{border-color:var(--gold); background:rgba(232,180,74,.07);}
+  .wd-tier.poor{opacity:.4;}
+  .wt-pay{font-family:'Chakra Petch',sans-serif; font-weight:700; font-size:14px; color:var(--txt);}
+  .wt-cost{display:flex; align-items:center; gap:4px; font-size:11px; color:var(--txt3);}
+  .wd-dest label{display:block; font-size:10.5px; letter-spacing:.08em; color:var(--txt3); text-transform:uppercase; margin:12px 2px 6px; font-weight:700;}
+  .wd-dest input{width:100%; background:var(--surf); border:1px solid var(--line); border-radius:var(--rad-sm); color:var(--txt); padding:13px; font-size:15px;}
+  .wd-dest input:focus{outline:none; border-color:var(--gold);}
+  .wd-cta{width:100%; margin-top:18px; padding:15px; border:none; border-radius:var(--rad-sm); background:var(--blue); color:#052440; font-family:'Chakra Petch',sans-serif; font-weight:700; font-size:15px; letter-spacing:.02em; cursor:pointer;}
+  .wd-cta.off{background:var(--surf3); color:var(--txt3); cursor:default;}
 </style>
 </head>
 <body>
@@ -1393,6 +1403,8 @@ function dwellSecs(t){ return Number(t.dwell)>0?Number(t.dwell):10; }
 // withdrawal — Codashop style: lahat ng amount NAKALABAS na cards, tap para piliin (highlight),
 // tapos ISANG button sa baba. WSEL = napiling tier cost (persisted across re-renders).
 let WSEL=null;
+let WMETHOD='mlbb';                 // withdraw method: mlbb | gcash | roblox
+let WD_F={gid:'',srv:'',nm:''};     // preserve dest field values across in-page repaints
 function withdrawPanel(s){
   const a=s.account;
   const avail=activeTiers(s);
@@ -1412,7 +1424,7 @@ function withdrawPanel(s){
   });
   wrap.appendChild(grid);
   const btn=$(`<button class="wdbtn ${can?'go':'off'}">${a.earnBanned?'EARNING DISABLED':can?('WITHDRAW '+sel.mlbb+' MLBB DIAMONDS'):('COLLECT '+(sel.cost-a.balance).toLocaleString()+' MORE POINTS')}</button>`);
-  if(can) btn.onclick=()=>openWithdraw(sel);
+  if(can) btn.onclick=()=>openWithdrawPage();
   else if(!a.earnBanned) btn.onclick=()=>toast('Collect '+(sel.cost-a.balance).toLocaleString()+' more points','bad');
   wrap.appendChild(btn);
   return wrap;
@@ -1438,45 +1450,79 @@ function withdrawBanner(app,s){
 // Buong Withdraw page — goal hero + tier grid + payout proof. Nag-re-repaint sa tier select
 // (hindi render() na nagre-rebuild ng dashboard sa likod) para di masira ang page.
 function openWithdrawPage(){ openPage('Withdraw', body=>paintWithdraw(body)); }
+// Payout in the target unit for a tier under the current method. 30 diamonds = P1 / 1 Robux.
+function wdPayout(method, tier){
+  if(method==='gcash') return '₱'+Math.floor(tier.cost/30).toLocaleString();
+  if(method==='roblox') return Math.floor(tier.cost/30).toLocaleString()+' Robux';
+  return tier.mlbb.toLocaleString()+' MLBB';
+}
+// Full Withdraw PAGE (no dialog): balance + 3 method cards + amount + destination + one CTA.
 function paintWithdraw(body){
   const s=STATE,a=s.account; body.textContent='';
-  const g=ensureSel(s)||goalTier(s), reached=a.balance>=g.cost, remaining=Math.max(0,g.cost-a.balance), frac=Math.min(100,Math.round(a.balance/Math.max(1,g.cost)*100));
-  const hero=$(`<div class="hero" style="margin-top:2px">
-    <div class="eyebrow">${g.firstOnly?'FIRST WITHDRAWAL REWARD':'YOUR WITHDRAWAL GOAL'}</div>
-    <div class="reward"><div class="num">${g.mlbb}</div><div class="rlabel"><span class="a">MLBB</span><span class="b">DIAMONDS</span></div></div>
-    <div class="sub">${g.firstOnly?'One-time starter — cash out straight to your account':'Pick a target below — save up for a bigger reward'}</div>
-    <div class="emblem dia blue"></div>
-    <div class="prog"><div class="prow"><div class="l">PROGRESS</div><div class="r">${a.balance.toLocaleString()} / ${g.cost.toLocaleString()}</div></div>
-      <div class="track"><div class="fill" data-w="${frac}"></div></div></div>
-    <div class="cta ${reached&&!a.earnBanned?'':'off'}" id="hcta"><span class="dia ${reached?'blue':''}" style="width:14px;height:14px;${reached?'':'display:none'}"></span><span>${a.earnBanned?'EARNING DISABLED':reached?'WITHDRAW NOW':'COLLECT '+remaining.toLocaleString()+' MORE'}</span></div>
-  </div>`);
-  if(reached&&!a.earnBanned) hero.querySelector('#hcta').onclick=()=>openWithdraw(g);
-  body.appendChild(hero);
-  requestAnimationFrame(()=>{ const f=hero.querySelector('.fill'); if(f) f.style.width=frac+'%'; });
-
-  const proof=$(`<div class="proofcard"><div class="pcic"><span class="dia blue" style="width:22px;height:22px"></span></div>
-    <div class="pcmid"><div class="pct">Real payouts <span class="pcv">VERIFIED</span></div><div class="pcs">See who's cashing out real diamonds</div></div>
-    <div class="pcgo">›</div></div>`);
-  proof.onclick=openTopEarners; body.appendChild(proof);
-
-  body.appendChild($(`<div class="sh"><div class="t">CHOOSE AMOUNT</div><div class="x blue">tap to set your goal</div></div>`));
   const avail=activeTiers(s);
-  if(!avail.length){ body.appendChild($(`<div class="empty">No withdrawal tiers available right now.</div>`)); return; }
-  const grid=$(`<div class="tiers wsel"></div>`);
+  body.appendChild($(`<div class="wd-hero">
+    <div class="wd-heye">CASH OUT BALANCE</div>
+    <div class="wd-hbal"><span class="dia gold" style="width:22px;height:22px"></span>${a.balance.toLocaleString()}</div>
+    <div class="wd-hsub">MLBB Diamonds &middot; GCash &middot; Roblox &nbsp;|&nbsp; 30 diamonds = &#8369;1 / 1 Robux</div>
+  </div>`));
+  if(!avail.length){ body.appendChild($(`<div class="empty">No withdrawal options right now.</div>`)); return; }
+  ensureSel(s);
+  // STEP 1 — method
+  body.appendChild($(`<div class="wd-step"><span class="wd-stepn">1</span>Choose method</div>`));
+  const M=[['mlbb','MLBB Diamonds','To your Mobile Legends account'],['gcash','GCash','Cash to your GCash'],['roblox','Roblox','Robux to your account']];
+  const methods=$(`<div class="wd-mlist"></div>`);
+  M.forEach(([id,name,rate])=>{ const el=$(`<button type="button" class="wd-m ${id===WMETHOD?'sel':''}"><div class="wm-name">${name}</div><div class="wm-rate">${rate}</div></button>`);
+    el.onclick=()=>{ if(WMETHOD!==id){ WMETHOD=id; WD_F={gid:'',srv:'',nm:''}; paintWithdraw(body); } };
+    methods.appendChild(el); });
+  body.appendChild(methods);
+  // STEP 2 — amount
+  body.appendChild($(`<div class="wd-step"><span class="wd-stepn">2</span>Choose amount</div>`));
+  const tiers=$(`<div class="wd-tiers"></div>`);
   avail.forEach(t=>{ const ok=a.balance>=t.cost;
-    const el=$(`<div class="tier sgrid ${t.cost===WSEL?'sel':''} ${ok?'':'poor'}">
-      ${t.cost===WSEL?'<div class="selck">✓</div>':''}
-      <span class="dia blue tg"></span><div class="n">${t.mlbb}</div><div class="u">MLBB</div>
-      <div class="c"><span class="dia gold" style="width:14px;height:14px"></span>${t.cost.toLocaleString()}</div></div>`);
+    const el=$(`<button type="button" class="wd-tier ${t.cost===WSEL?'sel':''} ${ok?'':'poor'}">
+      <div class="wt-pay">${wdPayout(WMETHOD,t)}</div>
+      <div class="wt-cost"><span class="dia gold" style="width:11px;height:11px"></span>${t.cost.toLocaleString()}</div></button>`);
     el.onclick=()=>{ WSEL=t.cost; paintWithdraw(body); };
-    grid.appendChild(el);
+    tiers.appendChild(el);
   });
-  body.appendChild(grid);
-  const sel=ensureSel(s), can=a.balance>=sel.cost && !a.earnBanned;
-  const btn=$(`<button class="wdbtn ${can?'go':'off'}">${a.earnBanned?'EARNING DISABLED':can?('WITHDRAW '+sel.mlbb+' MLBB DIAMONDS'):('COLLECT '+(sel.cost-a.balance).toLocaleString()+' MORE POINTS')}</button>`);
-  if(can) btn.onclick=()=>openWithdraw(sel);
-  else if(!a.earnBanned) btn.onclick=()=>toast('Collect '+(sel.cost-a.balance).toLocaleString()+' more points','bad');
-  body.appendChild(btn);
+  body.appendChild(tiers);
+  const sel=ensureSel(s);
+  // STEP 3 — destination
+  body.appendChild($(`<div class="wd-step"><span class="wd-stepn">3</span>Where to send it</div>`));
+  const dest=$(`<div class="wd-dest"></div>`);
+  if(WMETHOD==='mlbb'){
+    dest.innerHTML=`<label>GAME ID</label><input id="gid" inputmode="numeric" placeholder="e.g. 123456789">
+      <label>SERVER ID</label><input id="srv" inputmode="numeric" placeholder="e.g. 1234"><div id="mlchk" style="min-height:18px;margin:6px 2px 0"></div>`;
+  } else if(WMETHOD==='gcash'){
+    dest.innerHTML=`<label>GCASH NUMBER</label><input id="gid" inputmode="numeric" placeholder="09XX XXX XXXX">
+      <label>ACCOUNT NAME</label><input id="nm" placeholder="Full name on GCash">`;
+  } else {
+    dest.innerHTML=`<label>ROBLOX USERNAME</label><input id="gid" placeholder="Your Roblox username">`;
+  }
+  body.appendChild(dest);
+  // restore + persist field values across repaints (e.g. changing amount)
+  const bind=(id,key)=>{ const el=dest.querySelector('#'+id); if(!el) return; el.value=WD_F[key]||''; el.oninput=()=>{ WD_F[key]=el.value; }; };
+  bind('gid','gid'); bind('srv','srv'); bind('nm','nm');
+  if(WMETHOD==='mlbb') wireMlbb(dest.querySelector('#gid'),dest.querySelector('#srv'),dest.querySelector('#mlchk'));
+  const err=$(`<div class="err" id="we" style="margin:12px 2px 0"></div>`); body.appendChild(err);
+  // CTA
+  const can=a.balance>=sel.cost && !a.earnBanned;
+  const cta=$(`<button class="wd-cta ${can?'':'off'}">${a.earnBanned?'Earning disabled':can?('Withdraw '+wdPayout(WMETHOD,sel)):('Collect '+(sel.cost-a.balance).toLocaleString()+' more diamonds')}</button>`);
+  cta.onclick=async()=>{
+    if(a.earnBanned){ err.textContent='Earning is disabled on this account.'; return; }
+    if(a.balance<sel.cost){ toast('Collect '+(sel.cost-a.balance).toLocaleString()+' more','bad'); return; }
+    const gid=(WD_F.gid||'').trim(); let srv='';
+    if(WMETHOD==='mlbb'){ srv=(WD_F.srv||'').trim();
+      if(!gid){err.textContent='Enter your Game ID'; return;} if(!srv){err.textContent='Enter your Server ID'; return;} }
+    else if(WMETHOD==='gcash'){ const nm=(WD_F.nm||'').trim();
+      if(!gid){err.textContent='Enter your GCash number'; return;} if(!nm){err.textContent='Enter the account name'; return;} srv='gcash:'+nm; }
+    else { if(!gid){err.textContent='Enter your Roblox username'; return;} srv='roblox'; }
+    cta.textContent='Submitting…'; cta.disabled=true; err.textContent='';
+    const r=await call('withdraw',sel.mlbb,sel.cost,gid,srv);
+    if(r&&r.ok){ WD_F={gid:'',srv:'',nm:''}; toast('Withdrawal submitted!','good'); requestState(); paintWithdraw(body); }
+    else{ err.textContent=wdErr(r&&r.error); cta.disabled=false; cta.textContent='Withdraw '+wdPayout(WMETHOD,sel); }
+  };
+  body.appendChild(cta);
 }
 // Daily check-in DIALOG — bubukas via check-in icon sa header.
 function openDailyDialog(){
@@ -2471,66 +2517,8 @@ function wireMlbb(idEl,srvEl,outEl){
   const deb=()=>{ if(t)clearTimeout(t); t=setTimeout(run,500); };
   idEl.addEventListener('input',deb); srvEl.addEventListener('input',deb);
 }
-// 3-method withdraw (MLBB / GCash / Roblox). Update-free: the method + destination are
-// carried through the existing native `withdraw` bridge by repurposing the gameId/server
-// args (server="gcash:<name>" or "roblox", gameId=<number/username>). 30 diamonds = P1 / 1 Robux.
-function openWithdraw(tier){
-  let WM='mlbb';
-  const robux=Math.floor(tier.cost/30);
-  const ov=$(`<div class="ov"><div class="modal wd-modal">
-    <h3>Cash out</h3>
-    <div class="wd-amt">You are spending <b>${tier.cost.toLocaleString()} diamonds</b></div>
-    <div class="wd-methods">
-      <button type="button" class="wd-m sel" data-m="mlbb">MLBB<span>Diamonds</span></button>
-      <button type="button" class="wd-m" data-m="gcash">GCash<span>Cash</span></button>
-      <button type="button" class="wd-m" data-m="roblox">Roblox<span>Robux</span></button>
-    </div>
-    <div class="wd-payout" id="wdPay"></div>
-    <div id="wdFields"></div>
-    <div id="mlchk" style="min-height:18px;margin:6px 2px 2px"></div>
-    <div class="err" id="we"></div>
-    <div class="mrow"><button class="btn ghost" id="wx">Cancel</button><button class="btn go" id="wok">Withdraw</button></div>
-  </div></div>`);
-  document.body.appendChild(ov);
-  const pay=ov.querySelector('#wdPay'), fields=ov.querySelector('#wdFields'), mlchk=ov.querySelector('#mlchk');
-  function paintMethod(){
-    ov.querySelectorAll('.wd-m').forEach(b=>b.classList.toggle('sel',b.dataset.m===WM));
-    if(WM==='mlbb'){
-      pay.innerHTML=`You receive <b>${tier.mlbb.toLocaleString()} MLBB Diamonds</b> to your Mobile Legends account.`;
-      fields.innerHTML=`<label>GAME ID</label><input id="gid" inputmode="numeric" placeholder="e.g. 123456789">
-        <label>SERVER ID</label><input id="srv" inputmode="numeric" placeholder="e.g. 1234">`;
-      mlchk.style.display='';
-      wireMlbb(fields.querySelector('#gid'),fields.querySelector('#srv'),mlchk);
-    } else if(WM==='gcash'){
-      pay.innerHTML=`You receive <b>&#8369;${robux.toLocaleString()}</b> to your GCash. <span class="wd-rate">30 diamonds = &#8369;1</span>`;
-      fields.innerHTML=`<label>GCASH NUMBER</label><input id="gid" inputmode="numeric" placeholder="09XX XXX XXXX">
-        <label>ACCOUNT NAME</label><input id="nm" placeholder="Full name on GCash">`;
-      mlchk.style.display='none'; mlchk.innerHTML='';
-    } else {
-      pay.innerHTML=`You receive <b>${robux.toLocaleString()} Robux</b> to your account. <span class="wd-rate">30 diamonds = 1 Robux</span>`;
-      fields.innerHTML=`<label>ROBLOX USERNAME</label><input id="gid" placeholder="Your Roblox username">`;
-      mlchk.style.display='none'; mlchk.innerHTML='';
-    }
-  }
-  ov.querySelectorAll('.wd-m').forEach(b=>b.onclick=()=>{ WM=b.dataset.m; ov.querySelector('#we').textContent=''; paintMethod(); });
-  paintMethod();
-  ov.querySelector('#wx').onclick=()=>ov.remove();
-  ov.querySelector('#wok').onclick=async()=>{
-    const e=ov.querySelector('#we'); const gid=(fields.querySelector('#gid')||{}).value?.trim()||'';
-    let srv='';
-    if(WM==='mlbb'){ srv=(fields.querySelector('#srv')||{}).value?.trim()||'';
-      if(!gid){e.textContent='Enter your Game ID'; return;} if(!srv){e.textContent='Enter your Server ID'; return;} }
-    else if(WM==='gcash'){ const nm=(fields.querySelector('#nm')||{}).value?.trim()||'';
-      if(!gid){e.textContent='Enter your GCash number'; return;} if(!nm){e.textContent='Enter the account name'; return;}
-      srv='gcash:'+nm; }
-    else { if(!gid){e.textContent='Enter your Roblox username'; return;} srv='roblox'; }
-    const b=ov.querySelector('#wok'); b.textContent='…'; b.disabled=true; e.textContent='';
-    const r=await call('withdraw',tier.mlbb,tier.cost,gid,srv);
-    if(r.ok){ ov.remove(); toast('Withdrawal submitted!','good'); }
-    else{ b.textContent='Withdraw'; b.disabled=false; e.textContent=wdErr(r.error); }
-    requestState();
-  };
-}
+// (openWithdraw modal removed — withdraw is now the full paintWithdraw page with the
+// 3-method selector inline.)
 function wdErr(e){return({insufficient:'Not enough points yet.',bad_tier:'This tier is unavailable.',no_gameid:'Enter your Game ID.',first_used:'You already used your one-time first withdrawal.',banned:'Earning is disabled on this account.',network:'Network error — try again.'})[e]||'Withdrawal failed. Try again.';}
 function refErr(e){return({already:'You already used a code.',self:"That's your own code.",mutual:"You can't both refer each other.",invalid:'Invalid code.',
   clone:'This device already has an earning account. Only one account per device can earn.',
