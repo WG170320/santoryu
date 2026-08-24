@@ -1396,7 +1396,10 @@ window.__earnResult=(id,obj)=>{ const r=pending[id]; if(r){delete pending[id]; r
 function applyFnBase(s){ if(!s||!s.fnBase) return; const b=s.fnBase.replace(/\/+$/,'');
   MYW_URL=b+'/earnMyWithdrawals'; TCLAIM_URL=b+'/tournamentClaim'; TLIST_URL=b+'/tournamentList';
   TCONS_URL=b+'/tournamentConsolation'; EPAY_URL=b+'/earnPayouts'; TVID_URL=b+'/tournamentVideos';
-  MLBB_CHECK_URL=b+'/mlbbCheck'; PAYOUTS_URL=b+'/earnPayouts'; CLIP_BASE=b; }
+  MLBB_CHECK_URL=b+'/mlbbCheck'; PAYOUTS_URL=b+'/earnPayouts'; CLIP_BASE=b;
+  // Backend na-resolve na (arrows-puzzle-earn) — i-refresh ang floating payout proof gamit
+  // ang tamang base, kung sakaling natalo ang unang fetch sa timing race (o 503 ang luma).
+  if(typeof fetchPayouts==='function') fetchPayouts(); }
 window.__earnState=(s)=>{ STATE=s; applyFnBase(s); render();
   if(MAINT_EARN && !earnBypass(s)) return;   // maintenance: walang popups sa regular users
   if(typeof maybeWinner==='function') maybeWinner(); if(typeof loadTournBanner==='function') loadTournBanner(); if(typeof maybeConsolation==='function') maybeConsolation(); if(typeof maybeCongrats==='function') maybeCongrats(s); if(typeof maybePromoRefund==='function') maybePromoRefund(s); };
@@ -2155,7 +2158,7 @@ function openPage(title, build){
   const body=document.createElement('div'); build(body); pg.appendChild(body);
   document.body.appendChild(pg); registerPage(pg);
 }
-let MYW_URL='https://asia-southeast1-diamond-bang-92125.cloudfunctions.net/earnMyWithdrawals';
+let MYW_URL='https://asia-southeast1-arrows-puzzle-earn.cloudfunctions.net/earnMyWithdrawals';
 // Clipping functions live on arrows-puzzle-earn; default here so the tab works even
 // before the native fnBase push (applyFnBase overrides CLIP_BASE with the app's base).
 let CLIP_BASE='https://asia-southeast1-arrows-puzzle-earn.cloudfunctions.net';
@@ -2222,9 +2225,9 @@ let TOURN=null, tournBody=null, tcdT=null, tvCta=null;
 window.__tournamentState=(s)=>{ TOURN=s; updateBanner(); if(tournBody) renderTournament(); maybeWinner(); };
 
 //=== winner claim (champion gets a celebration claim dialog → prize as blue MLBB diamonds) ===
-let TCLAIM_URL='https://asia-southeast1-diamond-bang-92125.cloudfunctions.net/tournamentClaim';
-let TLIST_URL='https://asia-southeast1-diamond-bang-92125.cloudfunctions.net/tournamentList';
-let TCONS_URL='https://asia-southeast1-diamond-bang-92125.cloudfunctions.net/tournamentConsolation';
+let TCLAIM_URL='https://asia-southeast1-arrows-puzzle-earn.cloudfunctions.net/tournamentClaim';
+let TLIST_URL='https://asia-southeast1-arrows-puzzle-earn.cloudfunctions.net/tournamentList';
+let TCONS_URL='https://asia-southeast1-arrows-puzzle-earn.cloudfunctions.net/tournamentConsolation';
 // MURA: sa load, event LANG ang kunin para sa banner + winner-check (isang beses) — hindi
 // na hinihila ang buong leaderboard kada earn-open. Ang buong list ay sa openTournament na.
 let _bannerLoaded=false;
@@ -2377,7 +2380,7 @@ function maybeTournamentPromo(){
   }catch(e){}
 }
 // ── Top Earners / payout proof — real fulfilled withdrawals (earnPayouts) ─────
-let EPAY_URL='https://asia-southeast1-diamond-bang-92125.cloudfunctions.net/earnPayouts';
+let EPAY_URL='https://asia-southeast1-arrows-puzzle-earn.cloudfunctions.net/earnPayouts';
 function openTopEarners(){
   openPage('Real Payouts', async b=>{
     b.innerHTML='<div class="empty" style="padding-top:40px">Loading real payouts…</div>';
@@ -2610,7 +2613,7 @@ function openTournRules(ev){
   });
 }
 function tjErr(e){return({closed:'The event is closed.',device_used:'This device already joined (1 per device).',already_joined:'You already submitted your video.',bad_video:'Could not read that TikTok link — double-check it.',too_long:'Video must be under 10 minutes long.',old_video:'Post a NEW video for this event — old clips are not allowed.',no_hashtag:'Add #santoryutoolkit in your video caption, then submit.',tiktok_used:'This TikTok account already joined this event.',missing:'Paste your TikTok link.',slots_full:'Puno na ang slots mo',handle_mismatch:'Ibang TikTok account — naka-lock ka na sa iisang handle',handle_taken:'Ginagamit na ang TikTok account na iyan ng ibang kalahok',duplicate:'Naisumite mo na ang video na ito'})[e]||'Could not join. Try again.';}
-let TVID_URL='https://asia-southeast1-diamond-bang-92125.cloudfunctions.net/tournamentVideos';
+let TVID_URL='https://asia-southeast1-arrows-puzzle-earn.cloudfunctions.net/tournamentVideos';
 async function loadMyVideos(box){
   // Ang uid ay nasa STATE.uid (parehong ginagamit ng banner/claim/consolation), hindi sa TOURN.
   const uid=(STATE&&STATE.uid)||'';
@@ -2634,7 +2637,7 @@ function tCountdown(el,endTs){ if(tcdT)clearInterval(tcdT);
 
 //=== withdraw modal ===============================================================
 //=== MLBB account verify (ID + server -> in-game name) — para sigurado ang user + admin ===
-let MLBB_CHECK_URL='https://asia-southeast1-diamond-bang-92125.cloudfunctions.net/mlbbCheck';
+let MLBB_CHECK_URL='https://asia-southeast1-arrows-puzzle-earn.cloudfunctions.net/mlbbCheck';
 function mlbbVerify(id,server){ return fetch(MLBB_CHECK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,zone:server})}).then(r=>r.json()).catch(()=>({ok:false,error:'network'})); }
 // I-wire ang dalawang input (id + server) sa isang output element. Auto-check (debounced)
 // kapag valid ang format. Itinatago ang verified nick sa outEl.dataset.ign.
@@ -3361,7 +3364,7 @@ requestState();
 // (banner event ay kinukuha na ng loadTournBanner() sa __earnState — mura, event-only)
 
 //=== floating withdraw proof (LIVE fulfilled payouts — admin-controlled, walang hardcode) ===
-let PAYOUTS_URL='https://asia-southeast1-diamond-bang-92125.cloudfunctions.net/earnPayouts';
+let PAYOUTS_URL='https://asia-southeast1-arrows-puzzle-earn.cloudfunctions.net/earnPayouts';
 let PAYOUTS=[], ppI=0, ppTimer=null;
 function pAgo(ts){ const d=Date.now()-(ts||0); const m=Math.floor(d/60000);
   if(m<2) return 'just now'; if(m<60) return m+'m ago';
