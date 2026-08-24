@@ -57,6 +57,12 @@
   .tab:active{transform:translateY(1px);}
   .tab .cdot{display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--gold); margin-left:6px; vertical-align:middle;}
   #tabbody{min-height:62vh;}
+  /* Home quick-stats strip */
+  .qstats{display:flex; gap:2px; padding:14px 6px; margin-bottom:15px;}
+  .qstat{flex:1; text-align:center; position:relative;}
+  .qstat+.qstat::before{content:''; position:absolute; left:0; top:20%; height:60%; width:1px; background:var(--line);}
+  .qstat .qv{font-family:'Rajdhani'; font-weight:700; font-size:19px; color:var(--txt); font-variant-numeric:tabular-nums;}
+  .qstat .ql{font-size:9.5px; font-weight:700; letter-spacing:.08em; color:var(--txt2); margin-top:2px;}
   .ckbtn.ready{color:var(--gold-hi); border-color:rgba(232,180,74,.5); background:linear-gradient(180deg,rgba(232,180,74,.16),rgba(232,180,74,.04)); box-shadow:0 4px 14px -6px rgba(232,180,74,.5);}
   .ckdot{position:absolute; top:-3px; right:-3px; width:11px; height:11px; border-radius:50%; background:var(--emerald); border:2px solid var(--bg); box-shadow:0 0 8px rgba(45,212,167,.8); animation:gmblink 1.5s ease-in-out infinite;}
   /* daily check-in dialog */
@@ -1516,7 +1522,21 @@ function renderShell(){
   renderTab(tabbody);
 }
 
-// Home tab — holds the full dashboard body (Invite/Tasks split out in later tasks).
+// Home quick-stats strip: balance / total earned / qualified invites / open tasks.
+function homeQuickStats(host,s){
+  const a=s.account;
+  const avail=(s.tasks||[]).filter(t=>!t.claimed && (!isUsage(t)||usageSupported())).length;
+  const qualified=(s.invited||[]).filter(x=>x && x.status==='accepted').length;
+  const q=(v,l)=>`<div class="qstat"><div class="qv">${v}</div><div class="ql">${l}</div></div>`;
+  host.appendChild($(`<div class="qstats card">
+    ${q(a.balance.toLocaleString(),'BALANCE')}
+    ${q(kFmt(a.earned||0),'EARNED')}
+    ${q(qualified,'QUALIFIED')}
+    ${q(avail,'TASKS')}
+  </div>`));
+}
+
+// Home tab — dashboard: profile + withdraw + quick stats + Featured promos + activity.
 // `app` is aliased to the tab body so the moved markup below is unchanged.
 function renderHome(host){
   const app=host; const s=STATE, a=s.account, c=s.config;
@@ -1553,7 +1573,13 @@ function renderHome(host){
   // na para malinis ang dashboard; earning-focused ang dashboard, cash-out ang page).
   withdrawBanner(app,s);
 
+  // quick stats: balance / earned / qualified invites / open tasks
+  homeQuickStats(host,s);
+
   // (INVITE HERO moved to the Invite tab — renderInvite.)
+
+  // FEATURED — promotional / optional earners (Tongits, redeem, tournament, jogos).
+  app.appendChild($(`<div class="sh"><div class="t">FEATURED</div></div>`));
 
   // TONGITS GO — high-value campaign hero, prominent (di na nakabaon sa tasks).
   tongitsHero(app,s);
