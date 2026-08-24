@@ -46,6 +46,17 @@
     background:var(--surf2); border:1px solid var(--line); color:var(--txt2); transition:transform .15s,border-color .2s,color .2s;}
   .ckbtn svg{width:22px; height:22px;}
   .ckbtn:active{transform:scale(.92);}
+
+  /* dashboard tab bar (Home / Clipping / Invite / Tasks) */
+  .tabbar{position:sticky; top:0; z-index:30; display:flex; gap:2px; margin:0 -14px 16px; padding:0 10px;
+    background:linear-gradient(180deg,var(--bg),rgba(7,9,12,.86)); backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);}
+  .tab{flex:1; text-align:center; padding:13px 4px 11px; font-family:'Rajdhani'; font-weight:700; font-size:14px;
+    letter-spacing:.06em; color:var(--txt2); border-bottom:2px solid transparent; cursor:pointer; transition:color .18s,border-color .18s;}
+  .tab.active{color:var(--txt); border-bottom-color:var(--gold);}
+  .tab:active{transform:translateY(1px);}
+  .tab .cdot{display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--gold); margin-left:6px; vertical-align:middle;}
+  #tabbody{min-height:62vh;}
   .ckbtn.ready{color:var(--gold-hi); border-color:rgba(232,180,74,.5); background:linear-gradient(180deg,rgba(232,180,74,.16),rgba(232,180,74,.04)); box-shadow:0 4px 14px -6px rgba(232,180,74,.5);}
   .ckdot{position:absolute; top:-3px; right:-3px; width:11px; height:11px; border-radius:50%; background:var(--emerald); border:2px solid var(--bg); box-shadow:0 0 8px rgba(45,212,167,.8); animation:gmblink 1.5s ease-in-out infinite;}
   /* daily check-in dialog */
@@ -1418,7 +1429,26 @@ function renderEarnMaintenance(app){
     <div style="margin-top:8px;font-weight:800;font-size:11px;letter-spacing:2.5px;color:#E8B44A">SANTORYU REWARDS · BACK SOON</div>
   </div>`));
 }
-function render(){
+// ── Dashboard tabs (Home / Clipping / Invite / Tasks) ──────────────────────────
+let TAB='home';
+const TAB_LABELS={home:'Home',clipping:'Clipping',invite:'Invite',tasks:'Tasks'};
+function selectTab(id){ if(!TAB_LABELS[id]) return; TAB=id;
+  document.querySelectorAll('.tabbar .tab').forEach(el=>el.classList.toggle('active',el.dataset.tab===id));
+  const body=document.getElementById('tabbody'); if(body) renderTab(body);
+  window.scrollTo(0,0);
+}
+function renderTab(host){ host.innerHTML='';
+  ({home:renderHome,clipping:renderClipping,invite:renderInvite,tasks:renderTasks}[TAB]||renderHome)(host);
+  requestAnimationFrame(()=>document.querySelectorAll('.fill[data-w]').forEach(f=>f.style.width=f.dataset.w+'%'));
+}
+// Placeholders — filled by later tasks (Invite=Task3, Tasks=Task4, Clipping=Task6).
+function renderClipping(host){ host.appendChild($('<div class="sh"><div class="t">CLIPPING</div></div>'));
+  host.appendChild($('<div class="card" style="text-align:center;padding:26px 18px;color:var(--txt2)">Clipping campaign is coming soon.</div>')); }
+function renderInvite(host){ host.appendChild($('<div class="card" style="padding:20px;color:var(--txt2)">Invite moves here in Task 3.</div>')); }
+function renderTasks(host){ host.appendChild($('<div class="card" style="padding:20px;color:var(--txt2)">Tasks move here in Task 4.</div>')); }
+
+function render(){ renderShell(); }
+function renderShell(){
   const s=STATE; if(!s) return;
   // Keep an already-open Tongits Go detail page in sync with fresh campaignState pushes
   // (native re-sends __earnState after every claim/upload) without tearing the page down.
@@ -1445,6 +1475,19 @@ function render(){
   </div>`);
   head.querySelector('#ckbtn').onclick=()=>openDailyDialog();
   app.appendChild(head);
+
+  // tab bar — Home / Clipping / Invite / Tasks (client-side switch, no reload)
+  const bar=$(`<div class="tabbar">${Object.keys(TAB_LABELS).map(id=>`<div class="tab${id===TAB?' active':''}" data-tab="${id}">${TAB_LABELS[id]}</div>`).join('')}</div>`);
+  bar.querySelectorAll('.tab').forEach(el=>el.onclick=()=>selectTab(el.dataset.tab));
+  app.appendChild(bar);
+  const tabbody=$(`<div id="tabbody"></div>`); app.appendChild(tabbody);
+  renderTab(tabbody);
+}
+
+// Home tab — holds the full dashboard body (Invite/Tasks split out in later tasks).
+// `app` is aliased to the tab body so the moved markup below is unchanged.
+function renderHome(host){
+  const app=host; const s=STATE, a=s.account, c=s.config;
 
   // Device/earn gate warning — kapag naka-earnBanned ang account (neutralized clone/cheat, o
   // ibang account na ang may-ari ng device), agad na ipakita ang malinaw na babala sa taas.
