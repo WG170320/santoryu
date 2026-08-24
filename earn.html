@@ -63,6 +63,18 @@
   .qstat+.qstat::before{content:''; position:absolute; left:0; top:20%; height:60%; width:1px; background:var(--line);}
   .qstat .qv{font-family:'Rajdhani'; font-weight:700; font-size:19px; color:var(--txt); font-variant-numeric:tabular-nums;}
   .qstat .ql{font-size:9.5px; font-weight:700; letter-spacing:.08em; color:var(--txt2); margin-top:2px;}
+  /* Clipping teaser */
+  .cliphero{position:relative; overflow:hidden; border-radius:18px; padding:22px 20px;
+    background:radial-gradient(120% 150% at 100% -20%, rgba(77,166,255,.16), transparent 55%), linear-gradient(150deg,#12202e,#0c1016 82%);
+    border:1px solid rgba(77,166,255,.28); box-shadow:0 16px 40px -24px rgba(77,166,255,.5);}
+  .ch-eyebrow{display:inline-flex; align-items:center; gap:7px; font-family:'Rajdhani'; font-weight:700; font-size:11px; letter-spacing:.14em; color:var(--blue-hi);}
+  .ch-eyebrow span{width:7px; height:7px; border-radius:50%; background:var(--cyan); box-shadow:0 0 8px var(--cyan);}
+  .ch-title{font-family:'Chakra Petch'; font-weight:700; font-size:22px; line-height:1.12; margin:10px 0 8px;}
+  .ch-sub{font-size:13px; color:var(--txt2); line-height:1.5;}
+  .ch-steps{display:flex; gap:8px; margin:16px 0 18px; flex-wrap:wrap;}
+  .ch-step{display:inline-flex; align-items:center; gap:7px; font-size:12px; font-weight:600; color:var(--txt); background:rgba(255,255,255,.04); border:1px solid var(--line); border-radius:20px; padding:6px 11px;}
+  .ch-step b{display:inline-flex; align-items:center; justify-content:center; width:17px; height:17px; border-radius:50%; background:var(--blue); color:#04121f; font-size:11px;}
+  .ch-cta{width:100%; padding:13px; border:none; border-radius:12px; font-family:'Rajdhani'; font-weight:700; font-size:15px; letter-spacing:.04em; color:var(--txt2); background:var(--surf2); border:1px solid var(--line); cursor:not-allowed;}
   .ckbtn.ready{color:var(--gold-hi); border-color:rgba(232,180,74,.5); background:linear-gradient(180deg,rgba(232,180,74,.16),rgba(232,180,74,.04)); box-shadow:0 4px 14px -6px rgba(232,180,74,.5);}
   .ckdot{position:absolute; top:-3px; right:-3px; width:11px; height:11px; border-radius:50%; background:var(--emerald); border:2px solid var(--bg); box-shadow:0 0 8px rgba(45,212,167,.8); animation:gmblink 1.5s ease-in-out infinite;}
   /* daily check-in dialog */
@@ -1451,8 +1463,16 @@ function renderTab(host){ host.innerHTML='';
   requestAnimationFrame(()=>document.querySelectorAll('.fill[data-w]').forEach(f=>f.style.width=f.dataset.w+'%'));
 }
 // Placeholders — filled by later tasks (Invite=Task3, Tasks=Task4, Clipping=Task6).
-function renderClipping(host){ host.appendChild($('<div class="sh"><div class="t">CLIPPING</div></div>'));
-  host.appendChild($('<div class="card" style="text-align:center;padding:26px 18px;color:var(--txt2)">Clipping campaign is coming soon.</div>')); }
+function renderClipping(host){
+  host.appendChild($(`<div class="sh"><div class="t">CLIP &amp; EARN</div></div>`));
+  host.appendChild($(`<div class="cliphero">
+    <div class="ch-eyebrow"><span></span>NEW · COMING SOON</div>
+    <h3 class="ch-title">Clip Santoryu, earn Diamonds per view</h3>
+    <p class="ch-sub">Post clips about the app on TikTok and earn Diamonds straight into your balance as the views climb. Launching soon — get your account ready.</p>
+    <div class="ch-steps"><span class="ch-step"><b>1</b>Make a clip</span><span class="ch-step"><b>2</b>Post on TikTok</span><span class="ch-step"><b>3</b>Earn per view</span></div>
+    <button class="ch-cta" disabled>Coming soon</button>
+  </div>`));
+}
 function renderInvite(host){
   const s=STATE;
   inviteHero(host,s);
