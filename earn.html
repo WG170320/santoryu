@@ -46,6 +46,36 @@
     background:var(--surf2); border:1px solid var(--line); color:var(--txt2); transition:transform .15s,border-color .2s,color .2s;}
   .ckbtn svg{width:22px; height:22px;}
   .ckbtn:active{transform:scale(.92);}
+
+  /* dashboard tab bar (Home / Clipping / Invite / Tasks) */
+  .tabbar{position:sticky; top:0; z-index:30; display:flex; gap:2px; margin:0 -14px 16px; padding:0 10px;
+    background:linear-gradient(180deg,var(--bg),rgba(7,9,12,.86)); backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);}
+  .tab{flex:1; text-align:center; padding:13px 4px 11px; font-family:'Rajdhani'; font-weight:700; font-size:14px;
+    letter-spacing:.06em; color:var(--txt2); border-bottom:2px solid transparent; cursor:pointer; transition:color .18s,border-color .18s;}
+  .tab.active{color:var(--txt); border-bottom-color:var(--gold);}
+  .tab:active{transform:translateY(1px);}
+  .tab .cdot{display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--gold); margin-left:6px; vertical-align:middle;}
+  #tabbody{min-height:62vh;}
+  /* Home quick-stats strip */
+  .qstats{display:flex; gap:2px; padding:14px 6px; margin-bottom:15px;}
+  .qstat{flex:1; text-align:center; position:relative;}
+  .qstat+.qstat::before{content:''; position:absolute; left:0; top:20%; height:60%; width:1px; background:var(--line);}
+  .qstat .qv{font-family:'Rajdhani'; font-weight:700; font-size:19px; color:var(--txt); font-variant-numeric:tabular-nums;}
+  .qstat:first-child .qv{color:var(--gold-hi);}
+  .qstat .ql{font-size:9.5px; font-weight:700; letter-spacing:.08em; color:var(--txt2); margin-top:2px;}
+  /* Clipping teaser */
+  .cliphero{position:relative; overflow:hidden; border-radius:18px; padding:22px 20px;
+    background:radial-gradient(120% 150% at 100% -20%, rgba(77,166,255,.16), transparent 55%), linear-gradient(150deg,#12202e,#0c1016 82%);
+    border:1px solid rgba(77,166,255,.28); box-shadow:0 16px 40px -24px rgba(77,166,255,.5);}
+  .ch-eyebrow{display:inline-flex; align-items:center; gap:7px; font-family:'Rajdhani'; font-weight:700; font-size:11px; letter-spacing:.14em; color:var(--blue-hi);}
+  .ch-eyebrow span{width:7px; height:7px; border-radius:50%; background:var(--cyan); box-shadow:0 0 8px var(--cyan);}
+  .ch-title{font-family:'Chakra Petch'; font-weight:700; font-size:22px; line-height:1.12; margin:10px 0 8px;}
+  .ch-sub{font-size:13px; color:var(--txt2); line-height:1.5;}
+  .ch-steps{display:flex; gap:8px; margin:16px 0 18px; flex-wrap:wrap;}
+  .ch-step{display:inline-flex; align-items:center; gap:7px; font-size:12px; font-weight:600; color:var(--txt); background:rgba(255,255,255,.04); border:1px solid var(--line); border-radius:20px; padding:6px 11px;}
+  .ch-step b{display:inline-flex; align-items:center; justify-content:center; width:17px; height:17px; border-radius:50%; background:var(--blue); color:#04121f; font-size:11px;}
+  .ch-cta{width:100%; padding:13px; border:none; border-radius:12px; font-family:'Rajdhani'; font-weight:700; font-size:15px; letter-spacing:.04em; color:var(--txt2); background:var(--surf2); border:1px solid var(--line); cursor:not-allowed;}
   .ckbtn.ready{color:var(--gold-hi); border-color:rgba(232,180,74,.5); background:linear-gradient(180deg,rgba(232,180,74,.16),rgba(232,180,74,.04)); box-shadow:0 4px 14px -6px rgba(232,180,74,.5);}
   .ckdot{position:absolute; top:-3px; right:-3px; width:11px; height:11px; border-radius:50%; background:var(--emerald); border:2px solid var(--bg); box-shadow:0 0 8px rgba(45,212,167,.8); animation:gmblink 1.5s ease-in-out infinite;}
   /* daily check-in dialog */
@@ -1241,6 +1271,9 @@ function isReview(t){ return t.id.includes('rate')||/review|star/i.test(t.title)
 function isCommentTask(t){ return !!(t && (/^yt[_-]?comment/i.test(t.id||'') || (/youtu\.?be|youtube\.com/i.test(t.link||'') && /comment/i.test((t.id||'')+' '+(t.title||''))))); }
 // Social dwell task (hal. i-heart ang FB post) — kailangang manatili ~10s bago mag-claim.
 function isSocial(t){ return /facebook\.com|fb\.watch|fb\.me/i.test(t.link||'')||/facebook|fb\b/i.test(t.title||''); }
+// Download tasks = install / usage-verified offers (GearUp, boost, download-to-unlock).
+// Everything else (social follow/comment, review, comment-on-video, daily/promo) is "Other".
+function isDownloadTask(t){ return isUsage(t) || /install|download|gearup|warlito|boost/i.test((t.title||'')+' '+(t.desc||'')); }
 function dwellSecs(t){ return Number(t.dwell)>0?Number(t.dwell):10; }
 
 // withdrawal — Codashop style: lahat ng amount NAKALABAS na cards, tap para piliin (highlight),
@@ -1418,7 +1451,63 @@ function renderEarnMaintenance(app){
     <div style="margin-top:8px;font-weight:800;font-size:11px;letter-spacing:2.5px;color:#E8B44A">SANTORYU REWARDS · BACK SOON</div>
   </div>`));
 }
-function render(){
+// ── Dashboard tabs (Home / Clipping / Invite / Tasks) ──────────────────────────
+let TAB='home';
+const TAB_LABELS={home:'Home',clipping:'Clipping',invite:'Invite',tasks:'Tasks'};
+function selectTab(id){ if(!TAB_LABELS[id]) return; TAB=id;
+  document.querySelectorAll('.tabbar .tab').forEach(el=>el.classList.toggle('active',el.dataset.tab===id));
+  const body=document.getElementById('tabbody'); if(body) renderTab(body);
+  window.scrollTo(0,0);
+}
+function renderTab(host){ host.innerHTML='';
+  ({home:renderHome,clipping:renderClipping,invite:renderInvite,tasks:renderTasks}[TAB]||renderHome)(host);
+  requestAnimationFrame(()=>document.querySelectorAll('.fill[data-w]').forEach(f=>f.style.width=f.dataset.w+'%'));
+}
+// Placeholders — filled by later tasks (Invite=Task3, Tasks=Task4, Clipping=Task6).
+function renderClipping(host){
+  host.appendChild($(`<div class="sh"><div class="t">CLIP &amp; EARN</div></div>`));
+  host.appendChild($(`<div class="cliphero">
+    <div class="ch-eyebrow"><span></span>NEW · COMING SOON</div>
+    <h3 class="ch-title">Clip Santoryu, earn Diamonds per view</h3>
+    <p class="ch-sub">Post clips about the app on TikTok and earn Diamonds straight into your balance as the views climb. Launching soon — get your account ready.</p>
+    <div class="ch-steps"><span class="ch-step"><b>1</b>Make a clip</span><span class="ch-step"><b>2</b>Post on TikTok</span><span class="ch-step"><b>3</b>Earn per view</span></div>
+    <button class="ch-cta" disabled>Coming soon</button>
+  </div>`));
+}
+function renderInvite(host){
+  const s=STATE;
+  inviteHero(host,s);
+  host.appendChild($(`<div class="sh"><div class="t">FRIENDS YOU INVITED</div></div>`));
+  inviteLedger(host);
+}
+function renderTasks(host){
+  const s=STATE;
+  giveawayHero(host,s);
+  const all=(s.tasks||[]).filter(t=>!t.claimed && (!isUsage(t) || usageSupported()));
+  const hero=all.find(t=>t&&t.hero===true && isUsage(t));
+  if(hero) gearMissionHero(host, hero);
+  const rest=all.filter(t=>t!==hero);
+  const dl=rest.filter(isDownloadTask), other=rest.filter(t=>!isDownloadTask(t));
+  const group=(title,list)=>{
+    if(!list.length) return;
+    host.appendChild($(`<div class="sh"><div class="t">${title}</div></div>`));
+    const tc=$(`<div class="card"></div>`);
+    list.forEach(t=>{
+      const right=`<button class="tclaim"><span class="dia gold" style="width:14px;height:14px"></span>+${t.reward}</button>`;
+      const row=$(`<div class="taskrow"><div class="ti">${taskIcon(t)}</div>
+        <div class="gleft"><div class="n">${esc(t.title)}</div><div class="d">${esc(t.desc)}</div></div>${right}</div>`);
+      row.querySelector('.tclaim').onclick=()=> isCommentTask(t)?openCommentPage(t): isUsage(t)?(usageSupported()?openUsage(t):toast('Update the app to do this task','bad')): isReview(t)?openReview(t): isSocial(t)?openDwell(t): doTask(t);
+      tc.appendChild(row);
+    });
+    host.appendChild(tc);
+  };
+  group('DOWNLOAD TASKS', dl);
+  group('OTHER TASKS', other);
+  if(!dl.length && !other.length && !hero) host.appendChild($(`<div class="card" style="text-align:center;color:var(--txt2);padding:24px">No tasks right now. Check back soon.</div>`));
+}
+
+function render(){ renderShell(); }
+function renderShell(){
   const s=STATE; if(!s) return;
   // Keep an already-open Tongits Go detail page in sync with fresh campaignState pushes
   // (native re-sends __earnState after every claim/upload) without tearing the page down.
@@ -1445,6 +1534,36 @@ function render(){
   </div>`);
   head.querySelector('#ckbtn').onclick=()=>openDailyDialog();
   app.appendChild(head);
+
+  // tab bar — Home / Clipping / Invite / Tasks (client-side switch, no reload)
+  // actionable dot: Tasks shows a dot when there are unclaimed tasks the user can do now.
+  const openTasks=(s.tasks||[]).filter(t=>!t.claimed && (!isUsage(t)||usageSupported())).length;
+  const tabDot={tasks:openTasks>0};
+  const bar=$(`<div class="tabbar">${Object.keys(TAB_LABELS).map(id=>`<div class="tab${id===TAB?' active':''}" data-tab="${id}">${TAB_LABELS[id]}${tabDot[id]?'<span class="cdot"></span>':''}</div>`).join('')}</div>`);
+  bar.querySelectorAll('.tab').forEach(el=>el.onclick=()=>selectTab(el.dataset.tab));
+  app.appendChild(bar);
+  const tabbody=$(`<div id="tabbody"></div>`); app.appendChild(tabbody);
+  renderTab(tabbody);
+}
+
+// Home quick-stats strip: balance / total earned / qualified invites / open tasks.
+function homeQuickStats(host,s){
+  const a=s.account;
+  const avail=(s.tasks||[]).filter(t=>!t.claimed && (!isUsage(t)||usageSupported())).length;
+  const qualified=(s.invited||[]).filter(x=>x && x.status==='accepted').length;
+  const q=(v,l)=>`<div class="qstat"><div class="qv">${v}</div><div class="ql">${l}</div></div>`;
+  host.appendChild($(`<div class="qstats card">
+    ${q(a.balance.toLocaleString(),'BALANCE')}
+    ${q(kFmt(a.earned||0),'EARNED')}
+    ${q(qualified,'QUALIFIED')}
+    ${q(avail,'TASKS')}
+  </div>`));
+}
+
+// Home tab — dashboard: profile + withdraw + quick stats + Featured promos + activity.
+// `app` is aliased to the tab body so the moved markup below is unchanged.
+function renderHome(host){
+  const app=host; const s=STATE, a=s.account, c=s.config;
 
   // Device/earn gate warning — kapag naka-earnBanned ang account (neutralized clone/cheat, o
   // ibang account na ang may-ari ng device), agad na ipakita ang malinaw na babala sa taas.
@@ -1478,8 +1597,13 @@ function render(){
   // na para malinis ang dashboard; earning-focused ang dashboard, cash-out ang page).
   withdrawBanner(app,s);
 
-  // INVITE HERO — ang pinaka-highlight ng Earn (conditional +perInvite + status ledger).
-  inviteHero(app,s);
+  // quick stats: balance / earned / qualified invites / open tasks
+  homeQuickStats(host,s);
+
+  // (INVITE HERO moved to the Invite tab — renderInvite.)
+
+  // FEATURED — promotional / optional earners (Tongits, redeem, tournament, jogos).
+  app.appendChild($(`<div class="sh"><div class="t">FEATURED</div></div>`));
 
   // TONGITS GO — high-value campaign hero, prominent (di na nakabaon sa tasks).
   tongitsHero(app,s);
@@ -1561,7 +1685,7 @@ function render(){
   }
 
   // (Daily check-in ay naka-DIALOG na — buksan via check-in icon sa header.)
-  appendTasks(app,s);
+  // (TASKS moved to the Tasks tab — renderTasks, split into Download / Other.)
 
   // (Referral Mission tinanggal — ang invite hero na sa itaas ang referral highlight.)
 
@@ -1570,9 +1694,7 @@ function render(){
   const navc=$(`<div class="card"></div>`);
   const r1=$(`<div class="navrow"><div class="di" style="width:38px;height:38px;background:rgba(95,160,255,.12)">${II('ic-history')}</div><div class="gl"><div class="n">Withdrawal history</div><div class="s">${(s.history||[]).length} total</div></div><div class="ch">›</div></div>`);
   r1.onclick=openHistory;
-  const r2=$(`<div class="navrow"><div class="di" style="width:38px;height:38px;background:rgba(45,212,167,.12)">${II('ic-friends')}</div><div class="gl"><div class="n">Friends you invited</div><div class="s">${(s.invited||[]).length} joined</div></div><div class="ch">›</div></div>`);
-  r2.onclick=openInvited;
-  navc.appendChild(r1); navc.appendChild(r2);
+  navc.appendChild(r1);
   app.appendChild(navc);
 
   // legal footer (Terms / Privacy / Delete account)
@@ -1608,27 +1730,7 @@ function giveawayHero(app,s){
   el.querySelector('.gvw-cta').onclick=()=>{ if(link&&link!=='#'){ if(window.Android&&window.Android.openLink) window.Android.openLink(link); else window.open(link,'_blank'); } };
   app.appendChild(el);
 }
-function appendTasks(app,s){
-  giveawayHero(app,s);
-  // (tongitsHero ay nasa render() na — prominent, di nakabaon sa tasks.)
-  // One-time show: pag na-claim na, tuluyang mawawala sa listahan (walang "Done" row).
-  const all=(s.tasks||[]).filter(t=>!t.claimed && (!isUsage(t) || usageSupported()));
-  // High-value hero mission renders as its OWN gold banner (separate from the task rows).
-  const hero=all.find(t=>t&&t.hero===true && isUsage(t));
-  if(hero) gearMissionHero(app, hero);
-  const list=all.filter(t=>t!==hero);
-  if(!list.length) return;
-  app.appendChild($(`<div class="sh"><div class="t">TASKS</div><div class="x">earn more points</div></div>`));
-  const tc=$(`<div class="card"></div>`);
-  list.forEach(t=>{
-    const right=`<button class="tclaim"><span class="dia gold" style="width:14px;height:14px"></span>+${t.reward}</button>`;
-    const row=$(`<div class="taskrow"><div class="ti">${taskIcon(t)}</div>
-      <div class="gleft"><div class="n">${esc(t.title)}</div><div class="d">${esc(t.desc)}</div></div>${right}</div>`);
-    row.querySelector('.tclaim').onclick=()=> isCommentTask(t)?openCommentPage(t): isUsage(t)?(usageSupported()?openUsage(t):toast('Update the app to do this task','bad')): isReview(t)?openReview(t): isSocial(t)?openDwell(t): doTask(t);
-    tc.appendChild(row);
-  });
-  app.appendChild(tc);
-}
+// (appendTasks removed — its logic now lives in renderTasks with Download/Other groups.)
 
 //=== legal (Terms / Data Policy / Delete account) ================================
 const TERMS_TEXT=(perInvite)=>`Welcome to the Santoryu Diamond rewards program.
@@ -1747,22 +1849,22 @@ async function fillRejectReasons(scope){
     });
   }catch(e){}
 }
-function openInvited(){
-  openPage('Friends You Invited', b=>{
-    const inv=(STATE.invited)||[], per=STATE.config.perInvite, q=STATE.config.refQualify||10;
-    const stt=x=>(x&&x.status)||'pending';
-    const nA=inv.filter(x=>stt(x)==='accepted').length;
-    b.appendChild($(`<div class="sh" style="margin-top:0"><div class="t">${inv.length} INVITED · ${nA} QUALIFIED</div><div class="x">+${per} each</div></div>`));
-    if(!inv.length){ b.appendChild($(`<div class="empty">No invites yet.<br>Share your code — you earn ${per} once a friend reaches ${q} diamonds.</div>`)); return; }
-    const sub={pending:`Needs ${q} diamonds to qualify`, accepted:`Qualified — you earned +${per}`, rejected:'Rejected — flagged as a bot'};
-    const c=$(`<div class="card"></div>`);
-    inv.forEach(f=>{ const st=stt(f);
-      c.appendChild($(`<div class="litem"><div class="fav fini">${esc((f.name||'?')[0].toUpperCase())}${f.avatarUrl?`<img src="${esc(f.avatarUrl)}" alt="" onerror="this.remove()">`:''}</div>
-      <div class="gleft"><div class="nm">${esc(f.name||'Player')}</div><div class="sm">${sub[st]||sub.pending} · joined ${ago(f.ts)}</div></div>
-      <span class="ivchip ${st}">${st}</span></div>`)); });
-    b.appendChild(c);
-  });
+// Invited-friends ledger — reused by the Invite tab and the standalone page.
+function inviteLedger(b){
+  const inv=(STATE.invited)||[], per=STATE.config.perInvite, q=STATE.config.refQualify||10;
+  const stt=x=>(x&&x.status)||'pending';
+  const nA=inv.filter(x=>stt(x)==='accepted').length;
+  b.appendChild($(`<div class="sh" style="margin-top:0"><div class="t">${inv.length} INVITED · ${nA} QUALIFIED</div><div class="x">+${per} each</div></div>`));
+  if(!inv.length){ b.appendChild($(`<div class="empty">No invites yet.<br>Share your code — you earn ${per} once a friend reaches ${q} diamonds.</div>`)); return; }
+  const sub={pending:`Needs ${q} diamonds to qualify`, accepted:`Qualified — you earned +${per}`, rejected:'Rejected — flagged as a bot'};
+  const c=$(`<div class="card"></div>`);
+  inv.forEach(f=>{ const st=stt(f);
+    c.appendChild($(`<div class="litem"><div class="fav fini">${esc((f.name||'?')[0].toUpperCase())}${f.avatarUrl?`<img src="${esc(f.avatarUrl)}" alt="" onerror="this.remove()">`:''}</div>
+    <div class="gleft"><div class="nm">${esc(f.name||'Player')}</div><div class="sm">${sub[st]||sub.pending} · joined ${ago(f.ts)}</div></div>
+    <span class="ivchip ${st}">${st}</span></div>`)); });
+  b.appendChild(c);
 }
+function openInvited(){ openPage('Friends You Invited', b=>inviteLedger(b)); }
 
 //=== tournament ==================================================================
 let TOURN=null, tournBody=null, tcdT=null, tvCta=null;
