@@ -1212,6 +1212,22 @@
   /* TASK / nav rows — calm */
   .taskrow{border-radius:var(--rad-sm);}
   .tclaim{box-shadow:none;}
+
+  /* WITHDRAW modal — clean 3-method cash-out */
+  .wd-modal{text-align:left;}
+  .wd-amt{font-size:13px; color:var(--txt2); margin:2px 0 14px;} .wd-amt b{color:var(--gold-hi);}
+  .wd-methods{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:14px;}
+  .wd-m{display:flex; flex-direction:column; align-items:center; gap:1px; padding:12px 4px; border-radius:var(--rad-sm);
+    background:var(--surf3); border:1px solid var(--line); color:var(--txt); font-family:'Chakra Petch',sans-serif; font-weight:700; font-size:13px; cursor:pointer; transition:border-color .15s,background .15s;}
+  .wd-m span{font-family:'Inter',sans-serif; font-weight:500; font-size:9.5px; letter-spacing:.04em; color:var(--txt3); text-transform:uppercase;}
+  .wd-m.sel{border-color:var(--gold); background:rgba(232,180,74,.08);}
+  .wd-m.sel span{color:var(--gold-hi);}
+  .wd-payout{font-size:13px; line-height:1.5; color:var(--txt2); background:var(--surf3); border:1px solid var(--line); border-radius:var(--rad-sm); padding:11px 13px; margin-bottom:12px;}
+  .wd-payout b{color:var(--txt);}
+  .wd-rate{display:block; margin-top:3px; font-size:11px; color:var(--txt3);}
+  .wd-modal label{display:block; font-size:10.5px; letter-spacing:.08em; color:var(--txt3); text-transform:uppercase; margin:10px 2px 5px; font-weight:700;}
+  .wd-modal input{width:100%; background:var(--surf3); border:1px solid var(--line); border-radius:var(--rad-sm); color:var(--txt); padding:12px 13px; font-size:14px;}
+  .wd-modal input:focus{outline:none; border-color:var(--gold);}
 </style>
 </head>
 <body>
@@ -2455,21 +2471,59 @@ function wireMlbb(idEl,srvEl,outEl){
   const deb=()=>{ if(t)clearTimeout(t); t=setTimeout(run,500); };
   idEl.addEventListener('input',deb); srvEl.addEventListener('input',deb);
 }
+// 3-method withdraw (MLBB / GCash / Roblox). Update-free: the method + destination are
+// carried through the existing native `withdraw` bridge by repurposing the gameId/server
+// args (server="gcash:<name>" or "roblox", gameId=<number/username>). 30 diamonds = P1 / 1 Robux.
 function openWithdraw(tier){
-  const ov=$(`<div class="ov"><div class="modal">
-    <h3>Withdraw ${tier.mlbb} MLBB Diamonds</h3>
-    <p>Costs <b style="color:var(--gold-hi)">${tier.cost.toLocaleString()} points</b>. Topped up to your MLBB account after admin review.</p>
-    <label>GAME ID</label><input id="gid" inputmode="numeric" placeholder="e.g. 123456789">
-    <label>SERVER ID</label><input id="srv" inputmode="numeric" placeholder="e.g. 1234">
+  let WM='mlbb';
+  const robux=Math.floor(tier.cost/30);
+  const ov=$(`<div class="ov"><div class="modal wd-modal">
+    <h3>Cash out</h3>
+    <div class="wd-amt">You are spending <b>${tier.cost.toLocaleString()} diamonds</b></div>
+    <div class="wd-methods">
+      <button type="button" class="wd-m sel" data-m="mlbb">MLBB<span>Diamonds</span></button>
+      <button type="button" class="wd-m" data-m="gcash">GCash<span>Cash</span></button>
+      <button type="button" class="wd-m" data-m="roblox">Roblox<span>Robux</span></button>
+    </div>
+    <div class="wd-payout" id="wdPay"></div>
+    <div id="wdFields"></div>
     <div id="mlchk" style="min-height:18px;margin:6px 2px 2px"></div>
     <div class="err" id="we"></div>
-    <div class="mrow"><button class="btn ghost" id="wx">Cancel</button><button class="btn go" id="wok">Withdraw</button></div></div></div>`);
+    <div class="mrow"><button class="btn ghost" id="wx">Cancel</button><button class="btn go" id="wok">Withdraw</button></div>
+  </div></div>`);
   document.body.appendChild(ov);
-  wireMlbb(ov.querySelector('#gid'),ov.querySelector('#srv'),ov.querySelector('#mlchk'));
+  const pay=ov.querySelector('#wdPay'), fields=ov.querySelector('#wdFields'), mlchk=ov.querySelector('#mlchk');
+  function paintMethod(){
+    ov.querySelectorAll('.wd-m').forEach(b=>b.classList.toggle('sel',b.dataset.m===WM));
+    if(WM==='mlbb'){
+      pay.innerHTML=`You receive <b>${tier.mlbb.toLocaleString()} MLBB Diamonds</b> to your Mobile Legends account.`;
+      fields.innerHTML=`<label>GAME ID</label><input id="gid" inputmode="numeric" placeholder="e.g. 123456789">
+        <label>SERVER ID</label><input id="srv" inputmode="numeric" placeholder="e.g. 1234">`;
+      mlchk.style.display='';
+      wireMlbb(fields.querySelector('#gid'),fields.querySelector('#srv'),mlchk);
+    } else if(WM==='gcash'){
+      pay.innerHTML=`You receive <b>&#8369;${robux.toLocaleString()}</b> to your GCash. <span class="wd-rate">30 diamonds = &#8369;1</span>`;
+      fields.innerHTML=`<label>GCASH NUMBER</label><input id="gid" inputmode="numeric" placeholder="09XX XXX XXXX">
+        <label>ACCOUNT NAME</label><input id="nm" placeholder="Full name on GCash">`;
+      mlchk.style.display='none'; mlchk.innerHTML='';
+    } else {
+      pay.innerHTML=`You receive <b>${robux.toLocaleString()} Robux</b> to your account. <span class="wd-rate">30 diamonds = 1 Robux</span>`;
+      fields.innerHTML=`<label>ROBLOX USERNAME</label><input id="gid" placeholder="Your Roblox username">`;
+      mlchk.style.display='none'; mlchk.innerHTML='';
+    }
+  }
+  ov.querySelectorAll('.wd-m').forEach(b=>b.onclick=()=>{ WM=b.dataset.m; ov.querySelector('#we').textContent=''; paintMethod(); });
+  paintMethod();
   ov.querySelector('#wx').onclick=()=>ov.remove();
   ov.querySelector('#wok').onclick=async()=>{
-    const gid=ov.querySelector('#gid').value.trim(),srv=ov.querySelector('#srv').value.trim(),e=ov.querySelector('#we');
-    if(!gid){e.textContent='Enter your Game ID'; return;}
+    const e=ov.querySelector('#we'); const gid=(fields.querySelector('#gid')||{}).value?.trim()||'';
+    let srv='';
+    if(WM==='mlbb'){ srv=(fields.querySelector('#srv')||{}).value?.trim()||'';
+      if(!gid){e.textContent='Enter your Game ID'; return;} if(!srv){e.textContent='Enter your Server ID'; return;} }
+    else if(WM==='gcash'){ const nm=(fields.querySelector('#nm')||{}).value?.trim()||'';
+      if(!gid){e.textContent='Enter your GCash number'; return;} if(!nm){e.textContent='Enter the account name'; return;}
+      srv='gcash:'+nm; }
+    else { if(!gid){e.textContent='Enter your Roblox username'; return;} srv='roblox'; }
     const b=ov.querySelector('#wok'); b.textContent='…'; b.disabled=true; e.textContent='';
     const r=await call('withdraw',tier.mlbb,tier.cost,gid,srv);
     if(r.ok){ ov.remove(); toast('Withdrawal submitted!','good'); }
