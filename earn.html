@@ -1310,6 +1310,24 @@
   .lb-name{font-family:'Rajdhani',sans-serif; font-weight:700; font-size:15px; color:var(--txt); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
   .lb-views{font-size:11px; color:var(--txt3);}
   .lb-earn{flex:none; font-family:'Rajdhani',sans-serif; font-weight:700; font-size:16px; color:var(--gold-hi); font-variant-numeric:tabular-nums;}
+  /* podium — top 3 */
+  .lb-podium{display:flex; align-items:flex-end; justify-content:center; gap:8px; margin:6px 0 14px;}
+  .lbp{flex:1; max-width:33%; display:flex; flex-direction:column; align-items:center; text-align:center; position:relative;}
+  .lbp-crown{margin-bottom:2px; filter:drop-shadow(0 2px 6px rgba(255,206,90,.6)); animation:cgpulse 3s ease-in-out infinite;}
+  .lbp-av{width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-family:'Teko','Rajdhani',sans-serif; font-weight:700; font-size:24px; color:var(--txt); background:linear-gradient(140deg,#27405e,#16222f); border:2px solid var(--line);}
+  .lbp.p1 .lbp-av{width:62px; height:62px; font-size:28px; border-color:#FFD98A; box-shadow:0 8px 22px -8px rgba(232,180,74,.7);}
+  .lbp.p2 .lbp-av{border-color:#c6cfdb;}
+  .lbp.p3 .lbp-av{border-color:#d09a63;}
+  .lbp-name{margin-top:7px; font-family:'Rajdhani',sans-serif; font-weight:700; font-size:13px; color:var(--txt); max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .lbp-earn{font-family:'Rajdhani',sans-serif; font-weight:700; font-size:15px; color:var(--gold-hi); margin-top:1px; font-variant-numeric:tabular-nums;}
+  .lbp-views{font-size:9.5px; color:var(--txt3); margin-bottom:8px;}
+  .lbp-bar{width:100%; border-radius:12px 12px 0 0; display:flex; align-items:flex-start; justify-content:center; padding-top:8px;
+    font-family:'Chakra Petch',sans-serif; font-weight:800; color:rgba(0,0,0,.55);}
+  .lbp-bar span{font-size:20px;}
+  .lbp.p1 .lbp-bar{height:66px; background:linear-gradient(180deg,#FFE08A,#E8B44A); box-shadow:0 -6px 24px -8px rgba(232,180,74,.6);}
+  .lbp.p2 .lbp-bar{height:48px; background:linear-gradient(180deg,#e6ebf2,#aab4c2);}
+  .lbp.p3 .lbp-bar{height:38px; background:linear-gradient(180deg,#e6a86a,#b9793e);}
 </style>
 </head>
 <body>
@@ -1775,13 +1793,28 @@ function renderClipping(host){
   if(CLIP_BOARD===null){ host.appendChild($(`<div class="empty">Loading leaderboard…</div>`)); loadLeaderboard(); }
   else if(!lb.length){ host.appendChild($(`<div class="empty">No clippers on the board yet — be the first to earn and top the leaderboard!</div>`)); }
   else{
-    const board=$(`<div class="card lb"></div>`);
-    lb.forEach(r=>{ const rk=r.rank, cls=rk===1?'g1':rk===2?'g2':rk===3?'g3':'';
-      board.appendChild($(`<div class="lb-row">
-        <div class="lb-rank ${cls}">${rk}</div>
+    const CROWN='<svg viewBox="0 0 24 24" width="20" height="20" fill="#FFD98A"><path d="M3 8l4.5 3.5L12 5l4.5 6.5L21 8l-1.8 10H4.8L3 8z"/></svg>';
+    const ini=n=>esc((n||'?').trim().slice(0,1).toUpperCase());
+    const top3=lb.slice(0,3), rest=lb.slice(3);
+    const at=r=>top3.find(x=>x.rank===r);
+    const col=(r,cls)=>{ const x=at(r); if(!x) return '';
+      return `<div class="lbp ${cls}">
+        ${r===1?'<div class="lbp-crown">'+CROWN+'</div>':''}
+        <div class="lbp-av">${ini(x.name)}</div>
+        <div class="lbp-name">${esc(x.name||'Clipper')}</div>
+        <div class="lbp-earn">${D} ${(+x.paid).toLocaleString()}</div>
+        <div class="lbp-views">${(+x.views).toLocaleString()} views</div>
+        <div class="lbp-bar"><span>${r}</span></div>
+      </div>`; };
+    host.appendChild($(`<div class="lb-podium">${col(2,'p2')}${col(1,'p1')}${col(3,'p3')}</div>`));
+    if(rest.length){
+      const list=$(`<div class="card lb"></div>`);
+      rest.forEach(r=>{ list.appendChild($(`<div class="lb-row">
+        <div class="lb-rank">${r.rank}</div>
         <div class="lb-mid"><div class="lb-name">${esc(r.name||'Clipper')}</div><div class="lb-views">${(+r.views).toLocaleString()} views</div></div>
         <div class="lb-earn">${D} ${(+r.paid).toLocaleString()}</div></div>`)); });
-    host.appendChild(board);
+      host.appendChild(list);
+    }
   }
 }
 function renderInvite(host){
