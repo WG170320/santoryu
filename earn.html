@@ -1256,6 +1256,39 @@
   .cg .cgcta:active{transform:scale(.985);}
   @keyframes cgbtnpulse{0%,100%{transform:scale(1);}50%{transform:scale(1.025);}}
   @media (prefers-reduced-motion:reduce){.cg .cgcta{animation:none;}}
+
+  /* CLIP & EARN — exciting creator-campaign hero */
+  .cliphero.live{position:relative; overflow:hidden; border-radius:20px; padding:22px 20px 20px;
+    background:radial-gradient(120% 130% at 100% -10%, rgba(77,166,255,.22), transparent 55%), linear-gradient(155deg,#15263a,#0c1119 78%);
+    border:1px solid rgba(77,166,255,.3); box-shadow:0 20px 46px -24px rgba(77,166,255,.55);}
+  .ch-glow{position:absolute; top:-70px; right:-50px; width:220px; height:220px; border-radius:50%; pointer-events:none;
+    background:radial-gradient(circle, rgba(255,206,90,.22), transparent 68%); animation:cgpulse 3.2s ease-in-out infinite;}
+  .ch-badge{position:relative; z-index:1; display:inline-flex; align-items:center; gap:7px; font-family:'Chakra Petch',sans-serif; font-weight:700; font-size:10.5px; letter-spacing:.14em; color:var(--blue-hi);}
+  .ch-live{width:7px; height:7px; border-radius:50%; background:#34D399; box-shadow:0 0 9px #34D399; animation:peblink 1.6s ease-in-out infinite;}
+  .ch-big{position:relative; z-index:1; display:flex; align-items:center; gap:14px; margin:12px 0 4px;}
+  .ch-num{font-family:'Teko','Rajdhani',sans-serif; font-weight:700; font-size:72px; line-height:.8;
+    background:linear-gradient(180deg,#FFE9A8,#FFC24D 55%,#E8901F); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; filter:drop-shadow(0 4px 16px rgba(232,180,74,.4));}
+  .ch-per{font-family:'Chakra Petch',sans-serif; font-weight:700; font-size:19px; line-height:1.05; color:var(--txt);}
+  .ch-per span{display:block; font-family:'Inter',sans-serif; font-weight:500; font-size:12px; color:var(--txt2); margin-top:3px;}
+  .ch-lead{position:relative; z-index:1; font-size:12.5px; line-height:1.55; color:var(--txt2); margin:8px 0 16px; max-width:92%;}
+  .ch-earn{position:relative; z-index:1; display:grid; grid-template-columns:repeat(3,1fr); gap:8px;}
+  .ce{position:relative; text-align:center; padding:12px 6px 11px; border-radius:13px; background:rgba(255,255,255,.04); border:1px solid var(--line);}
+  .ce-v{font-size:10.5px; font-weight:700; letter-spacing:.04em; color:var(--txt3); text-transform:uppercase;}
+  .ce-d{font-family:'Rajdhani',sans-serif; font-weight:700; font-size:18px; color:var(--gold-hi); margin-top:4px; font-variant-numeric:tabular-nums;}
+  .ce.hot{background:linear-gradient(180deg,rgba(232,180,74,.14),rgba(232,180,74,.04)); border-color:rgba(232,180,74,.5);}
+  .ce-tag{position:absolute; top:-8px; left:50%; transform:translateX(-50%); font-size:8px; font-weight:800; letter-spacing:.1em; color:#3a2400; background:linear-gradient(180deg,#FFE08A,#F5B445); padding:2px 8px; border-radius:20px;}
+  .ch-steps3{display:flex; gap:8px; margin:14px 0 4px;}
+  .s3{flex:1; display:flex; align-items:center; gap:8px; padding:11px 10px; border-radius:12px; background:var(--surf); border:1px solid var(--hair); font-size:11.5px; font-weight:600; color:var(--txt); line-height:1.2;}
+  .s3 b{display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; flex:none; border-radius:50%; background:var(--blue); color:#052440; font-size:11px;}
+  .ch-submit{margin-top:16px;}
+  .ch-sublbl{font-family:'Chakra Petch',sans-serif; font-weight:700; font-size:14px; color:var(--txt); margin-bottom:10px;}
+  .ch-submit input{width:100%; background:var(--surf3); border:1px solid var(--line); border-radius:12px; color:var(--txt); padding:13px; font-size:14px;}
+  .ch-submit input:focus{outline:none; border-color:var(--gold);}
+  .ch-hint{font-size:11.5px; color:var(--txt3); margin:9px 2px 12px; line-height:1.5;}
+  .ch-go{width:100%; padding:15px; border:none; border-radius:13px; font-family:'Chakra Petch',sans-serif; font-weight:800; font-size:15px; letter-spacing:.02em; color:#3a2400; cursor:pointer;
+    background:linear-gradient(180deg,#FFE7A0,#F5B33C 52%,#E68A16); box-shadow:0 12px 30px -10px rgba(232,180,74,.65), inset 0 1px 0 rgba(255,255,255,.4);}
+  .ch-go:active{transform:translateY(1px);}
+  .ch-msg{font-size:12.5px; margin-top:9px;}
 </style>
 </head>
 <body>
@@ -1661,9 +1694,9 @@ async function submitClip(url){
 }
 function renderClipping(host){
   const cfg=(CLIP&&CLIP.cfg)||null;
-  host.appendChild($(`<div class="sh"><div class="t">CLIP &amp; EARN</div></div>`));
   // Not launched yet (or still loading) -> teaser.
   if(!cfg || cfg.enabled===false){
+    host.appendChild($(`<div class="sh"><div class="t">CLIP &amp; EARN</div></div>`));
     host.appendChild($(`<div class="cliphero">
       <div class="ch-eyebrow"><span></span>NEW · COMING SOON</div>
       <h3 class="ch-title">Clip Santoryu, earn Diamonds per view</h3>
@@ -1674,23 +1707,37 @@ function renderClipping(host){
     if(CLIP===null) loadClip();
     return;
   }
-  // Live
-  host.appendChild($(`<div class="cliphero">
-    <div class="ch-eyebrow"><span></span>EARN PER VIEW</div>
-    <h3 class="ch-title">${cfg.ratePerK} Diamonds per 1,000 views</h3>
-    <p class="ch-sub">Post an original TikTok about Santoryu, submit the link within 1 hour, and earn Diamonds as the views climb. Starts earning at ${(+cfg.minViews).toLocaleString()} views. Diamonds land in your balance — cash out from Withdraw.</p>
+  // Live — exciting creator-campaign hero
+  const rate=+cfg.ratePerK, min=+cfg.minViews;
+  const ex=v=>(Math.floor(v/1000)*rate).toLocaleString();
+  const D='<span class="dia gold" style="width:15px;height:15px;vertical-align:-.18em"></span>';
+  host.appendChild($(`<div class="cliphero live">
+    <div class="ch-glow"></div>
+    <div class="ch-badge"><span class="ch-live"></span>CLIP &amp; EARN &middot; LIVE</div>
+    <div class="ch-big"><div class="ch-num">${rate}</div><div class="ch-per">Diamonds<span>per 1,000 views</span></div></div>
+    <p class="ch-lead">Post a TikTok about Santoryu and earn Diamonds as the views climb — cash out to GCash, Roblox, or MLBB.</p>
+    <div class="ch-earn">
+      <div class="ce"><div class="ce-v">10K views</div><div class="ce-d">${D} ${ex(10000)}</div></div>
+      <div class="ce"><div class="ce-v">50K views</div><div class="ce-d">${D} ${ex(50000)}</div></div>
+      <div class="ce hot"><div class="ce-tag">VIRAL</div><div class="ce-v">100K views</div><div class="ce-d">${D} ${ex(100000)}</div></div>
+    </div>
   </div>`));
-  const box=$(`<div class="card" style="margin-top:12px;padding:16px">
-    <div style="font-weight:700;margin-bottom:8px">Submit a clip</div>
-    <input id="clipUrl" placeholder="Paste your TikTok link" autocomplete="off" style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--surf2);color:var(--txt);font-size:14px">
-    <div style="font-size:12px;color:var(--txt2);margin:8px 2px">Submit within 1 hour of posting so all views count.</div>
-    <button id="clipGo" style="width:100%;padding:13px;border:none;border-radius:11px;font-family:'Rajdhani';font-weight:700;font-size:15px;letter-spacing:.03em;color:#151203;background:linear-gradient(180deg,var(--gold-hi),var(--gold));cursor:pointer">Submit clip</button>
-    <div id="clipMsg" style="font-size:12.5px;margin-top:8px"></div></div>`);
+  host.appendChild($(`<div class="ch-steps3">
+    <div class="s3"><b>1</b><span>Clip Santoryu</span></div>
+    <div class="s3"><b>2</b><span>Post on TikTok</span></div>
+    <div class="s3"><b>3</b><span>Submit in 1 hour</span></div>
+  </div>`));
+  const box=$(`<div class="card ch-submit">
+    <div class="ch-sublbl">Drop your TikTok link</div>
+    <input id="clipUrl" placeholder="https://www.tiktok.com/@you/video/..." autocomplete="off">
+    <div class="ch-hint">Submit within 1 hour of posting so all its views count. Starts earning at ${min.toLocaleString()} views.</div>
+    <button id="clipGo" class="ch-go">Submit clip &amp; start earning</button>
+    <div id="clipMsg" class="ch-msg"></div></div>`);
   box.querySelector('#clipGo').onclick=()=>submitClip((box.querySelector('#clipUrl').value||'').trim());
   host.appendChild(box);
   const clips=(CLIP&&CLIP.clips)||[];
   host.appendChild($(`<div class="sh"><div class="t">MY CLIPS</div></div>`));
-  if(!clips.length){ host.appendChild($(`<div class="empty">No clips yet. Submit your first one above.</div>`)); }
+  if(!clips.length){ host.appendChild($(`<div class="empty">No clips yet — drop your first one above and watch the Diamonds roll in.</div>`)); }
   else{
     const c=$(`<div class="card"></div>`);
     const pill=s=>`<span class="ivchip ${s==='approved'?'accepted':s==='rejected'?'rejected':'pending'}">${s}</span>`;
