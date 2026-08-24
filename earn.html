@@ -1178,7 +1178,7 @@ window.__earnResult=(id,obj)=>{ const r=pending[id]; if(r){delete pending[id]; r
 function applyFnBase(s){ if(!s||!s.fnBase) return; const b=s.fnBase.replace(/\/+$/,'');
   MYW_URL=b+'/earnMyWithdrawals'; TCLAIM_URL=b+'/tournamentClaim'; TLIST_URL=b+'/tournamentList';
   TCONS_URL=b+'/tournamentConsolation'; EPAY_URL=b+'/earnPayouts'; TVID_URL=b+'/tournamentVideos';
-  MLBB_CHECK_URL=b+'/mlbbCheck'; PAYOUTS_URL=b+'/earnPayouts'; }
+  MLBB_CHECK_URL=b+'/mlbbCheck'; PAYOUTS_URL=b+'/earnPayouts'; CLIP_BASE=b; }
 window.__earnState=(s)=>{ STATE=s; applyFnBase(s); render();
   if(MAINT_EARN && !earnBypass(s)) return;   // maintenance: walang popups sa regular users
   if(typeof maybeWinner==='function') maybeWinner(); if(typeof loadTournBanner==='function') loadTournBanner(); if(typeof maybeConsolation==='function') maybeConsolation(); if(typeof maybeCongrats==='function') maybeCongrats(s); if(typeof maybePromoRefund==='function') maybePromoRefund(s); };
@@ -1464,15 +1464,63 @@ function renderTab(host){ host.innerHTML='';
   requestAnimationFrame(()=>document.querySelectorAll('.fill[data-w]').forEach(f=>f.style.width=f.dataset.w+'%'));
 }
 // Placeholders — filled by later tasks (Invite=Task3, Tasks=Task4, Clipping=Task6).
+async function loadClip(){
+  try{ CLIP=await fetch(CLIP_BASE+'/clipMe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid:STATE&&STATE.uid})}).then(r=>r.json()); }
+  catch(e){ CLIP={ok:false}; }
+  const tb=document.getElementById('tabbody'); if(tb && TAB==='clipping') renderTab(tb);
+}
+async function submitClip(url){
+  const msg=document.getElementById('clipMsg'); if(!msg) return;
+  if(!url){ msg.textContent='Paste your TikTok link.'; msg.style.color='var(--danger)'; return; }
+  msg.textContent='Submitting…'; msg.style.color='var(--txt2)';
+  let r; try{ r=await fetch(CLIP_BASE+'/clipSubmit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid:STATE&&STATE.uid,url})}).then(x=>x.json()); }catch(e){ r={ok:false,error:'network'}; }
+  if(r&&r.ok){ CLIP=null; loadClip(); toast('Clip submitted — we will review it soon.'); }
+  else{ const e=r&&r.error; msg.style.color='var(--danger)';
+    msg.textContent = e==='too_old'?'Submit within 1 hour of posting. This clip is older.':
+      e==='dupe'?'This clip was already submitted.': e==='banned'?'Earning is disabled on this account.':
+      e==='bad_url'?'Enter a valid TikTok link.': e==='disabled'?'Clipping is not live yet.':
+      e==='fetch_failed'?'Could not read that clip — check the link.':'Could not submit — try again.'; }
+}
 function renderClipping(host){
+  const cfg=(CLIP&&CLIP.cfg)||null;
   host.appendChild($(`<div class="sh"><div class="t">CLIP &amp; EARN</div></div>`));
+  // Not launched yet (or still loading) -> teaser.
+  if(!cfg || cfg.enabled===false){
+    host.appendChild($(`<div class="cliphero">
+      <div class="ch-eyebrow"><span></span>NEW · COMING SOON</div>
+      <h3 class="ch-title">Clip Santoryu, earn Diamonds per view</h3>
+      <p class="ch-sub">Post clips about the app on TikTok and earn Diamonds straight into your balance as the views climb. Launching soon — get your account ready.</p>
+      <div class="ch-steps"><span class="ch-step"><b>1</b>Make a clip</span><span class="ch-step"><b>2</b>Post on TikTok</span><span class="ch-step"><b>3</b>Earn per view</span></div>
+      <button class="ch-cta" disabled>Coming soon</button>
+    </div>`));
+    if(CLIP===null) loadClip();
+    return;
+  }
+  // Live
   host.appendChild($(`<div class="cliphero">
-    <div class="ch-eyebrow"><span></span>NEW · COMING SOON</div>
-    <h3 class="ch-title">Clip Santoryu, earn Diamonds per view</h3>
-    <p class="ch-sub">Post clips about the app on TikTok and earn Diamonds straight into your balance as the views climb. Launching soon — get your account ready.</p>
-    <div class="ch-steps"><span class="ch-step"><b>1</b>Make a clip</span><span class="ch-step"><b>2</b>Post on TikTok</span><span class="ch-step"><b>3</b>Earn per view</span></div>
-    <button class="ch-cta" disabled>Coming soon</button>
+    <div class="ch-eyebrow"><span></span>EARN PER VIEW</div>
+    <h3 class="ch-title">${cfg.ratePerK} Diamonds per 1,000 views</h3>
+    <p class="ch-sub">Post an original TikTok about Santoryu, submit the link within 1 hour, and earn Diamonds as the views climb. Starts earning at ${(+cfg.minViews).toLocaleString()} views. Diamonds land in your balance — cash out from Withdraw.</p>
   </div>`));
+  const box=$(`<div class="card" style="margin-top:12px;padding:16px">
+    <div style="font-weight:700;margin-bottom:8px">Submit a clip</div>
+    <input id="clipUrl" placeholder="Paste your TikTok link" autocomplete="off" style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--surf2);color:var(--txt);font-size:14px">
+    <div style="font-size:12px;color:var(--txt2);margin:8px 2px">Submit within 1 hour of posting so all views count.</div>
+    <button id="clipGo" style="width:100%;padding:13px;border:none;border-radius:11px;font-family:'Rajdhani';font-weight:700;font-size:15px;letter-spacing:.03em;color:#151203;background:linear-gradient(180deg,var(--gold-hi),var(--gold));cursor:pointer">Submit clip</button>
+    <div id="clipMsg" style="font-size:12.5px;margin-top:8px"></div></div>`);
+  box.querySelector('#clipGo').onclick=()=>submitClip((box.querySelector('#clipUrl').value||'').trim());
+  host.appendChild(box);
+  const clips=(CLIP&&CLIP.clips)||[];
+  host.appendChild($(`<div class="sh"><div class="t">MY CLIPS</div></div>`));
+  if(!clips.length){ host.appendChild($(`<div class="empty">No clips yet. Submit your first one above.</div>`)); }
+  else{
+    const c=$(`<div class="card"></div>`);
+    const pill=s=>`<span class="ivchip ${s==='approved'?'accepted':s==='rejected'?'rejected':'pending'}">${s}</span>`;
+    clips.forEach(x=>{ c.appendChild($(`<div class="litem">
+      <div class="gleft"><div class="nm">${(+x.views).toLocaleString()} views</div>
+        <div class="sm">${x.paid?('Earned '+x.paid+' diamonds'):'Awaiting review'}</div></div>${pill(x.status)}</div>`)); });
+    host.appendChild(c);
+  }
 }
 function renderInvite(host){
   const s=STATE;
@@ -1810,6 +1858,10 @@ function openPage(title, build){
   document.body.appendChild(pg); registerPage(pg);
 }
 let MYW_URL='https://asia-southeast1-diamond-bang-92125.cloudfunctions.net/earnMyWithdrawals';
+// Clipping functions live on arrows-puzzle-earn; default here so the tab works even
+// before the native fnBase push (applyFnBase overrides CLIP_BASE with the app's base).
+let CLIP_BASE='https://asia-southeast1-arrows-puzzle-earn.cloudfunctions.net';
+let CLIP=null;
 function openHistory(){
   openPage('Withdrawal History', b=>{
     const h=(STATE.history)||[];
