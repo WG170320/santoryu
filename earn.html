@@ -1252,6 +1252,9 @@ function isReview(t){ return t.id.includes('rate')||/review|star/i.test(t.title)
 function isCommentTask(t){ return !!(t && (/^yt[_-]?comment/i.test(t.id||'') || (/youtu\.?be|youtube\.com/i.test(t.link||'') && /comment/i.test((t.id||'')+' '+(t.title||''))))); }
 // Social dwell task (hal. i-heart ang FB post) — kailangang manatili ~10s bago mag-claim.
 function isSocial(t){ return /facebook\.com|fb\.watch|fb\.me/i.test(t.link||'')||/facebook|fb\b/i.test(t.title||''); }
+// Download tasks = install / usage-verified offers (GearUp, boost, download-to-unlock).
+// Everything else (social follow/comment, review, comment-on-video, daily/promo) is "Other".
+function isDownloadTask(t){ return isUsage(t) || /install|download|gearup|warlito|boost/i.test((t.title||'')+' '+(t.desc||'')); }
 function dwellSecs(t){ return Number(t.dwell)>0?Number(t.dwell):10; }
 
 // withdrawal — Codashop style: lahat ng amount NAKALABAS na cards, tap para piliin (highlight),
@@ -1450,7 +1453,31 @@ function renderInvite(host){
   host.appendChild($(`<div class="sh"><div class="t">FRIENDS YOU INVITED</div></div>`));
   inviteLedger(host);
 }
-function renderTasks(host){ host.appendChild($('<div class="card" style="padding:20px;color:var(--txt2)">Tasks move here in Task 4.</div>')); }
+function renderTasks(host){
+  const s=STATE;
+  giveawayHero(host,s);
+  const all=(s.tasks||[]).filter(t=>!t.claimed && (!isUsage(t) || usageSupported()));
+  const hero=all.find(t=>t&&t.hero===true && isUsage(t));
+  if(hero) gearMissionHero(host, hero);
+  const rest=all.filter(t=>t!==hero);
+  const dl=rest.filter(isDownloadTask), other=rest.filter(t=>!isDownloadTask(t));
+  const group=(title,list)=>{
+    if(!list.length) return;
+    host.appendChild($(`<div class="sh"><div class="t">${title}</div></div>`));
+    const tc=$(`<div class="card"></div>`);
+    list.forEach(t=>{
+      const right=`<button class="tclaim"><span class="dia gold" style="width:14px;height:14px"></span>+${t.reward}</button>`;
+      const row=$(`<div class="taskrow"><div class="ti">${taskIcon(t)}</div>
+        <div class="gleft"><div class="n">${esc(t.title)}</div><div class="d">${esc(t.desc)}</div></div>${right}</div>`);
+      row.querySelector('.tclaim').onclick=()=> isCommentTask(t)?openCommentPage(t): isUsage(t)?(usageSupported()?openUsage(t):toast('Update the app to do this task','bad')): isReview(t)?openReview(t): isSocial(t)?openDwell(t): doTask(t);
+      tc.appendChild(row);
+    });
+    host.appendChild(tc);
+  };
+  group('DOWNLOAD TASKS', dl);
+  group('OTHER TASKS', other);
+  if(!dl.length && !other.length && !hero) host.appendChild($(`<div class="card" style="text-align:center;color:var(--txt2);padding:24px">No tasks right now. Check back soon.</div>`));
+}
 
 function render(){ renderShell(); }
 function renderShell(){
@@ -1608,7 +1635,7 @@ function renderHome(host){
   }
 
   // (Daily check-in ay naka-DIALOG na — buksan via check-in icon sa header.)
-  appendTasks(app,s);
+  // (TASKS moved to the Tasks tab — renderTasks, split into Download / Other.)
 
   // (Referral Mission tinanggal — ang invite hero na sa itaas ang referral highlight.)
 
@@ -1653,27 +1680,7 @@ function giveawayHero(app,s){
   el.querySelector('.gvw-cta').onclick=()=>{ if(link&&link!=='#'){ if(window.Android&&window.Android.openLink) window.Android.openLink(link); else window.open(link,'_blank'); } };
   app.appendChild(el);
 }
-function appendTasks(app,s){
-  giveawayHero(app,s);
-  // (tongitsHero ay nasa render() na — prominent, di nakabaon sa tasks.)
-  // One-time show: pag na-claim na, tuluyang mawawala sa listahan (walang "Done" row).
-  const all=(s.tasks||[]).filter(t=>!t.claimed && (!isUsage(t) || usageSupported()));
-  // High-value hero mission renders as its OWN gold banner (separate from the task rows).
-  const hero=all.find(t=>t&&t.hero===true && isUsage(t));
-  if(hero) gearMissionHero(app, hero);
-  const list=all.filter(t=>t!==hero);
-  if(!list.length) return;
-  app.appendChild($(`<div class="sh"><div class="t">TASKS</div><div class="x">earn more points</div></div>`));
-  const tc=$(`<div class="card"></div>`);
-  list.forEach(t=>{
-    const right=`<button class="tclaim"><span class="dia gold" style="width:14px;height:14px"></span>+${t.reward}</button>`;
-    const row=$(`<div class="taskrow"><div class="ti">${taskIcon(t)}</div>
-      <div class="gleft"><div class="n">${esc(t.title)}</div><div class="d">${esc(t.desc)}</div></div>${right}</div>`);
-    row.querySelector('.tclaim').onclick=()=> isCommentTask(t)?openCommentPage(t): isUsage(t)?(usageSupported()?openUsage(t):toast('Update the app to do this task','bad')): isReview(t)?openReview(t): isSocial(t)?openDwell(t): doTask(t);
-    tc.appendChild(row);
-  });
-  app.appendChild(tc);
-}
+// (appendTasks removed — its logic now lives in renderTasks with Download/Other groups.)
 
 //=== legal (Terms / Data Policy / Delete account) ================================
 const TERMS_TEXT=(perInvite)=>`Welcome to the Santoryu Diamond rewards program.
