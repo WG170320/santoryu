@@ -1212,6 +1212,13 @@
   /* TASK / nav rows — calm */
   .taskrow{border-radius:var(--rad-sm);}
   .tclaim{box-shadow:none;}
+  /* compact activity row (withdrawal history) — smaller, not a big empty card */
+  .navrow.acthist{background:var(--surf); border:1px solid var(--hair); border-radius:var(--rad-sm); padding:11px 13px; gap:11px;}
+  .navrow.acthist .di{border-radius:9px; display:flex; align-items:center; justify-content:center;}
+  .navrow.acthist .di svg{width:16px; height:16px;}
+  .navrow.acthist .gl .n{font-size:14px;}
+  .navrow.acthist .gl .s{font-size:11px; color:var(--txt3);}
+  .navrow.acthist .ch{font-size:18px;}
 
   /* WITHDRAW page — full-page 3-method cash-out (no dialog). Sits ABOVE the sticky tab bar. */
   .page{z-index:60 !important;}
@@ -1289,6 +1296,20 @@
     background:linear-gradient(180deg,#FFE7A0,#F5B33C 52%,#E68A16); box-shadow:0 12px 30px -10px rgba(232,180,74,.65), inset 0 1px 0 rgba(255,255,255,.4);}
   .ch-go:active{transform:translateY(1px);}
   .ch-msg{font-size:12.5px; margin-top:9px;}
+
+  /* TOP CLIPPERS leaderboard */
+  .lb{padding:6px 12px;}
+  .lb-row{display:flex; align-items:center; gap:12px; padding:11px 2px;}
+  .lb-row+.lb-row{border-top:1px solid var(--hair);}
+  .lb-rank{flex:none; width:28px; height:28px; border-radius:9px; display:flex; align-items:center; justify-content:center;
+    font-family:'Chakra Petch',sans-serif; font-weight:800; font-size:14px; color:var(--txt2); background:var(--surf3); border:1px solid var(--line);}
+  .lb-rank.g1{background:linear-gradient(180deg,#FFE08A,#E8B44A); color:#3a2400; border:none;}
+  .lb-rank.g2{background:linear-gradient(180deg,#e6ebf2,#aab4c2); color:#1a2230; border:none;}
+  .lb-rank.g3{background:linear-gradient(180deg,#e6a86a,#b9793e); color:#241206; border:none;}
+  .lb-mid{flex:1; min-width:0;}
+  .lb-name{font-family:'Rajdhani',sans-serif; font-weight:700; font-size:15px; color:var(--txt); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .lb-views{font-size:11px; color:var(--txt3);}
+  .lb-earn{flex:none; font-family:'Rajdhani',sans-serif; font-weight:700; font-size:16px; color:var(--gold-hi); font-variant-numeric:tabular-nums;}
 </style>
 </head>
 <body>
@@ -1483,16 +1504,17 @@ function withdrawPanel(s){
 // Compact withdraw banner sa dashboard — balance + progress + CTA → binubuksan ang Withdraw page.
 function withdrawBanner(app,s){
   const a=s.account;
-  const g=ensureSel(s)||goalTier(s), reached=a.balance>=g.cost, frac=Math.min(100,Math.round(a.balance/Math.max(1,g.cost)*100));
+  const MINW=150; // minimum cash-out = 5 MLBB diamonds (5 x 30 gold)
+  const reached=a.balance>=MINW, frac=Math.min(100,Math.round(a.balance/MINW*100));
   const b=$(`<div class="wbanner">
     <div class="wb-top">
       <div><div class="wb-eyebrow">YOUR BALANCE</div>
         <div class="wb-bal"><span class="dia gold" style="width:24px;height:24px"></span>${a.balance.toLocaleString()}</div></div>
-      <div class="wb-goal"><div class="wb-glabel">${g.firstOnly?'FIRST REWARD':'NEXT GOAL'}</div>
-        <div class="wb-gval">${g.mlbb}<span>MLBB</span></div></div>
+      <div class="wb-goal"><div class="wb-glabel">MIN CASH OUT</div>
+        <div class="wb-gval">5<span>MLBB</span></div></div>
     </div>
     <div class="wb-track"><div class="fill" data-w="${frac}"></div></div>
-    <div class="wb-foot"><span class="wb-prog">${a.balance.toLocaleString()} / ${g.cost.toLocaleString()} pts</span>
+    <div class="wb-foot"><span class="wb-prog">${a.balance.toLocaleString()} / ${MINW} diamonds</span>
       <span class="wb-cta ${reached&&!a.earnBanned?'ready':''}">${a.earnBanned?'DISABLED':reached?'WITHDRAW NOW':'WITHDRAW'} &rsaquo;</span></div>
   </div>`);
   b.onclick=()=>{ if(a.earnBanned){ toast('Earning is disabled on this device','bad'); return; } openWithdrawPage(); };
@@ -1502,42 +1524,38 @@ function withdrawBanner(app,s){
 // (hindi render() na nagre-rebuild ng dashboard sa likod) para di masira ang page.
 function openWithdrawPage(){ openPage('Withdraw', body=>paintWithdraw(body)); }
 // Payout in the target unit for a tier under the current method. 30 diamonds = P1 / 1 Robux.
-function wdPayout(method, tier){
-  if(method==='gcash') return '₱'+Math.floor(tier.cost/30).toLocaleString();
-  if(method==='roblox') return Math.floor(tier.cost/30).toLocaleString()+' Robux';
-  return tier.mlbb.toLocaleString()+' MLBB';
-}
-// Full Withdraw PAGE (no dialog): balance + 3 method cards + amount + destination + one CTA.
+// Per-method amount options. Pricing: 30 gold diamonds = 1 unit (P1 / 1 Robux / 1 MLBB diamond).
+const WD_OPTS={ mlbb:[5,11,22,56,112], roblox:[50,100,200,400,800], gcash:[500,750,1000] };
+function wdAmtLabel(method,u){ return method==='gcash' ? ('₱'+(+u).toLocaleString()) : ((+u).toLocaleString()+(method==='roblox'?' Robux':' MLBB')); }
+function wdSelUnits(){ const o=WD_OPTS[WMETHOD]||WD_OPTS.mlbb; if(!o.includes(WSEL)) WSEL=o[0]; return WSEL; }
+// Full Withdraw PAGE (no dialog): balance + 3 method cards + per-method amount + destination + one CTA.
 function paintWithdraw(body){
-  const s=STATE,a=s.account; body.textContent='';
-  const avail=activeTiers(s);
+  const s=STATE,a=s.account; body.textContent=''; const RATE=30;
   body.appendChild($(`<div class="wd-hero">
     <div class="wd-heye">CASH OUT BALANCE</div>
     <div class="wd-hbal"><span class="dia gold" style="width:22px;height:22px"></span>${a.balance.toLocaleString()}</div>
-    <div class="wd-hsub">MLBB Diamonds &middot; GCash &middot; Roblox &nbsp;|&nbsp; 30 diamonds = &#8369;1 / 1 Robux</div>
+    <div class="wd-hsub">MLBB Diamonds &middot; GCash &middot; Roblox &nbsp;|&nbsp; 30 diamonds = &#8369;1 / 1 Robux / 1 MLBB diamond</div>
   </div>`));
-  if(!avail.length){ body.appendChild($(`<div class="empty">No withdrawal options right now.</div>`)); return; }
-  ensureSel(s);
   // STEP 1 — method
   body.appendChild($(`<div class="wd-step"><span class="wd-stepn">1</span>Choose method</div>`));
-  const M=[['mlbb','MLBB Diamonds','To your Mobile Legends account'],['gcash','GCash','Cash to your GCash'],['roblox','Roblox','Robux to your account']];
+  const M=[['mlbb','MLBB Diamonds','Min 5 &middot; to your Game ID'],['gcash','GCash','Min &#8369;500 &middot; to your number'],['roblox','Roblox','Min 50 Robux &middot; to your username']];
   const methods=$(`<div class="wd-mlist"></div>`);
   M.forEach(([id,name,rate])=>{ const el=$(`<button type="button" class="wd-m ${id===WMETHOD?'sel':''}"><div class="wm-name">${name}</div><div class="wm-rate">${rate}</div></button>`);
-    el.onclick=()=>{ if(WMETHOD!==id){ WMETHOD=id; WD_F={gid:'',srv:'',nm:''}; paintWithdraw(body); } };
+    el.onclick=()=>{ if(WMETHOD!==id){ WMETHOD=id; WSEL=WD_OPTS[id][0]; WD_F={gid:'',srv:'',nm:''}; paintWithdraw(body); } };
     methods.appendChild(el); });
   body.appendChild(methods);
-  // STEP 2 — amount
+  // STEP 2 — amount (per method)
+  const units=wdSelUnits();
   body.appendChild($(`<div class="wd-step"><span class="wd-stepn">2</span>Choose amount</div>`));
   const tiers=$(`<div class="wd-tiers"></div>`);
-  avail.forEach(t=>{ const ok=a.balance>=t.cost;
-    const el=$(`<button type="button" class="wd-tier ${t.cost===WSEL?'sel':''} ${ok?'':'poor'}">
-      <div class="wt-pay">${wdPayout(WMETHOD,t)}</div>
-      <div class="wt-cost"><span class="dia gold" style="width:11px;height:11px"></span>${t.cost.toLocaleString()}</div></button>`);
-    el.onclick=()=>{ WSEL=t.cost; paintWithdraw(body); };
+  (WD_OPTS[WMETHOD]||[]).forEach(u=>{ const cost=u*RATE, ok=a.balance>=cost;
+    const el=$(`<button type="button" class="wd-tier ${u===WSEL?'sel':''} ${ok?'':'poor'}">
+      <div class="wt-pay">${wdAmtLabel(WMETHOD,u)}</div>
+      <div class="wt-cost"><span class="dia gold" style="width:11px;height:11px"></span>${cost.toLocaleString()}</div></button>`);
+    el.onclick=()=>{ WSEL=u; paintWithdraw(body); };
     tiers.appendChild(el);
   });
   body.appendChild(tiers);
-  const sel=ensureSel(s);
   // STEP 3 — destination
   body.appendChild($(`<div class="wd-step"><span class="wd-stepn">3</span>Where to send it</div>`));
   const dest=$(`<div class="wd-dest"></div>`);
@@ -1557,11 +1575,12 @@ function paintWithdraw(body){
   if(WMETHOD==='mlbb') wireMlbb(dest.querySelector('#gid'),dest.querySelector('#srv'),dest.querySelector('#mlchk'));
   const err=$(`<div class="err" id="we" style="margin:12px 2px 0"></div>`); body.appendChild(err);
   // CTA
-  const can=a.balance>=sel.cost && !a.earnBanned;
-  const cta=$(`<button class="wd-cta ${can?'':'off'}">${a.earnBanned?'Earning disabled':can?('Withdraw '+wdPayout(WMETHOD,sel)):('Collect '+(sel.cost-a.balance).toLocaleString()+' more diamonds')}</button>`);
+  const cost=units*RATE;
+  const can=a.balance>=cost && !a.earnBanned;
+  const cta=$(`<button class="wd-cta ${can?'':'off'}">${a.earnBanned?'Earning disabled':can?('Withdraw '+wdAmtLabel(WMETHOD,units)):('Collect '+(cost-a.balance).toLocaleString()+' more diamonds')}</button>`);
   cta.onclick=async()=>{
     if(a.earnBanned){ err.textContent='Earning is disabled on this account.'; return; }
-    if(a.balance<sel.cost){ toast('Collect '+(sel.cost-a.balance).toLocaleString()+' more','bad'); return; }
+    if(a.balance<cost){ toast('Collect '+(cost-a.balance).toLocaleString()+' more','bad'); return; }
     const gid=(WD_F.gid||'').trim(); let srv='';
     if(WMETHOD==='mlbb'){ srv=(WD_F.srv||'').trim();
       if(!gid){err.textContent='Enter your Game ID'; return;} if(!srv){err.textContent='Enter your Server ID'; return;} }
@@ -1569,9 +1588,9 @@ function paintWithdraw(body){
       if(!gid){err.textContent='Enter your GCash number'; return;} if(!nm){err.textContent='Enter the account name'; return;} srv='gcash:'+nm; }
     else { if(!gid){err.textContent='Enter your Roblox username'; return;} srv='roblox'; }
     cta.textContent='Submitting…'; cta.disabled=true; err.textContent='';
-    const r=await call('withdraw',sel.mlbb,sel.cost,gid,srv);
+    const r=await call('withdraw',units,cost,gid,srv);
     if(r&&r.ok){ WD_F={gid:'',srv:'',nm:''}; toast('Withdrawal submitted!','good'); requestState(); paintWithdraw(body); }
-    else{ err.textContent=wdErr(r&&r.error); cta.disabled=false; cta.textContent='Withdraw '+wdPayout(WMETHOD,sel); }
+    else{ err.textContent=wdErr(r&&r.error); cta.disabled=false; cta.textContent='Withdraw '+wdAmtLabel(WMETHOD,units); }
   };
   body.appendChild(cta);
 }
@@ -1680,6 +1699,11 @@ async function loadClip(){
   catch(e){ CLIP={ok:false}; }
   const tb=document.getElementById('tabbody'); if(tb && TAB==='clipping') renderTab(tb);
 }
+async function loadLeaderboard(){
+  try{ CLIP_BOARD=await fetch(CLIP_BASE+'/clipLeaderboard',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'}).then(r=>r.json()); }
+  catch(e){ CLIP_BOARD={ok:false}; }
+  const tb=document.getElementById('tabbody'); if(tb && TAB==='clipping') renderTab(tb);
+}
 async function submitClip(url){
   const msg=document.getElementById('clipMsg'); if(!msg) return;
   if(!url){ msg.textContent='Paste your TikTok link.'; msg.style.color='var(--danger)'; return; }
@@ -1740,11 +1764,24 @@ function renderClipping(host){
   if(!clips.length){ host.appendChild($(`<div class="empty">No clips yet — drop your first one above and watch the Diamonds roll in.</div>`)); }
   else{
     const c=$(`<div class="card"></div>`);
-    const pill=s=>`<span class="ivchip ${s==='approved'?'accepted':s==='rejected'?'rejected':'pending'}">${s}</span>`;
-    clips.forEach(x=>{ c.appendChild($(`<div class="litem">
-      <div class="gleft"><div class="nm">${(+x.views).toLocaleString()} views</div>
-        <div class="sm">${x.paid?('Earned '+x.paid+' diamonds'):'Awaiting review'}</div></div>${pill(x.status)}</div>`)); });
+    const pill=s=>`<span class="ivchip ${s==='approved'?'accepted':s==='rejected'?'rejected':'pending'}">${s==='approved'?'approved':s==='rejected'?'rejected':s==='closed'?'closed':'pending'}</span>`;
+    clips.forEach(x=>{ const sub=x.paid?('Earned '+(+x.paid).toLocaleString()+' diamonds'):(x.status==='rejected'?'Not approved':'Under review — pending');
+      c.appendChild($(`<div class="litem"><div class="gleft"><div class="nm">${(+x.views).toLocaleString()} views</div><div class="sm">${sub}</div></div>${pill(x.status)}</div>`)); });
     host.appendChild(c);
+  }
+  // TOP CLIPPERS leaderboard
+  host.appendChild($(`<div class="sh"><div class="t">TOP CLIPPERS</div><div class="x">highest earning</div></div>`));
+  const lb=(CLIP_BOARD&&CLIP_BOARD.rows)||[];
+  if(CLIP_BOARD===null){ host.appendChild($(`<div class="empty">Loading leaderboard…</div>`)); loadLeaderboard(); }
+  else if(!lb.length){ host.appendChild($(`<div class="empty">No clippers on the board yet — be the first to earn and top the leaderboard!</div>`)); }
+  else{
+    const board=$(`<div class="card lb"></div>`);
+    lb.forEach(r=>{ const rk=r.rank, cls=rk===1?'g1':rk===2?'g2':rk===3?'g3':'';
+      board.appendChild($(`<div class="lb-row">
+        <div class="lb-rank ${cls}">${rk}</div>
+        <div class="lb-mid"><div class="lb-name">${esc(r.name||'Clipper')}</div><div class="lb-views">${(+r.views).toLocaleString()} views</div></div>
+        <div class="lb-earn">${D} ${(+r.paid).toLocaleString()}</div></div>`)); });
+    host.appendChild(board);
   }
 }
 function renderInvite(host){
@@ -1964,11 +2001,9 @@ function renderHome(host){
 
   // history + invited → sariling pages (mas magaan ang main, mas mabilis)
   app.appendChild($(`<div class="sh"><div class="t">YOUR ACTIVITY</div></div>`));
-  const navc=$(`<div class="card"></div>`);
-  const r1=$(`<div class="navrow"><div class="di" style="width:38px;height:38px;background:rgba(95,160,255,.12)">${II('ic-history')}</div><div class="gl"><div class="n">Withdrawal history</div><div class="s">${(s.history||[]).length} total</div></div><div class="ch">›</div></div>`);
+  const r1=$(`<div class="navrow acthist"><div class="di" style="width:30px;height:30px;background:rgba(95,160,255,.12)">${II('ic-history')}</div><div class="gl"><div class="n">Withdrawal history</div><div class="s">${(s.history||[]).length} total</div></div><div class="ch">›</div></div>`);
   r1.onclick=openHistory;
-  navc.appendChild(r1);
-  app.appendChild(navc);
+  app.appendChild(r1);
 
   // legal footer (Terms / Privacy / Delete account)
   const ft=$(`<div class="legal">
@@ -2087,6 +2122,7 @@ let MYW_URL='https://asia-southeast1-diamond-bang-92125.cloudfunctions.net/earnM
 // before the native fnBase push (applyFnBase overrides CLIP_BASE with the app's base).
 let CLIP_BASE='https://asia-southeast1-arrows-puzzle-earn.cloudfunctions.net';
 let CLIP=null;
+let CLIP_BOARD=null;   // clip leaderboard payload (top clippers by paid)
 function openHistory(){
   openPage('Withdrawal History', b=>{
     const h=(STATE.history)||[];
@@ -2584,7 +2620,7 @@ function wireMlbb(idEl,srvEl,outEl){
 }
 // (openWithdraw modal removed — withdraw is now the full paintWithdraw page with the
 // 3-method selector inline.)
-function wdErr(e){return({insufficient:'Not enough points yet.',bad_tier:'This tier is unavailable.',no_gameid:'Enter your Game ID.',first_used:'You already used your one-time first withdrawal.',banned:'Earning is disabled on this account.',network:'Network error — try again.'})[e]||'Withdrawal failed. Try again.';}
+function wdErr(e){return({insufficient:'Not enough diamonds yet.',bad_tier:'This amount is unavailable.',bad_amount:'This amount is unavailable.',below_min:'Below the minimum for this method.',above_max:'Above the maximum for this method.',no_gameid:'Enter your destination.',first_used:'You already used your one-time first withdrawal.',banned:'Earning is disabled on this account.',network:'Network error — try again.'})[e]||'Withdrawal failed. Try again.';}
 function refErr(e){return({already:'You already used a code.',self:"That's your own code.",mutual:"You can't both refer each other.",invalid:'Invalid code.',
   clone:'This device already has an earning account. Only one account per device can earn.',
   emulator:'Earning is not available on emulators or virtual devices.',
