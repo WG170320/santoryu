@@ -1583,14 +1583,6 @@ function paintWithdraw(body){
     <div class="wd-hbal"><span class="dia gold" style="width:22px;height:22px"></span>${a.balance.toLocaleString()}</div>
     <div class="wd-hsub">MLBB Diamonds &middot; GCash &middot; Roblox &nbsp;|&nbsp; 30 diamonds = &#8369;1 / 1 Robux / 1 MLBB diamond</div>
   </div>`));
-  // Entry requirement — everyone must post 1 approved Santoryu clip before cashing out.
-  const clipReq=$(`<div class="wd-clipreq" style="display:flex;align-items:center;gap:9px;margin:12px 2px 0;padding:11px 13px;border-radius:12px;background:rgba(245,180,69,.08);border:1px solid rgba(245,180,69,.28);cursor:pointer">
-    <div style="flex:0 0 auto;width:26px;height:26px;border-radius:8px;background:rgba(245,180,69,.16);display:flex;align-items:center;justify-content:center;font-size:14px">&#127916;</div>
-    <div style="flex:1;min-width:0"><div style="font-family:'Rajdhani';font-weight:700;font-size:13.5px;color:var(--txt)">Upload 1 clip to withdraw</div><div style="font-size:11px;color:var(--txt2);line-height:1.35">Post one clipping video about Santoryu (admin-approved) to unlock cash-outs.</div></div>
-    <div style="font-size:16px;color:var(--cyan);font-weight:700">&rsaquo;</div>
-  </div>`);
-  clipReq.onclick=()=>{ try{history.back();}catch(e){} selectTab('clipping'); };
-  body.appendChild(clipReq);
   // STEP 1 — method
   body.appendChild($(`<div class="wd-step"><span class="wd-stepn">1</span>Choose method</div>`));
   const M=[['mlbb','MLBB Diamonds','Min 5 &middot; to your Game ID'],['gcash','GCash','Min &#8369;500 &middot; to your number'],['roblox','Roblox','Min 50 Robux &middot; to your username']];
@@ -1645,12 +1637,6 @@ function paintWithdraw(body){
     cta.textContent='Submitting…'; cta.disabled=true; err.textContent='';
     const r=await call('withdraw',units,cost,gid,srv);
     if(r&&r.ok){ WD_F={gid:'',srv:'',nm:''}; toast('Withdrawal submitted!','good'); requestState(); paintWithdraw(body); }
-    else if(r&&r.error==='need_clip'){
-      err.innerHTML=`<div style="font-weight:700;color:var(--txt);margin-bottom:2px">Upload 1 clip to withdraw</div><div style="color:var(--txt2);font-size:12px;line-height:1.4">Post one clipping video about Santoryu and get it approved to unlock cash-outs. It's your entry.</div>`;
-      const jb=$(`<button class="wd-cta" style="margin-top:10px">Post a clip now</button>`);
-      jb.onclick=()=>{ try{history.back();}catch(e){} selectTab('clipping'); };
-      err.appendChild(jb); cta.disabled=false; cta.textContent='Withdraw '+wdAmtLabel(WMETHOD,units);
-    }
     else{ err.textContent=wdErr(r&&r.error); cta.disabled=false; cta.textContent='Withdraw '+wdAmtLabel(WMETHOD,units); }
   };
   body.appendChild(cta);
@@ -2708,7 +2694,7 @@ function wireMlbb(idEl,srvEl,outEl){
 }
 // (openWithdraw modal removed — withdraw is now the full paintWithdraw page with the
 // 3-method selector inline.)
-function wdErr(e){return({insufficient:'Not enough diamonds yet.',bad_tier:'This amount is unavailable.',bad_amount:'This amount is unavailable.',below_min:'Below the minimum for this method.',above_max:'Above the maximum for this method.',no_gameid:'Enter your destination.',first_used:'You already used your one-time first withdrawal.',banned:'Earning is disabled on this account.',need_clip:'Upload 1 clipping video about Santoryu (approved by admin) to unlock withdrawals.',network:'Network error — try again.'})[e]||'Withdrawal failed. Try again.';}
+function wdErr(e){return({insufficient:'Not enough diamonds yet.',bad_tier:'This amount is unavailable.',bad_amount:'This amount is unavailable.',below_min:'Below the minimum for this method.',above_max:'Above the maximum for this method.',no_gameid:'Enter your destination.',first_used:'You already used your one-time first withdrawal.',banned:'Earning is disabled on this account.',network:'Network error — try again.'})[e]||'Withdrawal failed. Try again.';}
 function refErr(e){return({already:'You already used a code.',self:"That's your own code.",mutual:"You can't both refer each other.",invalid:'Invalid code.',
   clone:'This device already has an earning account. Only one account per device can earn.',
   emulator:'Earning is not available on emulators or virtual devices.',
