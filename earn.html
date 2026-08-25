@@ -1354,6 +1354,55 @@
   .cs-go{align-self:flex-start; margin-top:2px; display:inline-flex; align-items:center; gap:5px; font-family:'Rajdhani'; font-weight:700; font-size:12px; color:#fff;
     background:linear-gradient(135deg,#25F4EE,#FE2C55); padding:6px 12px; border-radius:10px; box-shadow:0 3px 10px rgba(254,44,85,.35);}
   .cs-go svg{width:13px; height:13px; fill:none; stroke:#fff; stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round;}
+
+  /* ── Watch me LIVE (TikTok live) — home promo card ── */
+  .livehero{position:relative; overflow:hidden; display:flex; align-items:center; gap:13px; margin:0 0 12px; padding:15px 15px; border-radius:18px; cursor:pointer;
+    background:linear-gradient(135deg,#12060c 0%,#0b0f14 55%,#04140f 100%); border:1px solid rgba(254,44,85,.34);
+    box-shadow:0 10px 30px -14px rgba(254,44,85,.55), inset 0 1px 0 rgba(255,255,255,.04);}
+  .livehero .lh-glow{position:absolute; inset:-40% -20% auto auto; width:180px; height:180px; border-radius:50%; pointer-events:none;
+    background:radial-gradient(circle,rgba(37,244,238,.28),transparent 68%); filter:blur(6px);}
+  .livehero .lh-tag{position:absolute; top:11px; right:12px; z-index:2; display:inline-flex; align-items:center; gap:5px;
+    font-family:'Chakra Petch',sans-serif; font-weight:700; font-size:8.5px; letter-spacing:1.4px; color:#fff;
+    background:rgba(254,44,85,.92); padding:3px 8px; border-radius:20px; box-shadow:0 3px 12px rgba(254,44,85,.5);}
+  .livehero .lh-dot{width:6px; height:6px; border-radius:50%; background:#fff; animation:lvblink 1.2s ease-in-out infinite;}
+  .livehero .lh-ic{position:relative; z-index:1; flex:0 0 auto; width:50px; height:50px; border-radius:15px; display:grid; place-items:center;
+    color:#fff; background:linear-gradient(135deg,rgba(37,244,238,.22),rgba(254,44,85,.22)); border:1px solid rgba(255,255,255,.14);
+    box-shadow:0 0 0 4px rgba(254,44,85,.10), 0 6px 16px -6px rgba(37,244,238,.5); animation:lvpulse 2.2s ease-in-out infinite;}
+  .livehero .lh-ic svg{width:26px; height:26px;}
+  .livehero .lh-mid{flex:1; min-width:0; position:relative; z-index:1;}
+  .livehero .lh-t{font-family:'Rajdhani',sans-serif; font-weight:700; font-size:16px; color:var(--txt); line-height:1.15;}
+  .livehero .lh-s{font-size:11.5px; color:var(--txt2); line-height:1.4; margin-top:3px; max-width:30ch;}
+  .livehero .lh-go{flex:0 0 auto; align-self:center; font-family:'Rajdhani',sans-serif; font-weight:700; font-size:12.5px; letter-spacing:.03em; color:#fff;
+    background:linear-gradient(135deg,#25F4EE,#FE2C55); border:none; padding:9px 14px; border-radius:12px; cursor:pointer;
+    box-shadow:0 5px 16px -4px rgba(254,44,85,.6); white-space:nowrap;}
+  .livehero .lh-go:active{transform:scale(.96);}
+
+  /* ── LIVE dialog ── */
+  .ckcard.livedlg{max-width:346px; padding:24px 22px 20px; background:radial-gradient(130% 100% at 50% 0%,#160810,#0a0e13 60%,#050a09);
+    border:1px solid rgba(254,44,85,.30); box-shadow:0 24px 60px -20px rgba(254,44,85,.45);}
+  .livedlg .ld-live{display:inline-flex; align-items:center; gap:6px; font-family:'Chakra Petch',sans-serif; font-weight:700; font-size:10px; letter-spacing:2px; color:#fff;
+    background:rgba(254,44,85,.92); padding:4px 12px; border-radius:20px; box-shadow:0 4px 16px rgba(254,44,85,.55);}
+  .livedlg .ld-dot{width:7px; height:7px; border-radius:50%; background:#fff; animation:lvblink 1.2s ease-in-out infinite;}
+  .livedlg .ld-stage{position:relative; width:112px; height:112px; margin:18px auto 6px; display:grid; place-items:center;}
+  .livedlg .ld-ring{position:absolute; inset:0; border-radius:50%; border:2px solid rgba(37,244,238,.5); animation:lvring 2.4s ease-out infinite;}
+  .livedlg .ld-ring.r2{animation-delay:1.2s; border-color:rgba(254,44,85,.5);}
+  .livedlg .ld-logo{position:relative; z-index:1; width:78px; height:78px; border-radius:26px; display:grid; place-items:center; color:#fff;
+    background:linear-gradient(135deg,#25F4EE,#FE2C55); box-shadow:0 10px 30px -8px rgba(254,44,85,.7), inset 0 1px 0 rgba(255,255,255,.25);}
+  .livedlg .ld-logo svg{width:40px; height:40px;}
+  .livedlg .ld-title{font-family:'Rajdhani',sans-serif; font-weight:700; font-size:22px; color:var(--txt); margin-top:6px; line-height:1.1;}
+  .livedlg .ld-sub{font-size:13px; color:var(--txt2); line-height:1.55; margin:8px 6px 0;}
+  .livedlg .ld-chips{display:flex; flex-wrap:wrap; justify-content:center; gap:7px; margin:14px 0 4px;}
+  .livedlg .ld-chips span{font-family:'Chakra Petch',sans-serif; font-weight:700; font-size:9px; letter-spacing:1px; color:var(--cyan);
+    background:rgba(37,244,238,.10); border:1px solid rgba(37,244,238,.28); padding:5px 10px; border-radius:20px;}
+  .livedlg .ld-go{width:100%; margin-top:16px; display:inline-flex; align-items:center; justify-content:center; gap:9px; cursor:pointer;
+    font-family:'Rajdhani',sans-serif; font-weight:700; font-size:16px; letter-spacing:.03em; color:#fff; border:none; border-radius:14px; padding:14px;
+    background:linear-gradient(135deg,#25F4EE,#FE2C55); box-shadow:0 10px 26px -8px rgba(254,44,85,.65);}
+  .livedlg .ld-go svg{width:20px; height:20px;}
+  .livedlg .ld-go:active{transform:scale(.98);}
+  .livedlg .ld-note{font-size:10.5px; color:var(--txt2); margin-top:10px; letter-spacing:.02em;}
+  @keyframes lvblink{0%,100%{opacity:1;}50%{opacity:.25;}}
+  @keyframes lvpulse{0%,100%{box-shadow:0 0 0 4px rgba(254,44,85,.10),0 6px 16px -6px rgba(37,244,238,.5);}50%{box-shadow:0 0 0 7px rgba(254,44,85,.04),0 6px 22px -4px rgba(37,244,238,.7);}}
+  @keyframes lvring{0%{transform:scale(.62); opacity:.9;}100%{transform:scale(1.15); opacity:0;}}
 </style>
 </head>
 <body>
@@ -1717,6 +1766,42 @@ function openPromoCongrats(reward){
   card.querySelector('#pcok').onclick=close;
   mask.appendChild(card); document.body.appendChild(mask);
 }
+// ── Watch me LIVE on TikTok ─────────────────────────────────────────────────────
+const LIVE_URL='https://vt.tiktok.com/ZS9BN4uFYshmm-X7VIb/';
+const TT_LOGO='<svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M32.6 8h-5.3v25.1c0 2.9-2.4 5.3-5.3 5.3s-5.3-2.4-5.3-5.3 2.4-5.3 5.3-5.3c.5 0 1 .1 1.5.2v-5.4c-.5-.1-1-.1-1.5-.1-5.9 0-10.7 4.8-10.7 10.7S16.1 44 22 44s10.7-4.8 10.7-10.7V19.7c2.1 1.5 4.7 2.4 7.4 2.4v-5.3c-4.1 0-7.5-3.3-7.5-7.5V8Z" fill="currentColor"/></svg>';
+function openLiveLink(){ try{ if(window.Android&&window.Android.openLink) window.Android.openLink(LIVE_URL); else window.open(LIVE_URL,'_blank','noopener'); }catch(e){ window.open(LIVE_URL,'_blank'); } }
+function liveHero(app){
+  const card=$(`<div class="livehero">
+    <div class="lh-glow"></div>
+    <div class="lh-tag"><span class="lh-dot"></span>LIVE NOW</div>
+    <div class="lh-ic">${TT_LOGO}</div>
+    <div class="lh-mid">
+      <div class="lh-t">Watch me LIVE on TikTok</div>
+      <div class="lh-s">Sumali sa live stream — giveaways, skin drops, at diamonds. Naka-live ako ngayon!</div>
+    </div>
+    <button class="lh-go">Watch</button>
+  </div>`);
+  card.onclick=openLiveDialog;
+  app.appendChild(card);
+}
+function openLiveDialog(){
+  const mask=$(`<div class="ckmask"></div>`);
+  const card=$(`<div class="ckcard livedlg">
+    <button class="ckx" aria-label="Close">✕</button>
+    <div class="ld-live"><span class="ld-dot"></span>LIVE NOW</div>
+    <div class="ld-stage"><div class="ld-ring"></div><div class="ld-ring r2"></div><div class="ld-logo">${TT_LOGO}</div></div>
+    <div class="ld-title">Naka-LIVE ako ngayon</div>
+    <div class="ld-sub">Panoorin mo ako sa TikTok Live — giveaways, free skins, at diamond drops. Samahan mo ako sa chat!</div>
+    <div class="ld-chips"><span>GIVEAWAYS</span><span>SKIN DROPS</span><span>Q &amp; A</span></div>
+    <button class="ld-go">${TT_LOGO}<span>Watch on TikTok</span></button>
+    <div class="ld-note">Bubukas sa TikTok app o browser</div>
+  </div>`);
+  const close=()=>mask.remove();
+  mask.onclick=e=>{ if(e.target===mask) close(); };
+  card.querySelector('.ckx').onclick=close;
+  card.querySelector('.ld-go').onclick=openLiveLink;
+  mask.appendChild(card); document.body.appendChild(mask);
+}
 const JOGOS_LOGO = `<svg class="jlogo" viewBox="0 0 132 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Jogos"><path d="M6.16063 31.9782C3.0795 31.9477 0.690195 29.2772 1.00127 26.2117C1.53468 28.2722 3.39386 29.7114 5.52232 29.7114H9.74477H20.5884C21.2259 29.7114 21.7006 30.2999 21.5658 30.9229L21.474 31.347C21.3735 31.8113 20.9601 32.1409 20.485 32.1354L11.7043 32.0331L6.16063 31.9782Z" fill="white"></path><path d="M4.635 8.32535C5.53779 3.61388 9.65913 0.207275 14.4563 0.207275H26.2767C26.9045 0.207275 27.377 0.778929 27.2588 1.39547L22.2484 27.5439C22.1581 28.015 21.746 28.3557 21.2663 28.3557H5.63611C3.12509 28.3557 1.23503 26.0691 1.70758 23.6029L4.635 8.32535Z" fill="#4167FF"></path><rect x="14.1416" y="7.49597" width="3.55053" height="10.0204" rx="1" fill="white"></rect><rect x="10.9062" y="14.2815" width="3.55053" height="10.0204" rx="1" transform="rotate(-90 10.9062 14.2815)" fill="white"></rect><path d="M46.2341 23.6087C45.3313 28.3202 41.21 31.7268 36.4128 31.7268L24.5924 31.7268C23.9647 31.7268 23.4922 31.1552 23.6103 30.5386L28.6208 4.3902C28.711 3.91906 29.1232 3.5784 29.6029 3.5784L45.233 3.5784C47.7441 3.5784 49.6341 5.86501 49.1616 8.33116L46.2341 23.6087Z" fill="#FF366E"></path><path d="M43.1095 31.7108C41.5559 34.108 39.2309 35.218 36.3743 35.218H23.9403C23.3126 35.218 22.84 34.6463 22.9582 34.0297L23.0595 33.5013C23.1498 33.0301 23.5619 32.6895 24.0416 32.6895H37.7929C38.183 32.6895 38.6532 32.6336 39.1439 32.5399C40.9452 32.1959 42.4752 31.1076 43.8683 29.915L44.208 29.6242L43.1095 31.7108Z" fill="white"></path><circle cx="33.0318" cy="24.015" r="2.97635" fill="white"></circle><circle cx="38.6872" cy="19.0043" r="2.03384" fill="white"></circle><path d="M64.5254 26.5989C63.1647 26.5989 61.9603 26.3938 60.9121 25.9836C59.8639 25.5735 59.0436 24.9322 58.4512 24.0598C57.8587 23.1874 57.5625 22.0611 57.5625 20.6809V19.1965L62.9824 18.4543V19.9583C62.9824 20.5898 63.1126 21.0585 63.373 21.3645C63.64 21.664 63.9427 21.8137 64.2812 21.8137C64.6328 21.8137 64.9518 21.6444 65.2383 21.3059C65.5247 20.9609 65.668 20.4921 65.668 19.8997V10.6223H71.8887V18.1614C71.8887 19.7629 71.6999 21.1041 71.3223 22.1848C70.9512 23.2655 70.4303 24.1314 69.7598 24.7825C69.0892 25.427 68.3079 25.8925 67.416 26.179C66.5241 26.4589 65.5605 26.5989 64.5254 26.5989ZM80.5117 26.5793C79.6393 26.5793 78.7897 26.4296 77.9629 26.1301C77.1361 25.8241 76.3906 25.3879 75.7266 24.8215C75.069 24.2486 74.5449 23.565 74.1543 22.7708C73.7702 21.97 73.5781 21.078 73.5781 20.095C73.5781 19.1249 73.7604 18.2428 74.125 17.4485C74.4896 16.6542 74.9909 15.9739 75.6289 15.4075C76.2669 14.8346 77.0026 14.3951 77.8359 14.0891C78.6758 13.7766 79.5677 13.6204 80.5117 13.6204C81.8398 13.6204 83.041 13.884 84.1152 14.4114C85.1895 14.9322 86.0391 15.6809 86.6641 16.6575C87.2956 17.6275 87.6113 18.7864 87.6113 20.134C87.6113 21.1236 87.4193 22.0155 87.0352 22.8098C86.651 23.6041 86.127 24.2812 85.4629 24.8411C84.7988 25.401 84.0404 25.8306 83.1875 26.1301C82.3411 26.4296 81.4492 26.5793 80.5117 26.5793ZM79.8965 22.634C80.1829 22.634 80.502 22.5006 80.8535 22.2336C81.2051 21.9602 81.5436 21.6152 81.8691 21.1985C82.1947 20.7753 82.4616 20.3326 82.6699 19.8704C82.8848 19.4081 82.9922 18.9849 82.9922 18.6008C82.9922 18.3079 82.9141 18.0409 82.7578 17.8C82.6081 17.5592 82.3477 17.4387 81.9766 17.4387C81.638 17.4387 81.2799 17.5689 80.9023 17.8293C80.5247 18.0833 80.1699 18.4185 79.8379 18.8352C79.5124 19.2454 79.2454 19.6848 79.0371 20.1536C78.8353 20.6158 78.7344 21.0585 78.7344 21.4817C78.7344 21.7681 78.819 22.0318 78.9883 22.2727C79.1576 22.5136 79.4603 22.634 79.8965 22.634ZM98.8809 24.7141C98.3145 25.3326 97.6634 25.7981 96.9277 26.1106C96.1986 26.4231 95.4434 26.5793 94.6621 26.5793C93.679 26.5793 92.7611 26.3612 91.9082 25.925C91.0618 25.4889 90.3783 24.8313 89.8574 23.9524C89.3431 23.067 89.0859 21.9635 89.0859 20.6418C89.0859 19.5741 89.2617 18.6106 89.6133 17.7512C89.9714 16.8853 90.4564 16.1464 91.0684 15.5344C91.6868 14.9159 92.39 14.4439 93.1777 14.1184C93.972 13.7864 94.8021 13.6204 95.668 13.6204C96.3646 13.6204 97.0449 13.7929 97.709 14.1379C98.373 14.4765 98.9036 14.955 99.3008 15.5735L100.707 14.0793H103.9V26.218C103.9 27.2597 103.715 28.1288 103.344 28.8254C102.973 29.5221 102.475 30.0754 101.85 30.4856C101.225 30.8958 100.525 31.1887 99.75 31.3645C98.9753 31.5468 98.181 31.6379 97.3672 31.6379C96.7682 31.6379 96.179 31.5989 95.5996 31.5208C95.0202 31.4491 94.4733 31.3482 93.959 31.218V27.761C94.291 27.8 94.6523 27.8554 95.043 27.927C95.4401 27.9986 95.834 28.0344 96.2246 28.0344C96.6934 28.0344 97.1296 27.9465 97.5332 27.7708C97.9368 27.6015 98.2624 27.276 98.5098 26.7942C98.7572 26.3189 98.8809 25.6256 98.8809 24.7141ZM95.8047 22.5168C96.2148 22.5168 96.599 22.442 96.957 22.2922C97.3151 22.1425 97.6374 21.9667 97.9238 21.7649C98.2103 21.5631 98.4512 21.3873 98.6465 21.2375V17.761C98.4186 17.6243 98.1647 17.5559 97.8848 17.5559C97.5267 17.5559 97.1686 17.6666 96.8105 17.8879C96.4525 18.1028 96.1237 18.3925 95.8242 18.7571C95.5312 19.1152 95.2936 19.5058 95.1113 19.929C94.9355 20.3521 94.8477 20.7688 94.8477 21.179C94.8477 21.4849 94.9193 21.7844 95.0625 22.0774C95.2057 22.3704 95.4531 22.5168 95.8047 22.5168ZM112.641 26.5793C111.768 26.5793 110.919 26.4296 110.092 26.1301C109.265 25.8241 108.52 25.3879 107.855 24.8215C107.198 24.2486 106.674 23.565 106.283 22.7708C105.899 21.97 105.707 21.078 105.707 20.095C105.707 19.1249 105.889 18.2428 106.254 17.4485C106.618 16.6542 107.12 15.9739 107.758 15.4075C108.396 14.8346 109.132 14.3951 109.965 14.0891C110.805 13.7766 111.697 13.6204 112.641 13.6204C113.969 13.6204 115.17 13.884 116.244 14.4114C117.318 14.9322 118.168 15.6809 118.793 16.6575C119.424 17.6275 119.74 18.7864 119.74 20.134C119.74 21.1236 119.548 22.0155 119.164 22.8098C118.78 23.6041 118.256 24.2812 117.592 24.8411C116.928 25.401 116.169 25.8306 115.316 26.1301C114.47 26.4296 113.578 26.5793 112.641 26.5793ZM112.025 22.634C112.312 22.634 112.631 22.5006 112.982 22.2336C113.334 21.9602 113.673 21.6152 113.998 21.1985C114.324 20.7753 114.59 20.3326 114.799 19.8704C115.014 19.4081 115.121 18.9849 115.121 18.6008C115.121 18.3079 115.043 18.0409 114.887 17.8C114.737 17.5592 114.477 17.4387 114.105 17.4387C113.767 17.4387 113.409 17.5689 113.031 17.8293C112.654 18.0833 112.299 18.4185 111.967 18.8352C111.641 19.2454 111.374 19.6848 111.166 20.1536C110.964 20.6158 110.863 21.0585 110.863 21.4817C110.863 21.7681 110.948 22.0318 111.117 22.2727C111.286 22.5136 111.589 22.634 112.025 22.634ZM121.469 22.0774C121.592 22.0839 121.827 22.149 122.172 22.2727C122.517 22.3964 122.904 22.5201 123.334 22.6438C123.764 22.761 124.164 22.8196 124.535 22.8196C124.724 22.8196 124.877 22.787 124.994 22.7219C125.111 22.6503 125.17 22.5234 125.17 22.3411C125.17 22.1002 125.043 21.8984 124.789 21.7356C124.542 21.5728 124.232 21.4036 123.861 21.2278C123.49 21.0455 123.116 20.8144 122.738 20.5344C122.367 20.2545 122.055 19.8801 121.801 19.4114C121.553 18.9361 121.43 18.3241 121.43 17.5754C121.43 16.8463 121.583 16.231 121.889 15.7297C122.201 15.2219 122.618 14.815 123.139 14.509C123.666 14.1965 124.255 13.9719 124.906 13.8352C125.564 13.692 126.238 13.6204 126.928 13.6204C127.52 13.6204 128.08 13.6497 128.607 13.7083C129.135 13.7668 129.581 13.8319 129.945 13.9036C130.316 13.9687 130.551 14.0142 130.648 14.0403V17.7219C130.648 17.7219 130.531 17.6959 130.297 17.6438C130.069 17.5917 129.783 17.5331 129.438 17.468C129.092 17.4029 128.744 17.3443 128.393 17.2922C128.041 17.2402 127.742 17.2141 127.494 17.2141C127.305 17.2141 127.159 17.2564 127.055 17.3411C126.957 17.4257 126.908 17.5234 126.908 17.634C126.908 17.7382 126.964 17.8391 127.074 17.9368C127.185 18.0344 127.41 18.1516 127.748 18.2883C128.262 18.4967 128.741 18.7083 129.184 18.9231C129.626 19.1314 130.014 19.3821 130.346 19.675C130.684 19.968 130.945 20.3424 131.127 20.7981C131.316 21.2538 131.41 21.8333 131.41 22.5364C131.41 23.8775 130.935 24.8866 129.984 25.5637C129.034 26.2408 127.771 26.5793 126.195 26.5793C124.945 26.5793 123.979 26.5045 123.295 26.3547C122.611 26.2115 122.136 26.0683 121.869 25.925C121.602 25.7753 121.469 25.7004 121.469 25.7004V22.0774Z" fill="white"></path></svg>`;
 // Maintenance screen para sa regular users habang naka-close ang Earn (admin bypass).
 function renderEarnMaintenance(app){
@@ -1988,6 +2073,9 @@ function renderHome(host){
 
   // FEATURED — promotional / optional earners (Tongits, redeem, tournament, jogos).
   app.appendChild($(`<div class="sh"><div class="t">FEATURED</div></div>`));
+
+  // WATCH ME LIVE — TikTok live promo (opens the live in TikTok via a highlighted dialog).
+  liveHero(app);
 
   // TONGITS GO — high-value campaign hero, prominent (di na nakabaon sa tasks).
   tongitsHero(app,s);
