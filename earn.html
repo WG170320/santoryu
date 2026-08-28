@@ -1566,8 +1566,6 @@ function isSocial(t){ return /facebook\.com|fb\.watch|fb\.me/i.test(t.link||'')|
 // Download tasks = install / usage-verified offers (GearUp, boost, download-to-unlock).
 // Everything else (social follow/comment, review, comment-on-video, daily/promo) is "Other".
 function isDownloadTask(t){ return isUsage(t) || /install|download|gearup|warlito|boost/i.test((t.title||'')+' '+(t.desc||'')); }
-// Clip-download tasks (id prefix cdl_) live INSIDE the Clipping tab, not the Tasks tab.
-function isClipDownload(t){ return /^cdl_/i.test((t&&t.id)||''); }
 function dwellSecs(t){ return Number(t.dwell)>0?Number(t.dwell):10; }
 
 // withdrawal — Codashop style: lahat ng amount NAKALABAS na cards, tap para piliin (highlight),
@@ -1858,25 +1856,7 @@ async function submitClip(url){
       e==='bad_url'?'Enter a valid TikTok link.': e==='disabled'?'Clipping is not live yet.':
       e==='fetch_failed'?'Could not read that clip — check the link.':'Could not submit — try again.'; }
 }
-// Download & earn tasks that live inside the Clipping tab (usage-verified, no app update).
-function renderClipDownloads(host){
-  const s=STATE; if(!s) return;
-  const list=(s.tasks||[]).filter(t=>isClipDownload(t) && !t.claimed && (!isUsage(t) || usageSupported()));
-  if(!list.length) return;
-  host.appendChild($(`<div class="sh"><div class="t">DOWNLOAD &amp; EARN</div><div class="x">quick diamonds</div></div>`));
-  const tc=$(`<div class="card"></div>`);
-  list.forEach(t=>{
-    const right=`<button class="tclaim"><span class="dia gold" style="width:14px;height:14px"></span>+${t.reward}</button>`;
-    const row=$(`<div class="taskrow"><div class="ti">${taskIcon(t)}</div>
-      <div class="gleft"><div class="n">${esc(t.title)}</div><div class="d">${esc(t.desc)}</div></div>${right}</div>`);
-    row.querySelector('.tclaim').onclick=()=> isUsage(t)?(usageSupported()?openUsage(t):toast('Update the app to do this task','bad')):doTask(t);
-    tc.appendChild(row);
-  });
-  host.appendChild(tc);
-}
 function renderClipping(host){
-  // Download & earn tasks show at the top of Clipping whether or not the clip campaign is live.
-  renderClipDownloads(host);
   const cfg=(CLIP&&CLIP.cfg)||null;
   // Not launched yet (or still loading) -> teaser.
   if(!cfg || cfg.enabled===false){
@@ -1980,7 +1960,7 @@ function renderInvite(host){
 function renderTasks(host){
   const s=STATE;
   giveawayHero(host,s);
-  const all=(s.tasks||[]).filter(t=>!t.claimed && !isClipDownload(t) && (!isUsage(t) || usageSupported()));
+  const all=(s.tasks||[]).filter(t=>!t.claimed && (!isUsage(t) || usageSupported()));
   const hero=all.find(t=>t&&t.hero===true && isUsage(t));
   if(hero) gearMissionHero(host, hero);
   const rest=all.filter(t=>t!==hero);
