@@ -1482,10 +1482,10 @@ document.addEventListener('visibilitychange',()=>{ if(!document.hidden) requestS
 
 let MOCK={ uid:"dev-demo", code:"SANT-AB12-CD34", isAdmin:false,
   config:{perInvite:15,refQualify:10,inviteeBonus:5,welcomeBonus:5,dailyBonus:15,missionGoal:5,missionBonus:50,missionHours:24},
-  tiers:[{mlbb:22,cost:80,firstOnly:true},{mlbb:112,cost:250,firstOnly:false},{mlbb:223,cost:470,firstOnly:false},{mlbb:336,cost:670,firstOnly:false},{mlbb:570,cost:1080,firstOnly:false},{mlbb:1163,cost:2050,firstOnly:false}],
+  tiers:[{mlbb:5,cost:150,firstOnly:false},{mlbb:20,cost:600,firstOnly:false},{mlbb:50,cost:1500,firstOnly:false},{mlbb:100,cost:3000,firstOnly:false},{mlbb:250,cost:7500,firstOnly:false},{mlbb:500,cost:15000,firstOnly:false}],
   tasks:[{id:"download_cliptok",title:"Download ClipTok",desc:"Install our partner app — Video & Photo Saver.",link:"https://play.google.com/store/apps/details?id=com.warlito.clipto",logo:"",reward:10,claimed:false},{id:"rate_5star",title:"Rate us 5 stars",desc:"Write an honest review on Google Play.",link:"https://play.google.com/store/apps/details?id=com.warlito.clipto",logo:"",reward:5,claimed:false},{id:"fb_heart_post",title:"Heart our Facebook post",desc:"Tap the heart (like) on our Facebook post to support us.",link:"https://www.facebook.com/share/p/1UnZBCNUnZ/",logo:"",reward:5,claimed:false}],
   account:{balance:340,earned:560,referralCount:3,firstWithdrawUsed:true,earnBanned:false,welcomeClaimed:true,referred:false,lastDailyDay:0,missionStart:0,missionBaseline:0,name:"Kairi",avatarUrl:"https://kappa.lol/7Xnnlc",earned:1340},
-  history:[{mlbb:22,cost:80,status:"fulfilled",ts:Date.now()-86400000,refunded:false},{mlbb:112,cost:250,status:"pending",ts:Date.now()-3600000,refunded:false}],
+  history:[{mlbb:20,cost:600,status:"fulfilled",ts:Date.now()-86400000,refunded:false},{mlbb:5,cost:150,status:"fulfilled",ts:Date.now()-3600000,refunded:false}],
   invited:[{name:"Justin",ts:Date.now()-7200000,avatarUrl:"https://kappa.lol/Z9cLjS",status:"accepted"},{name:"Vince",ts:Date.now()-90000000,avatarUrl:"",status:"pending"},{name:"Maher",ts:Date.now()-180000000,avatarUrl:"https://kappa.lol/oF8JPO",status:"accepted"},{name:"BotFarm01",ts:Date.now()-260000000,avatarUrl:"",status:"rejected"}],
   dailyAvailable:true, dailyKnown:true, dailyMs:0 };
 function mockState(){ setTimeout(()=>window.__earnState(JSON.parse(JSON.stringify(MOCK))),60); }
