@@ -1485,7 +1485,7 @@ let MOCK={ uid:"dev-demo", code:"SANT-AB12-CD34", isAdmin:false,
   tiers:[{mlbb:5,cost:150,firstOnly:false},{mlbb:20,cost:600,firstOnly:false},{mlbb:50,cost:1500,firstOnly:false},{mlbb:100,cost:3000,firstOnly:false},{mlbb:250,cost:7500,firstOnly:false},{mlbb:500,cost:15000,firstOnly:false}],
   tasks:[{id:"download_cliptok",title:"Download ClipTok",desc:"Install our partner app — Video & Photo Saver.",link:"https://play.google.com/store/apps/details?id=com.warlito.clipto",logo:"",reward:10,claimed:false},{id:"rate_5star",title:"Rate us 5 stars",desc:"Write an honest review on Google Play.",link:"https://play.google.com/store/apps/details?id=com.warlito.clipto",logo:"",reward:5,claimed:false},{id:"fb_heart_post",title:"Heart our Facebook post",desc:"Tap the heart (like) on our Facebook post to support us.",link:"https://www.facebook.com/share/p/1UnZBCNUnZ/",logo:"",reward:5,claimed:false}],
   account:{balance:340,earned:560,referralCount:3,firstWithdrawUsed:true,earnBanned:false,welcomeClaimed:true,referred:false,lastDailyDay:0,missionStart:0,missionBaseline:0,name:"Kairi",avatarUrl:"https://kappa.lol/7Xnnlc",earned:1340},
-  history:[{mlbb:20,cost:600,status:"fulfilled",ts:Date.now()-86400000,refunded:false},{mlbb:5,cost:150,status:"fulfilled",ts:Date.now()-3600000,refunded:false}],
+  history:[{mlbb:20,cost:600,status:"fulfilled",ts:Date.now()-86400000,refunded:false},{mlbb:5,cost:150,status:"refunded",ts:Date.now()-3600000,refunded:true,reason:"We hit a top-up (Codashop) issue while processing your withdrawal, so we refunded your diamonds. Please withdraw again."}],
   invited:[{name:"Justin",ts:Date.now()-7200000,avatarUrl:"https://kappa.lol/Z9cLjS",status:"accepted"},{name:"Vince",ts:Date.now()-90000000,avatarUrl:"",status:"pending"},{name:"Maher",ts:Date.now()-180000000,avatarUrl:"https://kappa.lol/oF8JPO",status:"accepted"},{name:"BotFarm01",ts:Date.now()-260000000,avatarUrl:"",status:"rejected"}],
   dailyAvailable:true, dailyKnown:true, dailyMs:0 };
 function mockState(){ setTimeout(()=>window.__earnState(JSON.parse(JSON.stringify(MOCK))),60); }
@@ -1621,7 +1621,7 @@ function withdrawBanner(app,s){
 function openWithdrawPage(){ openPage('Withdraw', body=>paintWithdraw(body)); }
 // Payout in the target unit for a tier under the current method. 30 diamonds = P1 / 1 Robux.
 // Per-method amount options. Pricing: 30 gold diamonds = 1 unit (P1 / 1 Robux / 1 MLBB diamond).
-const WD_OPTS={ mlbb:[5,11,22,56,112], roblox:[50,100,200,400,800], gcash:[500,750,1000] };
+const WD_OPTS={ mlbb:[5,20,50,100,250,500], roblox:[50,100,200,400,800], gcash:[500,750,1000] };
 function wdAmtLabel(method,u){ return method==='gcash' ? ('₱'+(+u).toLocaleString()) : ((+u).toLocaleString()+(method==='roblox'?' Robux':' MLBB')); }
 function wdSelUnits(){ const o=WD_OPTS[WMETHOD]||WD_OPTS.mlbb; if(!o.includes(WSEL)) WSEL=o[0]; return WSEL; }
 // Full Withdraw PAGE (no dialog): balance + 3 method cards + per-method amount + destination + one CTA.
