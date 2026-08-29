@@ -2324,7 +2324,7 @@ async function fillRejectReasons(scope){
     scope.querySelectorAll('.litem.hi[data-st="rejected"], .litem.hi[data-st="refunded"]').forEach(row=>{
       const it=map[+row.getAttribute('data-ts')]; const det=row.querySelector('.rdet'); if(!det) return;
       const isRef=row.getAttribute('data-st')==='refunded';
-      const fallback=isRef?'Hindi na available ang 5 Diamonds na promo (naubos na). Ibinalik ang iyong points.'
+      const fallback=isRef?'Your withdrawal was refunded and your points were returned. You can withdraw again.'
         :'Your withdrawal was declined after review. Please make sure you follow the fair-use rules.';
       const reason=(it&&it.reason)||fallback;
       const refunded=(it&&it.refunded)||isRef;
