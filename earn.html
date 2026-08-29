@@ -2848,14 +2848,12 @@ function showCongrats(w){
 // Shows once when a user has a refunded 5-diamond promo withdrawal. Warm apology,
 // amber tone (not an error). No app update needed — status "refunded" comes from RTDB.
 function maybePromoRefund(s){
-  try{
-    const ref=(s.history||[]).filter(h=>h && h.status==='refunded');
-    if(!ref.length) return;
-    const KEY='santoryu_promo_apology_v1';
-    if(localStorage.getItem(KEY)) return;
-    localStorage.setItem(KEY,'1');
-    showPromoRefund();
-  }catch(e){}
+  // RETIRED. The 5-Diamonds first-withdraw promo is long over, and this modal's copy
+  // ("22 Diamonds na ang bagong first withdraw") is now wrong after the tier change to
+  // 5/20/50/100/250/500. It also fired on ANY refunded row, so Codashop-issue refunds
+  // would wrongly show the promo apology. The per-withdrawal "See details" already shows
+  // the correct refund reason, so this generic popup is disabled.
+  return;
 }
 function showPromoRefund(){
   if(document.querySelector('.ov.promoref')) return;
