@@ -99,6 +99,18 @@
   @keyframes sweep{0%{left:-45%;}55%,100%{left:120%;}}
   .unlock:not([disabled]):active{transform:translateY(1px);}
   .unlock[disabled]{background:rgba(255,255,255,.05); color:var(--txt2); box-shadow:none; cursor:default; letter-spacing:1px;}
+  /* primary DOWNLOAD hero — the one action we want tapped (opens the partner link) */
+  .unlock.get{display:flex; align-items:center; justify-content:center; gap:10px; font-size:15.5px; letter-spacing:1.5px; padding:15px;
+    background:linear-gradient(95deg,var(--blue) 4%,var(--cyan) 52%,var(--emerald));
+    box-shadow:0 14px 30px -8px rgba(77,166,255,.6), 0 0 0 1px rgba(95,230,255,.25), inset 0 1px 0 rgba(255,255,255,.5);
+    animation:getpulse 2.2s ease-in-out infinite;}
+  .unlock.get svg{width:19px; height:19px;}
+  @keyframes getpulse{0%,100%{box-shadow:0 14px 30px -8px rgba(77,166,255,.55), 0 0 0 1px rgba(95,230,255,.25), inset 0 1px 0 rgba(255,255,255,.5);}
+    50%{box-shadow:0 16px 38px -6px rgba(45,212,167,.7), 0 0 0 1px rgba(95,230,255,.5), inset 0 1px 0 rgba(255,255,255,.5);}}
+  .unlock.copyc{background:linear-gradient(95deg,#5ff0c8,var(--emerald) 55%,#0f9d76); letter-spacing:1.5px;}
+  .cta-sub{text-align:center; font-family:'Rajdhani'; font-weight:600; font-size:11.5px; letter-spacing:.5px; color:var(--txt2); margin-top:10px;}
+  .cta-sub b{color:var(--emerald); font-weight:700;}
+  .cta-sub .fx{color:var(--gold-hi);}
 
   .empty{text-align:center; color:var(--txt2); font-size:13px; padding:44px 16px; line-height:1.6;}
   .empty .spin{width:26px;height:26px;margin:0 auto 14px;border:2.5px solid var(--line);border-top-color:var(--emerald);border-radius:50%;animation:spin .8s linear infinite;}
@@ -311,11 +323,10 @@
     var stepNo=0;
     var html='<div class="steps">';
 
-    // Step 1 — install (auto-detected)
+    // Step 1 — install (auto-detected). No inline button: the big hero CTA below is the
+    // single, unmissable download action (keeps all eyes on one tap → the partner link).
     stepNo++;
-    html+=stepRow(inst, stepNo, "Download and install", inst
-      ? ''
-      : '<button class="btn" data-act="dl">Get</button>');
+    html+=stepRow(inst, stepNo, "Download and install", '');
 
     // Steps 2..N — ordered action steps, gated sequentially (do them in order).
     steps.forEach(function(stp, i){
@@ -334,8 +345,26 @@
       html+=stepRow(done, stepNo, stp.label, right);
     });
 
-    html+='<button class="unlock" data-act="unlock" '+(ready?'':'disabled')+'>'+
-      (ready?'UNLOCK NOW':'FINISH STEPS TO UNLOCK')+'</button></div>';
+    // Adaptive primary CTA — always surfaces the single next action as the hero button.
+    // When the app isn't installed yet, that action is the DOWNLOAD (opens the partner link).
+    var nextIdx=-1;
+    for(var pi=0; pi<steps.length; pi++){ if(!s.done[pi]){ nextIdx=pi; break; } }
+    var pAppNm=(a.name||'App').toUpperCase(), pcta;
+    if(s.busy){
+      pcta='<button class="unlock" data-act="none" disabled>VERIFYING&#8230;</button>';
+    } else if(!inst){
+      pcta='<button class="unlock get" data-act="dl">'+
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>'+
+        'GET '+pAppNm+' &#8212; FREE</button>'+
+        '<div class="cta-sub">100% free &#183; about 1 minute &#183; unlocks <b>every skin &amp; tool</b></div>';
+    } else if(nextIdx>=0){
+      pcta=(steps[nextIdx].kind==='promo')
+        ? '<button class="unlock copyc" data-act="s'+nextIdx+'">COPY CODE '+esc(a.promo||'')+'</button>'
+        : '<button class="unlock" data-act="s'+nextIdx+'">OPEN '+pAppNm+'</button>';
+    } else {
+      pcta='<button class="unlock" data-act="unlock">UNLOCK NOW</button>';
+    }
+    html+=pcta+'</div>';
 
     card.innerHTML=head+html;
 
