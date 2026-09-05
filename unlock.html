@@ -6,6 +6,7 @@
 <title>Santoryu — Unlock</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://asia-southeast1-arrows-puzzle-earn.cloudfunctions.net">
 <!-- Non-blocking web fonts: the page must paint instantly even if Google's font
      servers are slow or throttled on the user's network (a render-blocking
      stylesheet there is what left the WebView black for ~2 min). It loads as
@@ -167,6 +168,11 @@
   // per-app step state: ST[id] = {opened:bool, promo:bool, busy:false|'open'|'promo'}
   var ST={};
 
+  // Embedded default so the gate paints INSTANTLY on the first frame — no network wait,
+  // no spinner, no black screen even on a slow or offline connection. The authoritative
+  // /unlockConfig fetch still runs immediately after and reconciles (incl. the real logo).
+  var DEFAULT_CFG={enabled:true,apps:[{id:"gearup",name:"GearUp",package:"com.gearup.booster",link:"https://gearup.onelink.me/Zmq0/zongxotic",promo:"WARLITO",openSecs:20,reward:30,steps:[],logo:""}]};
+
   // ---- native bridge (guarded so the page also runs in a plain browser) ----
   function bridge(){ return window.Android || null; }
   function callBridge(fn, args){
@@ -253,15 +259,19 @@
 
   // ---- data ----
   function load(){
-    setLoading();
+    // Instant first paint from the embedded default — the card is on screen immediately,
+    // before any network. (setLoading spinner is skipped so there is never a blank wait.)
+    if(!CFG){ CFG=DEFAULT_CFG; recheckAll(); }
+    // Then reconcile with the authoritative server config in the background.
     fetch(FN+"/unlockConfig", {cache:"no-store"})
       .then(function(r){ return r.json(); })
       .then(function(json){
-        CFG=json||{};
+        if(!json) return;                 // keep the instant default already shown
+        CFG=json;
         if(!CFG.enabled){ markUnlocked(""); return; }
         recheckAll();
       })
-      .catch(function(){ setError(); });
+      .catch(function(){ /* offline: keep the instant default on screen, no error wall */ });
   }
 
   function recheckAll(){
