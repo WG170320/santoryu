@@ -1069,6 +1069,40 @@
   .temp-reward{display:flex; align-items:center; gap:8px; margin-top:10px; font-family:'Teko'; font-weight:700; font-size:34px; color:var(--gold-hi);}
   .temp-reward .rlbl{font-family:'Rajdhani'; font-weight:600; font-size:12px; letter-spacing:.4px; color:var(--txt2); text-transform:uppercase; align-self:flex-end; margin-bottom:7px;}
   .temp-note{font-size:12px; color:var(--txt2); margin-top:8px; line-height:1.45;}
+  /* hero progress track (mirrors the Tongits ladder, orange) */
+  .temuh-track{position:relative; z-index:1; display:flex; gap:5px; margin-top:14px;}
+  .temuh-seg{flex:1; height:6px; border-radius:3px; background:rgba(255,255,255,.08); overflow:hidden;}
+  .temuh-seg.on{background:linear-gradient(90deg,#FFB874,#FF6A00); box-shadow:0 0 9px rgba(255,106,0,.55);}
+  .temuh-seg.cur{background:rgba(255,106,0,.22);}
+  .temuh-steplbl{position:relative; z-index:1; display:flex; justify-content:space-between; margin-top:8px;
+    font-family:'Rajdhani'; font-weight:700; font-size:11px; letter-spacing:.4px; color:var(--txt2); text-transform:uppercase;}
+  /* detail-page progress */
+  .temp-prog{margin-top:14px;}
+  .temp-progbar{height:8px; border-radius:5px; background:rgba(255,255,255,.08); overflow:hidden;}
+  .temp-progfill{height:100%; border-radius:5px; background:linear-gradient(90deg,#FFB874,#FF6A00); transition:width .4s ease;}
+  .temp-proglbl{display:flex; justify-content:space-between; margin-top:6px; font-size:11px; color:var(--txt2);}
+  .temp-proglbl b{color:var(--gold-hi);}
+  /* step states */
+  .temp-step.done{opacity:.72;}
+  .temp-step.locked{opacity:.5;}
+  .temp-step.active{border-color:rgba(255,106,0,.5); box-shadow:0 8px 26px -14px rgba(255,106,0,.6);}
+  .temp-step.done .n{background:linear-gradient(160deg,#8FE3B0,#2DD4A7);}
+  .temp-step.locked .n{background:rgba(255,255,255,.12);}
+  .temp-rw{float:right; display:inline-flex; align-items:center; gap:4px; font-family:'Rajdhani'; font-weight:700;
+    font-size:13px; color:var(--gold-hi); background:rgba(232,180,74,.14); border:1px solid rgba(232,180,74,.3);
+    padding:1px 8px; border-radius:9px;}
+  /* per-step action + timer */
+  .temp-actrow{margin-top:11px;}
+  .temp-sbtn{width:100%; border:none; border-radius:11px; padding:13px; cursor:pointer;
+    font-family:'Chakra Petch'; font-weight:700; letter-spacing:1.5px; font-size:14px;}
+  .temp-sbtn.open{color:#fff; background:linear-gradient(90deg,#FF8A34,#FF6A00); box-shadow:0 10px 24px -12px rgba(255,106,0,.6);}
+  .temp-sbtn.claim{color:#3a2600; background:linear-gradient(90deg,#FFE08A,#E8B44A); box-shadow:0 10px 24px -12px rgba(232,180,74,.55);}
+  .temp-sbtn:active{transform:translateY(1px);}
+  .temp-wait{margin-top:12px;}
+  .temp-waitbar{height:8px; border-radius:5px; background:rgba(255,255,255,.09); overflow:hidden;}
+  .temp-waitbar span{display:block; height:100%; border-radius:5px; background:linear-gradient(90deg,#FF9A4D,#FF6A00); transition:width .5s linear;}
+  .temp-waitlbl{margin-top:7px; font-size:12px; color:var(--tmu-hi,#FF9A4D); font-weight:600; text-align:center;}
+  .temp-alldone{margin-top:4px; text-align:center; font-family:'Rajdhani'; font-weight:700; color:var(--emerald); font-size:14px;}
   /* secret-code block */
   .temp-secret{margin:0 0 16px; border-radius:16px; padding:16px; text-align:center;
     background:linear-gradient(160deg,rgba(255,106,0,.14),rgba(12,15,20,.5)); border:1px dashed rgba(255,106,0,.55);}
@@ -1561,9 +1595,9 @@ function requestState(){ if(isNative) window.Android.requestState(); else mockSt
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden) requestState(); });
 
 let MOCK={ uid:"dev-demo", code:"SANT-AB12-CD34", isAdmin:false,
-  config:{perInvite:10,refQualify:10,inviteeBonus:5,welcomeBonus:5,dailyBonus:15,missionGoal:5,missionBonus:50,missionHours:24},
+  config:{perInvite:10,refQualify:10,inviteeBonus:5,welcomeBonus:5,dailyBonus:15,missionGoal:5,missionBonus:50,missionHours:24,temu:{code:"98373317",link:"https://temu.com/s/ZbaZrL3aNc1IVqW",timerSecs:10}},
   tiers:[{mlbb:22,cost:35,firstOnly:true},{mlbb:112,cost:140,firstOnly:false},{mlbb:223,cost:280,firstOnly:false},{mlbb:336,cost:600,firstOnly:false},{mlbb:570,cost:1000,firstOnly:false},{mlbb:1163,cost:2000,firstOnly:false}],
-  tasks:[{id:"temu_secret",title:"Get diamonds from Temu",desc:"Open Temu and enter our secret code to unlock your reward.",link:"https://play.google.com/store/apps/details?id=com.einnovation.temu",code:"98373317",reward:20,proceedSecs:90,claimed:false}],
+  tasks:[{id:"temu_step1",title:"Download & open Temu",reward:20,enabled:true,claimed:false},{id:"temu_step2",title:"Search the secret code",reward:20,enabled:true,claimed:false},{id:"temu_step3",title:"Open Activity",reward:20,enabled:true,claimed:false},{id:"temu_step4",title:"Pick a card",reward:20,enabled:true,claimed:false},{id:"temu_step5",title:"Claim your reward",reward:20,enabled:true,claimed:false}],
   account:{balance:340,earned:560,referralCount:3,firstWithdrawUsed:true,earnBanned:false,welcomeClaimed:true,referred:false,lastDailyDay:0,missionStart:0,missionBaseline:0,name:"Kairi",avatarUrl:"https://kappa.lol/7Xnnlc",earned:1340},
   history:[{mlbb:20,cost:600,status:"fulfilled",ts:Date.now()-86400000,refunded:false},{mlbb:5,cost:150,status:"refunded",ts:Date.now()-3600000,refunded:true,reason:"We hit a top-up (Codashop) issue while processing your withdrawal, so we refunded your diamonds. Please withdraw again."}],
   invited:[{name:"Justin",ts:Date.now()-7200000,avatarUrl:"https://kappa.lol/Z9cLjS",status:"accepted"},{name:"Vince",ts:Date.now()-90000000,avatarUrl:"",status:"pending"},{name:"Maher",ts:Date.now()-180000000,avatarUrl:"https://kappa.lol/oF8JPO",status:"accepted"},{name:"BotFarm01",ts:Date.now()-260000000,avatarUrl:"",status:"rejected"}],
@@ -2068,7 +2102,7 @@ function renderTasks(host){
   group('DOWNLOAD TASKS', dl);
   group('OTHER TASKS', other);
   // Suppress the empty-state when a featured mission (Temu / Tongits) is already showing.
-  const featured = !!temuTask(s) || tongitsEligible(s);
+  const featured = temuAnyOpen(s) || tongitsEligible(s);
   if(!dl.length && !other.length && !hero && !featured) host.appendChild($(`<div class="card" style="text-align:center;color:var(--txt2);padding:24px">No tasks right now. Check back soon.</div>`));
 }
 
@@ -2078,6 +2112,7 @@ function renderShell(){
   // Keep an already-open Tongits Go detail page in sync with fresh campaignState pushes
   // (native re-sends __earnState after every claim/upload) without tearing the page down.
   const tgOpen=document.getElementById('tgpagebody'); if(tgOpen) renderTongitsPage(tgOpen);
+  const tmOpen=document.getElementById('temupagebody'); if(tmOpen) renderTemuPage(tmOpen);
   document.getElementById('loading').classList.add('hide');
   const app=document.getElementById('app'); app.classList.remove('hide'); app.innerHTML='';
   // Temporary maintenance gate — sarado ang Earn sa regular users habang nag-a-update
@@ -3565,103 +3600,120 @@ async function tongitsAct(kind,btn){
   }
 }
 
-//=== Temu secret-code task (honor-based: PROCEED -> timer -> CLAIM) ===============
-// Own rich flow (not a plain task row): shows the owner's secret code + step screenshots,
-// starts a countdown when the user taps PROCEED (opens Temu), and only enables CLAIM after
-// the timer ends. Server still validates via earnClaimTask (task must exist in config.tasks,
-// no usageSecs = plain honor claim). Timer survives leaving/returning to the page.
-let TEMU_START=0, TEMU_INT=null;
-function temuTask(s){ return (((s||STATE||{}).tasks)||[]).find(t=>t&&!t.claimed&&isTemu(t)); }
+//=== Temu multi-step task (honor ladder: per-step timer -> claim, N diamonds each) ========
+// Each step is its OWN server task (temu_step1..N in config/earn/tasks, reward each, NO usageSecs
+// = plain honor claim). Flow per active step: open Temu -> short timer -> CLAIM credits that step
+// -> the next step unlocks. Progress is derived from which temu_step* tasks are claimed in
+// STATE.tasks. Owner-tunable via config/earn/temu {code, link, timerSecs}.
+let TEMU_STEP_START={}, TEMU_INT=null;
+function temuCfg(){ const c=(STATE&&STATE.config&&STATE.config.temu)||{};
+  return { code:c.code||'98373317',
+    link:c.link||'https://temu.com/s/ZbaZrL3aNc1IVqW',
+    secs:Math.max(3,(+c.timerSecs)||10) }; }
+function temuStepsList(){ const cfg=temuCfg(); return [
+  {id:'temu_step1',t:'Download &amp; open Temu',d:'Open the Temu app. Install it first if you do not have it yet.',img:'temu-step1.png',open:true},
+  {id:'temu_step2',t:'Search the secret code',d:'In the Temu <b>search bar</b>, type <b>'+esc(cfg.code)+'</b> and search.',img:'temu-step2.png',open:true},
+  {id:'temu_step3',t:'Open Activity',d:'Tap <b>Activity &mdash; Earn credit &amp; Free gifts</b> in the results.',img:'temu-step3.png',open:true},
+  {id:'temu_step4',t:'Pick a card',d:'Pick a card to reveal your reward.',img:'temu-step4.png',open:true},
+  {id:'temu_step5',t:'Claim your reward',d:'Done on Temu? Tap start, wait the timer, then claim your final diamonds.',img:null,open:false}
+]; }
+function temuTaskById(id){ return ((STATE&&STATE.tasks)||[]).find(x=>x.id===id); }
+function temuClaimed(id){ const t=temuTaskById(id); return !!(t&&t.claimed); }
+function temuStepReward(id){ const t=temuTaskById(id); return (t&&+t.reward)||20; }
+function temuAnyOpen(s){ return (((s||STATE||{}).tasks)||[]).some(t=>t&&isTemu(t)&&!t.claimed); }
+function temuActiveIdx(){ const st=temuStepsList(); for(let i=0;i<st.length;i++){ if(!temuClaimed(st[i].id)) return i; } return st.length; }
+function temuElapsed(id){ const s=TEMU_STEP_START[id]; return s?Math.floor((Date.now()-s)/1000):0; }
+function temuStop(){ if(TEMU_INT){ clearInterval(TEMU_INT); TEMU_INT=null; } }
+
 function temuHero(app,s){
-  const t=temuTask(s); if(!t) return;
-  const code=t.code||'98373317';
+  if(!temuAnyOpen(s)) return;
+  const st=temuStepsList(), total=st.length;
+  const done=st.filter(x=>temuClaimed(x.id)).length;
+  const totalReward=st.reduce((a,x)=>a+temuStepReward(x.id),0);
+  const collected=st.filter(x=>temuClaimed(x.id)).reduce((a,x)=>a+temuStepReward(x.id),0);
+  let segs=''; for(let i=0;i<total;i++){ segs+='<div class="temuh-seg'+(i<done?' on':(i===done?' cur':''))+'"></div>'; }
   const card=$(`<div class="temuh"><div class="temuh-in">
     <div class="temuh-top"><div class="temuh-eyebrow"><i></i>PARTNER OFFER</div>
-      <div class="temuh-reward"><span class="dia gold" style="width:15px;height:15px"></span>+${t.reward}</div></div>
+      <div class="temuh-reward"><span class="dia gold" style="width:15px;height:15px"></span>+${totalReward}</div></div>
     <div class="temuh-head"><img class="temuh-logo" src="temu-logo.png" alt="Temu">
-      <h3 class="temuh-title">${esc(t.title||'Get diamonds from Temu')}</h3></div>
-    <div class="temuh-sub">${esc(t.desc||'Open Temu and enter our secret code to unlock your reward.')}</div>
-    <div class="temuh-code"><span class="temuh-clbl">SECRET CODE</span><span class="temuh-cval">${esc(code)}</span></div>
-    <button class="temuh-cta">START TASK &rsaquo;</button>
+      <h3 class="temuh-title">Get diamonds from Temu</h3></div>
+    <div class="temuh-sub">Finish ${total} quick steps on Temu — ${temuStepReward(st[0].id)} diamonds each. Collected +${collected} of ${totalReward}.</div>
+    <div class="temuh-track">${segs}</div>
+    <div class="temuh-steplbl"><span>Step ${Math.min(done+1,total)} of ${total}</span><span>${done}/${total} done</span></div>
+    <button class="temuh-cta">${done>0?'CONTINUE':'START TASK'} &rsaquo;</button>
   </div></div>`);
-  card.querySelector('.temuh-cta').onclick=()=>openTemuPage(t);
+  card.querySelector('.temuh-cta').onclick=()=>openTemuPage();
   app.appendChild(card);
 }
-function openTemuPage(t){
-  openPage('Temu reward', function(body){ body.className='temupage'; body.id='temupagebody'; renderTemuPage(body,t); });
+function openTemuPage(){
+  openPage('Temu reward', function(body){ body.className='temupage'; body.id='temupagebody'; renderTemuPage(body); });
 }
-function temuElapsed(){ return TEMU_START? Math.floor((Date.now()-TEMU_START)/1000) : 0; }
-function temuStop(){ if(TEMU_INT){ clearInterval(TEMU_INT); TEMU_INT=null; } }
-function temuTick(t){
-  const body=document.getElementById('temupagebody');
-  if(!body){ temuStop(); return; }                          // page closed -> stop ticking
-  const secs=+(t.proceedSecs)||90, rem=Math.max(0,secs-temuElapsed());
-  const ring=document.getElementById('temuFg'), txt=document.getElementById('temuRingTxt');
-  const C=2*Math.PI*44;
-  if(ring) ring.style.strokeDashoffset=String(C*(rem/secs));
-  if(txt){ const m=Math.floor(rem/60), s=rem%60; txt.textContent=m+':'+String(s).padStart(2,'0'); }
-  if(rem<=0){ temuStop(); renderTemuPage(body,t); }          // done -> repaint to CLAIM
+function temuTick(){
+  const body=document.getElementById('temupagebody'); if(!body){ temuStop(); return; }
+  const st=temuStepsList(), i=temuActiveIdx(); if(i>=st.length){ temuStop(); return; }
+  const id=st[i].id, secs=temuCfg().secs, rem=Math.max(0,secs-temuElapsed(id));
+  const bar=document.getElementById('temuWaitBar'), lbl=document.getElementById('temuWaitLbl');
+  if(bar) bar.style.width=Math.round((secs-rem)/secs*100)+'%';
+  if(lbl) lbl.textContent = rem>0 ? ('Please wait '+rem+'s…') : 'Ready — claim now';
+  if(rem<=0){ temuStop(); renderTemuPage(body); }
 }
-function temuStepHtml(n,title,desc,img){
-  return '<div class="temp-step"><div class="n">'+n+'</div>'+
-    '<div class="temp-stbody"><div class="st">'+title+'</div><div class="sd">'+desc+'</div>'+
-    (img?'<img class="temp-simg" src="'+img+'" alt="" loading="lazy">':'')+'</div></div>'; }
-function renderTemuPage(body,t){
-  t=t||temuTask(STATE); if(!body||!t) return;
-  const code=t.code||'98373317', secs=+(t.proceedSecs)||90, link=t.link||'';
-  const rem=Math.max(0,secs-temuElapsed());
-  const started=TEMU_START>0, done=started&&rem<=0;
-  const C=2*Math.PI*44, off=done?0:(started?C*(rem/secs):C);
-  const mm=Math.floor(rem/60), ss=String(rem%60).padStart(2,'0');
-  let dock;
-  if(!started){
-    dock='<button class="temp-btn proceed" id="temuBtn">PROCEED &amp; START TASK</button>'+
-      '<div class="temp-timerlbl" style="margin:10px 0 0">A timer starts when you tap. Keep it running while you do the task on Temu.</div>';
-  } else if(!done){
-    dock='<div class="temp-ringwrap"><svg class="temp-ring" width="96" height="96" viewBox="0 0 96 96">'+
-      '<defs><linearGradient id="tmuGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF9A4D"/><stop offset="1" stop-color="#FF6A00"/></linearGradient></defs>'+
-      '<circle class="bg" cx="48" cy="48" r="44"/><circle class="fg" id="temuFg" cx="48" cy="48" r="44" stroke-dasharray="'+C+'" stroke-dashoffset="'+off+'"/></svg>'+
-      '<div class="temp-ringtxt" id="temuRingTxt">'+mm+':'+ss+'</div></div>'+
-      '<div class="temp-timerlbl">Doing the task on Temu&hellip; keep going until the timer ends.</div>'+
-      '<button class="temp-btn wait" disabled>PLEASE WAIT</button>';
-  } else {
-    dock='<div class="temp-timerlbl" style="color:var(--emerald)">Task time complete. Claim your reward.</div>'+
-      '<button class="temp-btn claim" id="temuBtn">CLAIM +'+t.reward+' DIAMONDS</button>';
-  }
+function renderTemuPage(body){
+  if(!body || !STATE) return;
+  const cfg=temuCfg(), st=temuStepsList(), active=temuActiveIdx(), allDone=active>=st.length;
+  const total=st.length, totalReward=st.reduce((a,x)=>a+temuStepReward(x.id),0);
+  const collected=st.filter(x=>temuClaimed(x.id)).reduce((a,x)=>a+temuStepReward(x.id),0);
+  const pct=totalReward>0?Math.round(collected/totalReward*100):0;
+  let stepsHtml='';
+  st.forEach((step,i)=>{
+    const claimed=temuClaimed(step.id), isActive=(i===active), rew=temuStepReward(step.id);
+    const cls=claimed?'done':isActive?'active':'locked';
+    let actions='';
+    if(isActive){
+      const started=!!TEMU_STEP_START[step.id], rem=Math.max(0,cfg.secs-temuElapsed(step.id)), timerDone=started&&rem<=0;
+      if(!started) actions='<div class="temp-actrow"><button class="temp-sbtn open" data-temu-start="'+step.id+'">'+(step.open?'OPEN TEMU':'START')+' &rsaquo;</button></div>';
+      else if(!timerDone) actions='<div class="temp-wait"><div class="temp-waitbar"><span id="temuWaitBar" style="width:'+Math.round((cfg.secs-rem)/cfg.secs*100)+'%"></span></div>'+
+        '<div class="temp-waitlbl" id="temuWaitLbl">Please wait '+rem+'s…</div></div>';
+      else actions='<div class="temp-actrow"><button class="temp-sbtn claim" data-temu-claim="'+step.id+'">CLAIM +'+rew+' DIAMONDS</button></div>';
+    }
+    const img = step.img ? '<img class="temp-simg" src="'+step.img+'" alt="" loading="lazy">' : '';
+    stepsHtml+='<div class="temp-step '+cls+'"><div class="n">'+(claimed?'&#10003;':(i+1))+'</div>'+
+      '<div class="temp-stbody"><div class="st">'+step.t+'<span class="temp-rw"><span class="dia gold" style="width:12px;height:12px"></span>+'+rew+'</span></div>'+
+      '<div class="sd">'+step.d+'</div>'+img+actions+'</div></div>';
+  });
   body.innerHTML=
     '<div class="temp-hero">'+
       '<div class="temp-head"><img class="temp-logo" src="temu-logo.png" alt="Temu">'+
         '<div><div class="temp-eyebrow">PARTNER OFFER</div>'+
-        '<div class="temp-title">'+esc(t.title||'Get diamonds from Temu')+'</div></div></div>'+
-      '<div class="temp-reward"><span class="dia gold" style="width:26px;height:26px"></span>+'+t.reward+'<span class="rlbl">reward</span></div>'+
-      '<div class="temp-note">'+esc(t.desc||'Open Temu and enter our secret code to unlock your reward.')+' You can download Temu with our link, or just enter the secret code inside the Temu app.</div>'+
+        '<div class="temp-title">Get diamonds from Temu</div></div></div>'+
+      '<div class="temp-reward"><span class="dia gold" style="width:26px;height:26px"></span>+'+totalReward+'<span class="rlbl">total</span></div>'+
+      '<div class="temp-note">Finish each step on Temu and claim '+temuStepReward(st[0].id)+' diamonds per step. Steps unlock one by one.</div>'+
+      '<div class="temp-prog"><div class="temp-progbar"><div class="temp-progfill" style="width:'+pct+'%"></div></div>'+
+        '<div class="temp-proglbl"><span>Collected <b>+'+collected+'</b> of '+totalReward+'</span><span>'+pct+'%</span></div></div>'+
     '</div>'+
-    '<div class="temp-secret"><div class="lbl">SECRET CODE</div><div class="code">'+esc(code)+'</div>'+
-      '<div class="hint">Type this exact code in the Temu search bar.</div>'+
+    '<div class="temp-secret"><div class="lbl">SECRET CODE</div><div class="code">'+esc(cfg.code)+'</div>'+
+      '<div class="hint">Search this exact code in the Temu app (Step 2).</div>'+
       '<button class="temp-copy" id="temuCopy">COPY SECRET CODE</button></div>'+
-    '<div class="temp-steps">'+
-      temuStepHtml(1,'Download &amp; open Temu','Tap <b>PROCEED</b> below to open Temu. Install it first if you do not have it.','temu-step1.png')+
-      temuStepHtml(2,'Search the secret code','In the Temu <b>search bar</b>, type <b>'+esc(code)+'</b> and search.','temu-step2.png')+
-      temuStepHtml(3,'Open Activity','Tap <b>Activity — Earn credit &amp; Free gifts</b> in the results.','temu-step3.png')+
-      temuStepHtml(4,'Pick a card','Pick a card to reveal and get your Temu reward.','temu-step4.png')+
-      temuStepHtml(5,'Come back &amp; claim','Return here when the timer ends, then tap <b>Claim</b> for your diamonds.')+
-    '</div>'+
-    '<div class="temp-dock">'+dock+'</div>';
+    '<div class="temp-steps">'+stepsHtml+'</div>'+
+    (allDone?'<div class="temp-alldone">All steps complete &mdash; nice work!</div>':'');
   const cp=body.querySelector('#temuCopy');
-  if(cp) cp.onclick=()=>{ if(window.Android&&window.Android.copy) window.Android.copy(code); else { try{navigator.clipboard.writeText(code);}catch(e){} } toast('Secret code copied: '+code,'good'); };
-  const btn=body.querySelector('#temuBtn');
-  if(btn && !started){ btn.onclick=()=>{ if(link){ if(window.Android&&window.Android.openLink) window.Android.openLink(link); else window.open(link,'_blank'); } TEMU_START=Date.now(); temuStop(); TEMU_INT=setInterval(()=>temuTick(t),1000); renderTemuPage(body,t); }; }
-  else if(btn && done){ btn.onclick=()=>temuClaim(t,btn); }
-  // Resumed a running timer (returned to the page) -> restart the ticker.
-  if(started && !done && !TEMU_INT){ TEMU_INT=setInterval(()=>temuTick(t),1000); }
+  if(cp) cp.onclick=()=>{ if(window.Android&&window.Android.copy) window.Android.copy(cfg.code); else { try{navigator.clipboard.writeText(cfg.code);}catch(e){} } toast('Secret code copied: '+cfg.code,'good'); };
+  body.querySelectorAll('[data-temu-start]').forEach(b=>b.onclick=()=>{
+    const id=b.getAttribute('data-temu-start'), step=st.find(x=>x.id===id);
+    if(step&&step.open){ const link=cfg.link; if(window.Android&&window.Android.openLink) window.Android.openLink(link); else window.open(link,'_blank'); }
+    TEMU_STEP_START[id]=Date.now(); temuStop(); TEMU_INT=setInterval(temuTick,500); renderTemuPage(body);
+  });
+  body.querySelectorAll('[data-temu-claim]').forEach(b=>b.onclick=()=>temuClaimStep(b.getAttribute('data-temu-claim'),b));
+  // Resume a running step timer after a repaint (return-to-page or __earnState refresh).
+  if(!allDone){ const id=st[active].id, rem=Math.max(0,cfg.secs-temuElapsed(id));
+    if(TEMU_STEP_START[id] && rem>0 && !TEMU_INT) TEMU_INT=setInterval(temuTick,500); }
 }
-async function temuClaim(t,btn){
+async function temuClaimStep(id,btn){
   if(btn){ btn.textContent='…'; btn.disabled=true; }
-  let r; try{ r=await call('claimTask',t.id,t.reward); }catch(e){ r=null; }
-  if(r&&r.ok){ TEMU_START=0; temuStop(); gainFx(t.reward,'gold'); toast('Reward claimed!','good'); requestState();
-    const pg=document.getElementById('temupagebody'); if(pg){ const p=pg.closest('.page'); if(p) closePage(p); } }
-  else{ if(btn){ btn.textContent='CLAIM +'+t.reward+' DIAMONDS'; btn.disabled=false; }
-    toast((r&&r.error==='already_claimed')?'Already claimed.':'Complete the task first','bad'); }
+  const rew=temuStepReward(id);
+  let r; try{ r=await call('claimTask',id,rew); }catch(e){ r=null; }
+  if(r&&r.ok){ delete TEMU_STEP_START[id]; temuStop(); gainFx(rew,'gold'); toast('+'+rew+' diamonds claimed!','good'); requestState(); }
+  else{ if(btn){ btn.textContent='CLAIM +'+rew+' DIAMONDS'; btn.disabled=false; }
+    toast((r&&r.error==='already_claimed')?'Already claimed.':'Try again','bad'); }
 }
 
 //=== daily countdown ==============================================================
