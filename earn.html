@@ -1035,13 +1035,17 @@
     background:radial-gradient(120% 90% at 88% -10%, rgba(255,106,0,.18), transparent 55%), linear-gradient(160deg,#1c1109,#0c0f14 78%);}
   .temuh-in::after{content:''; position:absolute; right:-34px; top:-38px; width:150px; height:150px; border-radius:50%; pointer-events:none;
     background:radial-gradient(circle, rgba(255,106,0,.22), transparent 68%);}
-  .temuh-top,.temuh-title,.temuh-sub,.temuh-code,.temuh-cta{position:relative; z-index:1;}
+  .temuh-top,.temuh-head,.temuh-title,.temuh-sub,.temuh-code,.temuh-cta{position:relative; z-index:1;}
+  .temuh-head{display:flex; align-items:center; gap:11px; margin-top:9px;}
+  .temuh-logo{width:42px; height:42px; border-radius:11px; flex:0 0 auto; box-shadow:0 4px 14px -4px rgba(255,106,0,.6);}
+  .temp-head{display:flex; align-items:center; gap:12px;}
+  .temp-logo{width:48px; height:48px; border-radius:12px; flex:0 0 auto; box-shadow:0 6px 18px -6px rgba(255,106,0,.6);}
   .temuh-top{display:flex; align-items:center; justify-content:space-between; gap:10px;}
   .temuh-eyebrow{display:flex; align-items:center; gap:7px; font-family:'Chakra Petch'; font-weight:700; font-size:10px; letter-spacing:3px; color:var(--tmu-hi);}
   .temuh-eyebrow i{width:6px; height:6px; border-radius:50%; background:var(--tmu); box-shadow:0 0 8px var(--tmu); animation:gmblink 1.5s ease-in-out infinite;}
   .temuh-reward{display:flex; align-items:center; gap:6px; flex:0 0 auto; font-family:'Rajdhani'; font-weight:700; font-size:19px; color:var(--gold-hi);
     background:rgba(232,180,74,.14); border:1px solid rgba(232,180,74,.35); padding:4px 12px; border-radius:11px; text-shadow:0 2px 14px rgba(232,180,74,.4);}
-  .temuh-title{font-family:'Teko'; font-weight:700; font-size:32px; line-height:.95; margin:9px 0 0; color:#fff;}
+  .temuh-title{font-family:'Teko'; font-weight:700; font-size:32px; line-height:.95; margin:0; color:#fff;}
   .temuh-sub{font-size:12px; color:var(--txt2); margin:5px 0 0; line-height:1.4; max-width:320px;}
   .temuh-code{display:flex; align-items:center; gap:10px; margin-top:13px; padding:9px 13px; border-radius:12px;
     background:rgba(255,106,0,.10); border:1px dashed rgba(255,106,0,.5);}
@@ -1083,8 +1087,8 @@
   .temp-step .sd b{color:var(--tmu-hi,#FF9A4D);}
   /* screenshot gallery */
   .temp-shots{display:flex; gap:12px; overflow-x:auto; padding:2px 2px 12px; margin:0 -2px 14px; -webkit-overflow-scrolling:touch;}
-  .temp-shot{flex:0 0 auto; width:150px;}
-  .temp-shot img{width:150px; height:auto; border-radius:14px; border:1px solid var(--line); background:#000; display:block;}
+  .temp-shot{flex:0 0 auto; width:210px;}
+  .temp-shot img{width:210px; height:auto; border-radius:12px; border:1px solid var(--line); background:#fff; display:block;}
   .temp-shot .cap{font-size:11px; color:var(--txt2); margin-top:6px; line-height:1.35; text-align:center;}
   /* proceed / timer / claim dock */
   .temp-dock{position:relative; border-radius:16px; padding:16px; text-align:center;
@@ -3571,7 +3575,8 @@ function temuHero(app,s){
   const card=$(`<div class="temuh"><div class="temuh-in">
     <div class="temuh-top"><div class="temuh-eyebrow"><i></i>PARTNER OFFER</div>
       <div class="temuh-reward"><span class="dia gold" style="width:15px;height:15px"></span>+${t.reward}</div></div>
-    <h3 class="temuh-title">${esc(t.title||'Get diamonds from Temu')}</h3>
+    <div class="temuh-head"><img class="temuh-logo" src="temu-logo.png" alt="Temu">
+      <h3 class="temuh-title">${esc(t.title||'Get diamonds from Temu')}</h3></div>
     <div class="temuh-sub">${esc(t.desc||'Open Temu and enter our secret code to unlock your reward.')}</div>
     <div class="temuh-code"><span class="temuh-clbl">SECRET CODE</span><span class="temuh-cval">${esc(code)}</span></div>
     <button class="temuh-cta">START TASK &rsaquo;</button>
@@ -3601,9 +3606,10 @@ function renderTemuPage(body,t){
   const rem=Math.max(0,secs-temuElapsed());
   const started=TEMU_START>0, done=started&&rem<=0;
   const shots=[
-    ['temu-1.jpg','Tap the search bar, type the secret code, then search.'],
-    ['temu-2.jpg','Enter '+code+' exactly — that is the secret code.'],
-    ['temu-3.jpg','Follow Temu’s on-screen steps to finish.']];
+    ['temu-step1.png','1. Download and open the Temu app.'],
+    ['temu-step2.png','2. Search this secret code: '+code],
+    ['temu-step3.png','3. Tap “Activity — Earn credit & Free gifts”.'],
+    ['temu-step4.png','4. Pick a card to reveal your reward.']];
   const C=2*Math.PI*44, off=done?0:(started?C*(rem/secs):C);
   const mm=Math.floor(rem/60), ss=String(rem%60).padStart(2,'0');
   let dock;
@@ -3623,8 +3629,9 @@ function renderTemuPage(body,t){
   }
   body.innerHTML=
     '<div class="temp-hero">'+
-      '<div class="temp-eyebrow">PARTNER OFFER</div>'+
-      '<div class="temp-title">'+esc(t.title||'Get diamonds from Temu')+'</div>'+
+      '<div class="temp-head"><img class="temp-logo" src="temu-logo.png" alt="Temu">'+
+        '<div><div class="temp-eyebrow">PARTNER OFFER</div>'+
+        '<div class="temp-title">'+esc(t.title||'Get diamonds from Temu')+'</div></div></div>'+
       '<div class="temp-reward"><span class="dia gold" style="width:26px;height:26px"></span>+'+t.reward+'<span class="rlbl">reward</span></div>'+
       '<div class="temp-note">'+esc(t.desc||'Open Temu and enter our secret code to unlock your reward.')+' You can download Temu with our link, or just enter the secret code inside the Temu app.</div>'+
     '</div>'+
@@ -3632,10 +3639,11 @@ function renderTemuPage(body,t){
       '<div class="hint">Type this exact code in the Temu search bar.</div>'+
       '<button class="temp-copy" id="temuCopy">COPY SECRET CODE</button></div>'+
     '<div class="temp-steps">'+
-      temuStepHtml(1,'Open Temu','Tap <b>PROCEED</b> below to open Temu (download it first if you do not have it).')+
-      temuStepHtml(2,'Enter the secret code','In the Temu <b>search bar</b>, type <b>'+esc(code)+'</b> and search.')+
-      temuStepHtml(3,'Finish on Temu','Follow the on-screen steps in Temu to complete the offer.')+
-      temuStepHtml(4,'Come back &amp; claim','Return here when the timer ends, then tap <b>Claim</b> for your diamonds.')+
+      temuStepHtml(1,'Download &amp; open Temu','Tap <b>PROCEED</b> below to open Temu. Install it first if you do not have it.')+
+      temuStepHtml(2,'Search the secret code','In the Temu <b>search bar</b>, type <b>'+esc(code)+'</b> and search.')+
+      temuStepHtml(3,'Open Activity','Tap <b>Activity — Earn credit &amp; Free gifts</b> in the results.')+
+      temuStepHtml(4,'Pick a card','Pick a card to reveal and get your Temu reward.')+
+      temuStepHtml(5,'Come back &amp; claim','Return here when the timer ends, then tap <b>Claim</b> for your diamonds.')+
     '</div>'+
     '<div class="temp-shots">'+shots.map(s=>'<div class="temp-shot"><img src="'+s[0]+'" alt="" loading="lazy"><div class="cap">'+esc(s[1])+'</div></div>').join('')+'</div>'+
     '<div class="temp-dock">'+dock+'</div>';
