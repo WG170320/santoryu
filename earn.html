@@ -1495,7 +1495,6 @@
   <div id="payoutpop" class="ppop"></div>
 
 <script>
-const CLIPTOK_LOGO="https://play-lh.googleusercontent.com/CISn2zllaJv69FL7lgoRKGztQfZLMdLs30_0ARfz0qryyzokSahvGI-qw5nrbmfkel4KyHVhFpI6H92hPZb9qA=w96";
 //=== icons (inline SVG) ===========================================================
 const IC={
   copy:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>',
@@ -1626,7 +1625,6 @@ function goalTier(s){ const at=activeTiers(s),b=s.account.balance; return at.fin
 // goal anytime para makita ang progress. Default = susunod na tier na ipinapaipon (goalTier).
 function ensureSel(s){ const at=activeTiers(s); if(!at.length) return null; if(WSEL==null||!at.find(t=>t.cost===WSEL)) WSEL=goalTier(s).cost; return at.find(t=>t.cost===WSEL)||at[0]; }
 function taskIcon(t){
-  if(t.id.includes('cliptok')||(t.link||'').includes('com.warlito.clipto')&&t.id.includes('download')) return `<img src="${CLIPTOK_LOGO}" alt="">`;
   if(t.logo) return `<img src="${esc(t.logo)}" alt="">`;
   if(t.id.includes('rate')||/review|star/i.test(t.title)) return II('ic-rate');
   if(isSocial(t)) return `<svg viewBox="0 0 24 24" width="20" height="20" fill="#1877F2"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.15 8.44 9.9v-7H7.9v-2.9h2.54V9.84c0-2.52 1.5-3.91 3.78-3.91 1.1 0 2.24.2 2.24.2v2.47h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.44 2.9h-2.34v7c4.78-.75 8.44-4.9 8.44-9.9Z"/></svg>`;
