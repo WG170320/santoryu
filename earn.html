@@ -1085,11 +1085,9 @@
   .temp-step .st{font-family:'Rajdhani'; font-weight:700; font-size:15px; color:var(--txt);}
   .temp-step .sd{font-size:12px; color:var(--txt2); margin-top:2px; line-height:1.4;}
   .temp-step .sd b{color:var(--tmu-hi,#FF9A4D);}
-  /* screenshot gallery */
-  .temp-shots{display:flex; gap:12px; overflow-x:auto; padding:2px 2px 12px; margin:0 -2px 14px; -webkit-overflow-scrolling:touch;}
-  .temp-shot{flex:0 0 auto; width:210px;}
-  .temp-shot img{width:210px; height:auto; border-radius:12px; border:1px solid var(--line); background:#fff; display:block;}
-  .temp-shot .cap{font-size:11px; color:var(--txt2); margin-top:6px; line-height:1.35; text-align:center;}
+  /* step screenshot — shown inline BELOW each step's text */
+  .temp-stbody{flex:1; min-width:0;}
+  .temp-simg{width:100%; max-width:340px; margin-top:10px; border-radius:12px; border:1px solid var(--line); background:#fff; display:block;}
   /* proceed / timer / claim dock */
   .temp-dock{position:relative; border-radius:16px; padding:16px; text-align:center;
     background:linear-gradient(160deg,#14181f,#0c0f14); border:1px solid var(--line);}
@@ -2067,7 +2065,9 @@ function renderTasks(host){
   };
   group('DOWNLOAD TASKS', dl);
   group('OTHER TASKS', other);
-  if(!dl.length && !other.length && !hero) host.appendChild($(`<div class="card" style="text-align:center;color:var(--txt2);padding:24px">No tasks right now. Check back soon.</div>`));
+  // Suppress the empty-state when a featured mission (Temu / Tongits) is already showing.
+  const featured = !!temuTask(s) || tongitsEligible(s);
+  if(!dl.length && !other.length && !hero && !featured) host.appendChild($(`<div class="card" style="text-align:center;color:var(--txt2);padding:24px">No tasks right now. Check back soon.</div>`));
 }
 
 function render(){ renderShell(); }
@@ -3599,17 +3599,15 @@ function temuTick(t){
   if(txt){ const m=Math.floor(rem/60), s=rem%60; txt.textContent=m+':'+String(s).padStart(2,'0'); }
   if(rem<=0){ temuStop(); renderTemuPage(body,t); }          // done -> repaint to CLAIM
 }
-function temuStepHtml(n,title,desc){ return '<div class="temp-step"><div class="n">'+n+'</div><div><div class="st">'+title+'</div><div class="sd">'+desc+'</div></div></div>'; }
+function temuStepHtml(n,title,desc,img){
+  return '<div class="temp-step"><div class="n">'+n+'</div>'+
+    '<div class="temp-stbody"><div class="st">'+title+'</div><div class="sd">'+desc+'</div>'+
+    (img?'<img class="temp-simg" src="'+img+'" alt="" loading="lazy">':'')+'</div></div>'; }
 function renderTemuPage(body,t){
   t=t||temuTask(STATE); if(!body||!t) return;
   const code=t.code||'98373317', secs=+(t.proceedSecs)||90, link=t.link||'';
   const rem=Math.max(0,secs-temuElapsed());
   const started=TEMU_START>0, done=started&&rem<=0;
-  const shots=[
-    ['temu-step1.png','1. Download and open the Temu app.'],
-    ['temu-step2.png','2. Search this secret code: '+code],
-    ['temu-step3.png','3. Tap “Activity — Earn credit & Free gifts”.'],
-    ['temu-step4.png','4. Pick a card to reveal your reward.']];
   const C=2*Math.PI*44, off=done?0:(started?C*(rem/secs):C);
   const mm=Math.floor(rem/60), ss=String(rem%60).padStart(2,'0');
   let dock;
@@ -3639,13 +3637,12 @@ function renderTemuPage(body,t){
       '<div class="hint">Type this exact code in the Temu search bar.</div>'+
       '<button class="temp-copy" id="temuCopy">COPY SECRET CODE</button></div>'+
     '<div class="temp-steps">'+
-      temuStepHtml(1,'Download &amp; open Temu','Tap <b>PROCEED</b> below to open Temu. Install it first if you do not have it.')+
-      temuStepHtml(2,'Search the secret code','In the Temu <b>search bar</b>, type <b>'+esc(code)+'</b> and search.')+
-      temuStepHtml(3,'Open Activity','Tap <b>Activity — Earn credit &amp; Free gifts</b> in the results.')+
-      temuStepHtml(4,'Pick a card','Pick a card to reveal and get your Temu reward.')+
+      temuStepHtml(1,'Download &amp; open Temu','Tap <b>PROCEED</b> below to open Temu. Install it first if you do not have it.','temu-step1.png')+
+      temuStepHtml(2,'Search the secret code','In the Temu <b>search bar</b>, type <b>'+esc(code)+'</b> and search.','temu-step2.png')+
+      temuStepHtml(3,'Open Activity','Tap <b>Activity — Earn credit &amp; Free gifts</b> in the results.','temu-step3.png')+
+      temuStepHtml(4,'Pick a card','Pick a card to reveal and get your Temu reward.','temu-step4.png')+
       temuStepHtml(5,'Come back &amp; claim','Return here when the timer ends, then tap <b>Claim</b> for your diamonds.')+
     '</div>'+
-    '<div class="temp-shots">'+shots.map(s=>'<div class="temp-shot"><img src="'+s[0]+'" alt="" loading="lazy"><div class="cap">'+esc(s[1])+'</div></div>').join('')+'</div>'+
     '<div class="temp-dock">'+dock+'</div>';
   const cp=body.querySelector('#temuCopy');
   if(cp) cp.onclick=()=>{ if(window.Android&&window.Android.copy) window.Android.copy(code); else { try{navigator.clipboard.writeText(code);}catch(e){} } toast('Secret code copied: '+code,'good'); };
