@@ -3675,7 +3675,10 @@ function renderTemuPage(body){
         '<div class="temp-waitlbl" id="temuWaitLbl">Please wait '+rem+'s…</div></div>';
       else actions='<div class="temp-actrow"><button class="temp-sbtn claim" data-temu-claim="'+step.id+'">CLAIM +'+rew+' DIAMONDS</button></div>';
     }
-    const img = step.img ? '<img class="temp-simg" src="'+step.img+'" alt="" loading="lazy">' : '';
+    // Show the guide screenshot only for the ACTIVE step — it appears the moment a step
+    // unlocks (e.g. the Download step) and moves to the next step as they progress. Done/locked
+    // steps stay compact. No lazy-loading (WebView often never triggers it below the fold).
+    const img = (step.img && isActive) ? '<img class="temp-simg" src="'+step.img+'" alt="">' : '';
     stepsHtml+='<div class="temp-step '+cls+'"><div class="n">'+(claimed?'&#10003;':(i+1))+'</div>'+
       '<div class="temp-stbody"><div class="st">'+step.t+'<span class="temp-rw"><span class="dia gold" style="width:12px;height:12px"></span>+'+rew+'</span></div>'+
       '<div class="sd">'+step.d+'</div>'+img+actions+'</div></div>';
