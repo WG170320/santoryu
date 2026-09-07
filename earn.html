@@ -1344,11 +1344,20 @@
   .wd-step{display:flex; align-items:center; gap:9px; margin:20px 2px 11px; font-family:'Chakra Petch',sans-serif; font-weight:700; font-size:13.5px; color:var(--txt);}
   .wd-stepn{display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:50%; background:var(--gold); color:#1a1400; font-size:12px; font-weight:800;}
   .wd-mlist{display:flex; flex-direction:column; gap:9px;}
-  .wd-m{display:flex; flex-direction:column; align-items:flex-start; gap:2px; text-align:left; padding:14px 16px; border-radius:var(--rad-sm); background:var(--surf); border:1px solid var(--line); cursor:pointer; transition:border-color .15s,background .15s;}
-  .wd-m.sel{border-color:var(--gold); background:rgba(232,180,74,.07);}
+  .wd-m{display:flex; flex-direction:row; align-items:center; gap:13px; text-align:left; padding:12px 14px; border-radius:var(--rad-sm); background:var(--surf); border:1px solid var(--line); cursor:pointer; transition:border-color .12s,background .12s,box-shadow .12s,transform .05s;}
+  .wd-m:active{transform:scale(.99);}
+  .wd-m.sel{border-color:var(--gold); background:rgba(232,180,74,.08); box-shadow:0 10px 26px -16px rgba(232,180,74,.55);}
+  .wm-logo{width:42px; height:42px; border-radius:11px; flex:0 0 auto; object-fit:cover; background:#0d1218; border:1px solid rgba(255,255,255,.07);}
+  .wm-tx{flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:2px;}
   .wm-name{font-family:'Chakra Petch',sans-serif; font-weight:700; font-size:15px; color:var(--txt);}
   .wm-rate{font-size:12px; color:var(--txt2);}
   .wd-m.sel .wm-rate{color:var(--gold-hi);}
+  .wm-ck{flex:0 0 auto; width:22px; height:22px; border-radius:50%; border:2px solid var(--line); position:relative; transition:border-color .12s,background .12s;}
+  .wd-m.sel .wm-ck{border-color:var(--gold); background:var(--gold);}
+  .wd-m.sel .wm-ck::after{content:''; position:absolute; left:6px; top:2.5px; width:5px; height:10px; border:solid #1a1400; border-width:0 2.5px 2.5px 0; transform:rotate(45deg);}
+  .wd-tier:active{transform:scale(.97);}
+  .wd-tier{transition:border-color .12s,background .12s,transform .05s;}
+  .wd-tier.sel{box-shadow:0 8px 20px -14px rgba(232,180,74,.5);}
   .wd-tiers{display:grid; grid-template-columns:repeat(3,1fr); gap:8px;}
   .wd-tier{display:flex; flex-direction:column; align-items:center; gap:4px; padding:14px 4px; border-radius:var(--rad-sm); background:var(--surf); border:1px solid var(--line); cursor:pointer; transition:border-color .15s;}
   .wd-tier.sel{border-color:var(--gold); background:rgba(232,180,74,.07);}
@@ -1738,6 +1747,9 @@ function openWithdrawPage(){ openPage('Withdraw', body=>paintWithdraw(body)); }
 // Payout in the target unit for a tier under the current method. 30 diamonds = P1 / 1 Robux.
 // Per-method amount options. Pricing: 30 gold diamonds = 1 unit (P1 / 1 Robux / 1 MLBB diamond).
 const WD_OPTS={ mlbb:[5,20,50,100,250,500], roblox:[50,100,200,400,800], gcash:[500,750,1000] };
+// Brand logos per method (para premium ang feel). MLBB = blue diamond emblem (ito mismo ang
+// binibigay na MLBB Diamonds); GCash + Roblox = tunay na app logo.
+const WLOGO={ mlbb:'gem-blue.png', gcash:'logo-gcash.png', roblox:'logo-roblox.png' };
 function wdAmtLabel(method,u){ return method==='gcash' ? ('₱'+(+u).toLocaleString()) : ((+u).toLocaleString()+(method==='roblox'?' Robux':' MLBB')); }
 function wdSelUnits(){ const o=WD_OPTS[WMETHOD]||WD_OPTS.mlbb; if(!o.includes(WSEL)) WSEL=o[0]; return WSEL; }
 // Full Withdraw PAGE (no dialog): balance + 3 method cards + per-method amount + destination + one CTA.
@@ -1752,7 +1764,7 @@ function paintWithdraw(body){
   body.appendChild($(`<div class="wd-step"><span class="wd-stepn">1</span>Choose method</div>`));
   const M=[['mlbb','MLBB Diamonds','Min 5 &middot; to your Game ID'],['gcash','GCash','Min &#8369;500 &middot; to your number'],['roblox','Roblox','Min 50 Robux &middot; to your username']];
   const methods=$(`<div class="wd-mlist"></div>`);
-  M.forEach(([id,name,rate])=>{ const el=$(`<button type="button" class="wd-m ${id===WMETHOD?'sel':''}"><div class="wm-name">${name}</div><div class="wm-rate">${rate}</div></button>`);
+  M.forEach(([id,name,rate])=>{ const el=$(`<button type="button" class="wd-m ${id===WMETHOD?'sel':''}"><img class="wm-logo" src="${WLOGO[id]}" alt=""><div class="wm-tx"><div class="wm-name">${name}</div><div class="wm-rate">${rate}</div></div><span class="wm-ck"></span></button>`);
     el.onclick=()=>{ if(WMETHOD!==id){ WMETHOD=id; WSEL=WD_OPTS[id][0]; WD_F={gid:'',srv:'',nm:''}; paintWithdraw(body); } };
     methods.appendChild(el); });
   body.appendChild(methods);
@@ -1764,7 +1776,9 @@ function paintWithdraw(body){
     const el=$(`<button type="button" class="wd-tier ${u===WSEL?'sel':''} ${ok?'':'poor'}">
       <div class="wt-pay">${wdAmtLabel(WMETHOD,u)}</div>
       <div class="wt-cost"><span class="dia gold" style="width:11px;height:11px"></span>${cost.toLocaleString()}</div></button>`);
-    el.onclick=()=>{ WSEL=u; paintWithdraw(body); };
+    // INSTANT — walang full repaint (mabilis/hindi delay): i-toggle lang ang selection + CTA.
+    el.onclick=()=>{ if(WSEL===u) return; WSEL=u;
+      tiers.querySelectorAll('.wd-tier').forEach(t=>t.classList.remove('sel')); el.classList.add('sel'); syncCta(); };
     tiers.appendChild(el);
   });
   body.appendChild(tiers);
@@ -1786,11 +1800,16 @@ function paintWithdraw(body){
   bind('gid','gid'); bind('srv','srv'); bind('nm','nm');
   if(WMETHOD==='mlbb') wireMlbb(dest.querySelector('#gid'),dest.querySelector('#srv'),dest.querySelector('#mlchk'));
   const err=$(`<div class="err" id="we" style="margin:12px 2px 0"></div>`); body.appendChild(err);
-  // CTA
-  const cost=units*RATE;
-  const can=a.balance>=cost && !a.earnBanned;
-  const cta=$(`<button class="wd-cta ${can?'':'off'}">${a.earnBanned?'Earning disabled':can?('Withdraw '+wdAmtLabel(WMETHOD,units)):('Collect '+(cost-a.balance).toLocaleString()+' more diamonds')}</button>`);
+  // CTA — updated INSTANTLY by syncCta() kapag nagpalit ng amount (walang page repaint).
+  const cta=$(`<button class="wd-cta"></button>`);
+  function syncCta(){ const u=wdSelUnits(), c=u*RATE, can=a.balance>=c && !a.earnBanned;
+    cta.className='wd-cta '+(can?'':'off');
+    cta.textContent = a.earnBanned ? 'Earning disabled'
+      : can ? ('Withdraw '+wdAmtLabel(WMETHOD,u))
+      : ('Collect '+(c-a.balance).toLocaleString()+' more diamonds'); }
+  syncCta();
   cta.onclick=async()=>{
+    const units=wdSelUnits(), cost=units*RATE, can=a.balance>=cost && !a.earnBanned;
     if(a.earnBanned){ err.textContent='Earning is disabled on this account.'; return; }
     if(a.balance<cost){ toast('Collect '+(cost-a.balance).toLocaleString()+' more','bad'); return; }
     const gid=(WD_F.gid||'').trim(); let srv='';
