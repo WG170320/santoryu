@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>Santoryu — Earn</title>
+<title>Santoryu Reborn — Earn</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Rajdhani:wght@500;600;700&family=Teko:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -1027,6 +1027,83 @@
   @keyframes tghshine{0%{left:-55%}55%,100%{left:135%}}
   .tgh-claim:active{transform:translateY(1px);}
   @media (prefers-reduced-motion:reduce){ .tgh{animation:none} .tgh-eyebrow i{animation:none} .tgh-seg.cur::after{animation:none} .tgh-claim::after{display:none} }
+  /* ── Temu secret-code task (warm orange accent, honor-based) ── */
+  .temuh{--tmu:#FF6A00; --tmu-hi:#FF9A4D; margin:6px 0 18px; border-radius:20px; padding:1.6px;
+    background:linear-gradient(120deg,#FFB874,#FF6A00,#B33F00,#FF6A00,#FFB874); background-size:220% 220%;
+    animation:gmfoil 8s linear infinite; box-shadow:0 16px 44px -18px rgba(255,106,0,.5);}
+  .temuh-in{position:relative; overflow:hidden; border-radius:18.6px; padding:18px 17px;
+    background:radial-gradient(120% 90% at 88% -10%, rgba(255,106,0,.18), transparent 55%), linear-gradient(160deg,#1c1109,#0c0f14 78%);}
+  .temuh-in::after{content:''; position:absolute; right:-34px; top:-38px; width:150px; height:150px; border-radius:50%; pointer-events:none;
+    background:radial-gradient(circle, rgba(255,106,0,.22), transparent 68%);}
+  .temuh-top,.temuh-title,.temuh-sub,.temuh-code,.temuh-cta{position:relative; z-index:1;}
+  .temuh-top{display:flex; align-items:center; justify-content:space-between; gap:10px;}
+  .temuh-eyebrow{display:flex; align-items:center; gap:7px; font-family:'Chakra Petch'; font-weight:700; font-size:10px; letter-spacing:3px; color:var(--tmu-hi);}
+  .temuh-eyebrow i{width:6px; height:6px; border-radius:50%; background:var(--tmu); box-shadow:0 0 8px var(--tmu); animation:gmblink 1.5s ease-in-out infinite;}
+  .temuh-reward{display:flex; align-items:center; gap:6px; flex:0 0 auto; font-family:'Rajdhani'; font-weight:700; font-size:19px; color:var(--gold-hi);
+    background:rgba(232,180,74,.14); border:1px solid rgba(232,180,74,.35); padding:4px 12px; border-radius:11px; text-shadow:0 2px 14px rgba(232,180,74,.4);}
+  .temuh-title{font-family:'Teko'; font-weight:700; font-size:32px; line-height:.95; margin:9px 0 0; color:#fff;}
+  .temuh-sub{font-size:12px; color:var(--txt2); margin:5px 0 0; line-height:1.4; max-width:320px;}
+  .temuh-code{display:flex; align-items:center; gap:10px; margin-top:13px; padding:9px 13px; border-radius:12px;
+    background:rgba(255,106,0,.10); border:1px dashed rgba(255,106,0,.5);}
+  .temuh-clbl{font-family:'Chakra Petch'; font-weight:700; font-size:10px; letter-spacing:2px; color:var(--tmu-hi);}
+  .temuh-cval{font-family:'Rajdhani'; font-weight:700; font-size:20px; letter-spacing:3px; color:#fff; margin-left:auto;}
+  .temuh-cta{position:relative; overflow:hidden; width:100%; margin-top:14px; border:none; border-radius:13px; padding:15px;
+    font-family:'Chakra Petch'; font-weight:700; letter-spacing:2px; font-size:15px; color:#fff; cursor:pointer;
+    background:linear-gradient(90deg,#FF8A34,#FF6A00); box-shadow:0 12px 30px -10px rgba(255,106,0,.6);}
+  .temuh-cta::after{content:''; position:absolute; top:0; left:-55%; width:34%; height:100%; pointer-events:none;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent); transform:skewX(-20deg); animation:tghshine 2.8s ease-in-out infinite;}
+  .temuh-cta:active{transform:translateY(1px);}
+  /* Temu detail page */
+  .temupage{padding:4px 2px 30px;}
+  .temp-hero{position:relative; overflow:hidden; border-radius:18px; padding:20px 18px; margin-bottom:16px;
+    background:radial-gradient(120% 100% at 90% -10%, rgba(255,106,0,.20), transparent 55%), linear-gradient(160deg,#1c1109,#0c0f14 80%);
+    border:1px solid rgba(255,106,0,.35); box-shadow:0 14px 40px -18px rgba(255,106,0,.4);}
+  .temp-eyebrow{font-family:'Chakra Petch'; font-weight:700; font-size:10px; letter-spacing:3px; color:var(--tmu-hi,#FF9A4D);}
+  .temp-title{font-family:'Teko'; font-weight:700; font-size:30px; line-height:1; margin:8px 0 0; color:#fff;}
+  .temp-reward{display:flex; align-items:center; gap:8px; margin-top:10px; font-family:'Teko'; font-weight:700; font-size:34px; color:var(--gold-hi);}
+  .temp-reward .rlbl{font-family:'Rajdhani'; font-weight:600; font-size:12px; letter-spacing:.4px; color:var(--txt2); text-transform:uppercase; align-self:flex-end; margin-bottom:7px;}
+  .temp-note{font-size:12px; color:var(--txt2); margin-top:8px; line-height:1.45;}
+  /* secret-code block */
+  .temp-secret{margin:0 0 16px; border-radius:16px; padding:16px; text-align:center;
+    background:linear-gradient(160deg,rgba(255,106,0,.14),rgba(12,15,20,.5)); border:1px dashed rgba(255,106,0,.55);}
+  .temp-secret .lbl{font-family:'Chakra Petch'; font-weight:700; font-size:11px; letter-spacing:3px; color:var(--tmu-hi,#FF9A4D);}
+  .temp-secret .code{font-family:'Teko'; font-weight:700; font-size:44px; letter-spacing:8px; color:#fff; line-height:1; margin:6px 0 3px;}
+  .temp-secret .hint{font-size:11px; color:var(--txt2);}
+  .temp-copy{margin-top:11px; width:100%; border:1px solid rgba(255,106,0,.4); background:rgba(255,106,0,.12); color:#fff;
+    font-family:'Chakra Petch'; font-weight:700; letter-spacing:1.5px; font-size:13px; padding:11px; border-radius:11px; cursor:pointer;}
+  .temp-copy:active{transform:translateY(1px);}
+  /* steps */
+  .temp-steps{display:flex; flex-direction:column; gap:10px; margin-bottom:16px;}
+  .temp-step{display:flex; gap:12px; align-items:flex-start; padding:13px 14px; border-radius:14px;
+    background:var(--surf); border:1px solid var(--line);}
+  .temp-step .n{flex:0 0 auto; width:26px; height:26px; border-radius:50%; display:grid; place-items:center;
+    font-family:'Rajdhani'; font-weight:700; font-size:14px; color:#fff; background:linear-gradient(160deg,#FF8A34,#FF6A00);}
+  .temp-step .st{font-family:'Rajdhani'; font-weight:700; font-size:15px; color:var(--txt);}
+  .temp-step .sd{font-size:12px; color:var(--txt2); margin-top:2px; line-height:1.4;}
+  .temp-step .sd b{color:var(--tmu-hi,#FF9A4D);}
+  /* screenshot gallery */
+  .temp-shots{display:flex; gap:12px; overflow-x:auto; padding:2px 2px 12px; margin:0 -2px 14px; -webkit-overflow-scrolling:touch;}
+  .temp-shot{flex:0 0 auto; width:150px;}
+  .temp-shot img{width:150px; height:auto; border-radius:14px; border:1px solid var(--line); background:#000; display:block;}
+  .temp-shot .cap{font-size:11px; color:var(--txt2); margin-top:6px; line-height:1.35; text-align:center;}
+  /* proceed / timer / claim dock */
+  .temp-dock{position:relative; border-radius:16px; padding:16px; text-align:center;
+    background:linear-gradient(160deg,#14181f,#0c0f14); border:1px solid var(--line);}
+  .temp-ringwrap{position:relative; width:96px; height:96px; margin:2px auto 10px;}
+  .temp-ring{transform:rotate(-90deg);}
+  .temp-ring .bg{fill:none; stroke:rgba(255,255,255,.09); stroke-width:8;}
+  .temp-ring .fg{fill:none; stroke:url(#tmuGrad); stroke-width:8; stroke-linecap:round; transition:stroke-dashoffset .95s linear;}
+  .temp-ringtxt{position:absolute; inset:0; display:grid; place-items:center; font-family:'Teko'; font-weight:700; font-size:26px; color:#fff;}
+  .temp-timerlbl{font-size:12px; color:var(--txt2); margin-bottom:12px;}
+  .temp-btn{position:relative; overflow:hidden; width:100%; border:none; border-radius:13px; padding:16px;
+    font-family:'Chakra Petch'; font-weight:700; letter-spacing:2px; font-size:15px; cursor:pointer;}
+  .temp-btn.proceed{color:#fff; background:linear-gradient(90deg,#FF8A34,#FF6A00); box-shadow:0 12px 30px -10px rgba(255,106,0,.6);}
+  .temp-btn.claim{color:#3a2600; background:linear-gradient(90deg,#FFE08A,#E8B44A); box-shadow:0 12px 30px -10px rgba(232,180,74,.55);}
+  .temp-btn.wait{color:var(--txt2); background:rgba(255,255,255,.06); border:1px solid var(--line); cursor:default;}
+  .temp-btn.claim::after,.temp-btn.proceed::after{content:''; position:absolute; top:0; left:-55%; width:34%; height:100%; pointer-events:none;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent); transform:skewX(-20deg); animation:tghshine 2.8s ease-in-out infinite;}
+  .temp-btn:active{transform:translateY(1px);}
+  @media (prefers-reduced-motion:reduce){ .temuh{animation:none} .temuh-eyebrow i{animation:none} .temuh-cta::after,.temp-btn::after{display:none} }
   /* Tongits Go detail page — 6-step ladder */
   .tgpage{padding:4px 2px 30px;}
   .tgp-hero{position:relative; overflow:hidden; border-radius:18px; padding:20px 18px; margin-bottom:16px;
@@ -1481,9 +1558,9 @@ function requestState(){ if(isNative) window.Android.requestState(); else mockSt
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden) requestState(); });
 
 let MOCK={ uid:"dev-demo", code:"SANT-AB12-CD34", isAdmin:false,
-  config:{perInvite:15,refQualify:10,inviteeBonus:5,welcomeBonus:5,dailyBonus:15,missionGoal:5,missionBonus:50,missionHours:24},
-  tiers:[{mlbb:5,cost:150,firstOnly:false},{mlbb:20,cost:600,firstOnly:false},{mlbb:50,cost:1500,firstOnly:false},{mlbb:100,cost:3000,firstOnly:false},{mlbb:250,cost:7500,firstOnly:false},{mlbb:500,cost:15000,firstOnly:false}],
-  tasks:[{id:"download_cliptok",title:"Download ClipTok",desc:"Install our partner app — Video & Photo Saver.",link:"https://play.google.com/store/apps/details?id=com.warlito.clipto",logo:"",reward:10,claimed:false},{id:"rate_5star",title:"Rate us 5 stars",desc:"Write an honest review on Google Play.",link:"https://play.google.com/store/apps/details?id=com.warlito.clipto",logo:"",reward:5,claimed:false},{id:"fb_heart_post",title:"Heart our Facebook post",desc:"Tap the heart (like) on our Facebook post to support us.",link:"https://www.facebook.com/share/p/1UnZBCNUnZ/",logo:"",reward:5,claimed:false}],
+  config:{perInvite:10,refQualify:10,inviteeBonus:5,welcomeBonus:5,dailyBonus:15,missionGoal:5,missionBonus:50,missionHours:24},
+  tiers:[{mlbb:22,cost:35,firstOnly:true},{mlbb:112,cost:140,firstOnly:false},{mlbb:223,cost:280,firstOnly:false},{mlbb:336,cost:600,firstOnly:false},{mlbb:570,cost:1000,firstOnly:false},{mlbb:1163,cost:2000,firstOnly:false}],
+  tasks:[{id:"temu_secret",title:"Get diamonds from Temu",desc:"Open Temu and enter our secret code to unlock your reward.",link:"https://play.google.com/store/apps/details?id=com.einnovation.temu",code:"98373317",reward:20,proceedSecs:90,claimed:false}],
   account:{balance:340,earned:560,referralCount:3,firstWithdrawUsed:true,earnBanned:false,welcomeClaimed:true,referred:false,lastDailyDay:0,missionStart:0,missionBaseline:0,name:"Kairi",avatarUrl:"https://kappa.lol/7Xnnlc",earned:1340},
   history:[{mlbb:20,cost:600,status:"fulfilled",ts:Date.now()-86400000,refunded:false},{mlbb:5,cost:150,status:"refunded",ts:Date.now()-3600000,refunded:true,reason:"We hit a top-up (Codashop) issue while processing your withdrawal, so we refunded your diamonds. Please withdraw again."}],
   invited:[{name:"Justin",ts:Date.now()-7200000,avatarUrl:"https://kappa.lol/Z9cLjS",status:"accepted"},{name:"Vince",ts:Date.now()-90000000,avatarUrl:"",status:"pending"},{name:"Maher",ts:Date.now()-180000000,avatarUrl:"https://kappa.lol/oF8JPO",status:"accepted"},{name:"BotFarm01",ts:Date.now()-260000000,avatarUrl:"",status:"rejected"}],
@@ -1567,6 +1644,9 @@ function isSocial(t){ return /facebook\.com|fb\.watch|fb\.me/i.test(t.link||'')|
 // Everything else (social follow/comment, review, comment-on-video, daily/promo) is "Other".
 function isDownloadTask(t){ return isUsage(t) || /install|download|gearup|warlito|boost/i.test((t.title||'')+' '+(t.desc||'')); }
 function dwellSecs(t){ return Number(t.dwell)>0?Number(t.dwell):10; }
+// Temu secret-code task — rendered as its own hero + step page (not a plain task row).
+// Detected by an explicit id prefix (temu*) or a Temu link. Honor-based: no usageSecs.
+function isTemu(t){ return !!(t && (/^temu/i.test(t.id||'') || /temu\.|einnovation\.temu/i.test((t.link||'')+' '+(t.title||'')))); }
 
 // withdrawal — Codashop style: lahat ng amount NAKALABAS na cards, tap para piliin (highlight),
 // tapos ISANG button sa baba. WSEL = napiling tier cost (persisted across re-renders).
@@ -1823,14 +1903,14 @@ function renderEarnMaintenance(app){
 }
 // ── Dashboard tabs (Home / Clipping / Invite / Tasks) ──────────────────────────
 let TAB='home';
-const TAB_LABELS={home:'Home',clipping:'Clipping',invite:'Invite',tasks:'Tasks'};
+const TAB_LABELS={home:'Home',invite:'Invite',tasks:'Tasks'};
 function selectTab(id){ if(!TAB_LABELS[id]) return; TAB=id;
   document.querySelectorAll('.tabbar .tab').forEach(el=>el.classList.toggle('active',el.dataset.tab===id));
   const body=document.getElementById('tabbody'); if(body) renderTab(body);
   window.scrollTo(0,0);
 }
 function renderTab(host){ host.innerHTML='';
-  ({home:renderHome,clipping:renderClipping,invite:renderInvite,tasks:renderTasks}[TAB]||renderHome)(host);
+  ({home:renderHome,invite:renderInvite,tasks:renderTasks}[TAB]||renderHome)(host);
   requestAnimationFrame(()=>document.querySelectorAll('.fill[data-w]').forEach(f=>f.style.width=f.dataset.w+'%'));
 }
 // Placeholders — filled by later tasks (Invite=Task3, Tasks=Task4, Clipping=Task6).
@@ -1960,7 +2040,12 @@ function renderInvite(host){
 function renderTasks(host){
   const s=STATE;
   giveawayHero(host,s);
-  const all=(s.tasks||[]).filter(t=>!t.claimed && (!isUsage(t) || usageSupported()));
+  // Featured missions live at the top of Tasks: Tongits Go ladder (native usage-verified)
+  // + the Temu secret-code task (honor-based, its own rich flow). Both self-gate.
+  tongitsHero(host,s);
+  temuHero(host,s);
+  // Temu renders as its own hero above — keep it out of the generic Download/Other lists.
+  const all=(s.tasks||[]).filter(t=>!t.claimed && !isTemu(t) && (!isUsage(t) || usageSupported()));
   const hero=all.find(t=>t&&t.hero===true && isUsage(t));
   if(hero) gearMissionHero(host, hero);
   const rest=all.filter(t=>t!==hero);
@@ -2000,7 +2085,7 @@ function renderShell(){
   const dAvail=s.dailyKnown&&s.dailyAvailable;
   const head=$(`<div class="head">
     <div class="brand"><div class="logo"><span class="dia gold" style="width:16px;height:16px"></span></div>
-      <div><h1>Earn</h1><small>SANTORYU REWARDS</small></div></div>
+      <div><h1>Earn</h1><small>SANTORYU REBORN</small></div></div>
     <div class="hright">
       <button class="ckbtn ${dAvail?'ready':''}" id="ckbtn" aria-label="Daily check-in">
         <svg viewBox="0 0 24 24" fill="none"><rect x="3.4" y="4.8" width="17.2" height="15.8" rx="3.2" stroke="currentColor" stroke-width="1.7"/><path d="M3.4 9.4h17.2" stroke="currentColor" stroke-width="1.7"/><path d="M8 2.8v3.2M16 2.8v3.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M8.3 14.7l2.5 2.5 4.9-4.9" stroke="#FFE08A" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -3473,6 +3558,104 @@ async function tongitsAct(kind,btn){
     }
     return;
   }
+}
+
+//=== Temu secret-code task (honor-based: PROCEED -> timer -> CLAIM) ===============
+// Own rich flow (not a plain task row): shows the owner's secret code + step screenshots,
+// starts a countdown when the user taps PROCEED (opens Temu), and only enables CLAIM after
+// the timer ends. Server still validates via earnClaimTask (task must exist in config.tasks,
+// no usageSecs = plain honor claim). Timer survives leaving/returning to the page.
+let TEMU_START=0, TEMU_INT=null;
+function temuTask(s){ return (((s||STATE||{}).tasks)||[]).find(t=>t&&!t.claimed&&isTemu(t)); }
+function temuHero(app,s){
+  const t=temuTask(s); if(!t) return;
+  const code=t.code||'98373317';
+  const card=$(`<div class="temuh"><div class="temuh-in">
+    <div class="temuh-top"><div class="temuh-eyebrow"><i></i>PARTNER OFFER</div>
+      <div class="temuh-reward"><span class="dia gold" style="width:15px;height:15px"></span>+${t.reward}</div></div>
+    <h3 class="temuh-title">${esc(t.title||'Get diamonds from Temu')}</h3>
+    <div class="temuh-sub">${esc(t.desc||'Open Temu and enter our secret code to unlock your reward.')}</div>
+    <div class="temuh-code"><span class="temuh-clbl">SECRET CODE</span><span class="temuh-cval">${esc(code)}</span></div>
+    <button class="temuh-cta">START TASK &rsaquo;</button>
+  </div></div>`);
+  card.querySelector('.temuh-cta').onclick=()=>openTemuPage(t);
+  app.appendChild(card);
+}
+function openTemuPage(t){
+  openPage('Temu reward', function(body){ body.className='temupage'; body.id='temupagebody'; renderTemuPage(body,t); });
+}
+function temuElapsed(){ return TEMU_START? Math.floor((Date.now()-TEMU_START)/1000) : 0; }
+function temuStop(){ if(TEMU_INT){ clearInterval(TEMU_INT); TEMU_INT=null; } }
+function temuTick(t){
+  const body=document.getElementById('temupagebody');
+  if(!body){ temuStop(); return; }                          // page closed -> stop ticking
+  const secs=+(t.proceedSecs)||90, rem=Math.max(0,secs-temuElapsed());
+  const ring=document.getElementById('temuFg'), txt=document.getElementById('temuRingTxt');
+  const C=2*Math.PI*44;
+  if(ring) ring.style.strokeDashoffset=String(C*(rem/secs));
+  if(txt){ const m=Math.floor(rem/60), s=rem%60; txt.textContent=m+':'+String(s).padStart(2,'0'); }
+  if(rem<=0){ temuStop(); renderTemuPage(body,t); }          // done -> repaint to CLAIM
+}
+function temuStepHtml(n,title,desc){ return '<div class="temp-step"><div class="n">'+n+'</div><div><div class="st">'+title+'</div><div class="sd">'+desc+'</div></div></div>'; }
+function renderTemuPage(body,t){
+  t=t||temuTask(STATE); if(!body||!t) return;
+  const code=t.code||'98373317', secs=+(t.proceedSecs)||90, link=t.link||'';
+  const rem=Math.max(0,secs-temuElapsed());
+  const started=TEMU_START>0, done=started&&rem<=0;
+  const shots=[
+    ['temu-1.jpg','Tap the search bar, type the secret code, then search.'],
+    ['temu-2.jpg','Enter '+code+' exactly — that is the secret code.'],
+    ['temu-3.jpg','Follow Temu’s on-screen steps to finish.']];
+  const C=2*Math.PI*44, off=done?0:(started?C*(rem/secs):C);
+  const mm=Math.floor(rem/60), ss=String(rem%60).padStart(2,'0');
+  let dock;
+  if(!started){
+    dock='<button class="temp-btn proceed" id="temuBtn">PROCEED &amp; START TASK</button>'+
+      '<div class="temp-timerlbl" style="margin:10px 0 0">A timer starts when you tap. Keep it running while you do the task on Temu.</div>';
+  } else if(!done){
+    dock='<div class="temp-ringwrap"><svg class="temp-ring" width="96" height="96" viewBox="0 0 96 96">'+
+      '<defs><linearGradient id="tmuGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF9A4D"/><stop offset="1" stop-color="#FF6A00"/></linearGradient></defs>'+
+      '<circle class="bg" cx="48" cy="48" r="44"/><circle class="fg" id="temuFg" cx="48" cy="48" r="44" stroke-dasharray="'+C+'" stroke-dashoffset="'+off+'"/></svg>'+
+      '<div class="temp-ringtxt" id="temuRingTxt">'+mm+':'+ss+'</div></div>'+
+      '<div class="temp-timerlbl">Doing the task on Temu&hellip; keep going until the timer ends.</div>'+
+      '<button class="temp-btn wait" disabled>PLEASE WAIT</button>';
+  } else {
+    dock='<div class="temp-timerlbl" style="color:var(--emerald)">Task time complete. Claim your reward.</div>'+
+      '<button class="temp-btn claim" id="temuBtn">CLAIM +'+t.reward+' DIAMONDS</button>';
+  }
+  body.innerHTML=
+    '<div class="temp-hero">'+
+      '<div class="temp-eyebrow">PARTNER OFFER</div>'+
+      '<div class="temp-title">'+esc(t.title||'Get diamonds from Temu')+'</div>'+
+      '<div class="temp-reward"><span class="dia gold" style="width:26px;height:26px"></span>+'+t.reward+'<span class="rlbl">reward</span></div>'+
+      '<div class="temp-note">'+esc(t.desc||'Open Temu and enter our secret code to unlock your reward.')+' You can download Temu with our link, or just enter the secret code inside the Temu app.</div>'+
+    '</div>'+
+    '<div class="temp-secret"><div class="lbl">SECRET CODE</div><div class="code">'+esc(code)+'</div>'+
+      '<div class="hint">Type this exact code in the Temu search bar.</div>'+
+      '<button class="temp-copy" id="temuCopy">COPY SECRET CODE</button></div>'+
+    '<div class="temp-steps">'+
+      temuStepHtml(1,'Open Temu','Tap <b>PROCEED</b> below to open Temu (download it first if you do not have it).')+
+      temuStepHtml(2,'Enter the secret code','In the Temu <b>search bar</b>, type <b>'+esc(code)+'</b> and search.')+
+      temuStepHtml(3,'Finish on Temu','Follow the on-screen steps in Temu to complete the offer.')+
+      temuStepHtml(4,'Come back &amp; claim','Return here when the timer ends, then tap <b>Claim</b> for your diamonds.')+
+    '</div>'+
+    '<div class="temp-shots">'+shots.map(s=>'<div class="temp-shot"><img src="'+s[0]+'" alt="" loading="lazy"><div class="cap">'+esc(s[1])+'</div></div>').join('')+'</div>'+
+    '<div class="temp-dock">'+dock+'</div>';
+  const cp=body.querySelector('#temuCopy');
+  if(cp) cp.onclick=()=>{ if(window.Android&&window.Android.copy) window.Android.copy(code); else { try{navigator.clipboard.writeText(code);}catch(e){} } toast('Secret code copied: '+code,'good'); };
+  const btn=body.querySelector('#temuBtn');
+  if(btn && !started){ btn.onclick=()=>{ if(link){ if(window.Android&&window.Android.openLink) window.Android.openLink(link); else window.open(link,'_blank'); } TEMU_START=Date.now(); temuStop(); TEMU_INT=setInterval(()=>temuTick(t),1000); renderTemuPage(body,t); }; }
+  else if(btn && done){ btn.onclick=()=>temuClaim(t,btn); }
+  // Resumed a running timer (returned to the page) -> restart the ticker.
+  if(started && !done && !TEMU_INT){ TEMU_INT=setInterval(()=>temuTick(t),1000); }
+}
+async function temuClaim(t,btn){
+  if(btn){ btn.textContent='…'; btn.disabled=true; }
+  let r; try{ r=await call('claimTask',t.id,t.reward); }catch(e){ r=null; }
+  if(r&&r.ok){ TEMU_START=0; temuStop(); gainFx(t.reward,'gold'); toast('Reward claimed!','good'); requestState();
+    const pg=document.getElementById('temupagebody'); if(pg){ const p=pg.closest('.page'); if(p) closePage(p); } }
+  else{ if(btn){ btn.textContent='CLAIM +'+t.reward+' DIAMONDS'; btn.disabled=false; }
+    toast((r&&r.error==='already_claimed')?'Already claimed.':'Complete the task first','bad'); }
 }
 
 //=== daily countdown ==============================================================
