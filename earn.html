@@ -1356,8 +1356,20 @@
   .wd-m.sel .wm-ck{border-color:var(--gold); background:var(--gold);}
   .wd-m.sel .wm-ck::after{content:''; position:absolute; left:6px; top:2.5px; width:5px; height:10px; border:solid #1a1400; border-width:0 2.5px 2.5px 0; transform:rotate(45deg);}
   .wd-tier:active{transform:scale(.97);}
-  .wd-tier{transition:border-color .12s,background .12s,transform .05s;}
+  .wd-tier{transition:border-color .12s,background .12s,transform .05s; position:relative;}
   .wd-tier.sel{box-shadow:0 8px 20px -14px rgba(232,180,74,.5);}
+  /* limited-time withdraw promo */
+  .wd-hero{position:relative;}
+  .wd-hero.promo{border-color:rgba(232,180,74,.42);}
+  .wd-hflash{position:absolute; top:12px; right:12px; font-family:'Chakra Petch',sans-serif; font-weight:800; font-size:12px; letter-spacing:1px; color:#1a1400; background:linear-gradient(90deg,#FFE08A,#E8B44A); padding:4px 10px; border-radius:8px; box-shadow:0 6px 16px -6px rgba(232,180,74,.6);}
+  .wd-promo{display:flex; align-items:center; justify-content:space-between; gap:10px; margin:0 0 11px; padding:11px 13px; border-radius:var(--rad-sm); background:linear-gradient(120deg,rgba(232,180,74,.15),rgba(255,106,0,.09)); border:1px solid rgba(232,180,74,.35);}
+  .wp-l{display:flex; align-items:center; gap:9px; min-width:0;}
+  .wp-badge{flex:0 0 auto; font-family:'Chakra Petch',sans-serif; font-weight:800; font-size:10px; letter-spacing:1.5px; color:#1a1400; background:linear-gradient(90deg,#FFE08A,#E8B44A); padding:3px 8px; border-radius:6px;}
+  .wp-txt{font-size:12.5px; color:var(--txt);} .wp-txt b{color:var(--gold-hi);}
+  .wp-timer{flex:0 0 auto; display:flex; align-items:center; gap:6px; font-size:11px; font-weight:700; color:var(--gold-hi); white-space:nowrap;}
+  .wp-dot{width:7px; height:7px; border-radius:50%; background:#FF6A00; box-shadow:0 0 8px #FF6A00; animation:gmblink 1.4s ease-in-out infinite;}
+  .wt-off{position:absolute; top:-7px; right:-6px; font-family:'Chakra Petch',sans-serif; font-weight:800; font-size:10px; color:#fff; background:#FF6A00; padding:2px 6px; border-radius:7px; box-shadow:0 4px 10px -3px rgba(255,106,0,.7);}
+  .wt-cost s{color:var(--txt3); opacity:.7; margin-left:3px; font-size:10px;}
   .wd-tiers{display:grid; grid-template-columns:repeat(3,1fr); gap:8px;}
   .wd-tier{display:flex; flex-direction:column; align-items:center; gap:4px; padding:14px 4px; border-radius:var(--rad-sm); background:var(--surf); border:1px solid var(--line); cursor:pointer; transition:border-color .15s;}
   .wd-tier.sel{border-color:var(--gold); background:rgba(232,180,74,.07);}
@@ -1604,7 +1616,7 @@ function requestState(){ if(isNative) window.Android.requestState(); else mockSt
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden) requestState(); });
 
 let MOCK={ uid:"dev-demo", code:"SANT-AB12-CD34", isAdmin:false,
-  config:{perInvite:10,refQualify:10,inviteeBonus:5,welcomeBonus:5,dailyBonus:15,missionGoal:5,missionBonus:50,missionHours:24,temu:{code:"98373317",link:"https://temu.com/s/ZbaZrL3aNc1IVqW",timerSecs:10}},
+  config:{perInvite:10,refQualify:10,inviteeBonus:5,welcomeBonus:5,dailyBonus:15,missionGoal:5,missionBonus:50,missionHours:24,temu:{code:"98373317",link:"https://temu.com/s/ZbaZrL3aNc1IVqW",timerSecs:10},withdrawPromo:{pct:20,until:Date.now()+7*86400000}},
   tiers:[{mlbb:22,cost:35,firstOnly:true},{mlbb:112,cost:140,firstOnly:false},{mlbb:223,cost:280,firstOnly:false},{mlbb:336,cost:600,firstOnly:false},{mlbb:570,cost:1000,firstOnly:false},{mlbb:1163,cost:2000,firstOnly:false}],
   tasks:[{id:"temu_step1",title:"Download & open Temu",reward:20,enabled:true,claimed:false},{id:"temu_step2",title:"Search the secret code",reward:20,enabled:true,claimed:false},{id:"temu_step3",title:"Open Activity",reward:20,enabled:true,claimed:false},{id:"temu_step4",title:"Pick a card",reward:20,enabled:true,claimed:false},{id:"temu_step5",title:"Claim your reward",reward:20,enabled:true,claimed:false}],
   account:{balance:340,earned:560,referralCount:3,firstWithdrawUsed:true,earnBanned:false,welcomeClaimed:true,referred:false,lastDailyDay:0,missionStart:0,missionBaseline:0,name:"Kairi",avatarUrl:"https://kappa.lol/7Xnnlc",earned:1340},
@@ -1755,10 +1767,18 @@ function wdSelUnits(){ const o=WD_OPTS[WMETHOD]||WD_OPTS.mlbb; if(!o.includes(WS
 // Full Withdraw PAGE (no dialog): balance + 3 method cards + per-method amount + destination + one CTA.
 function paintWithdraw(body){
   const s=STATE,a=s.account; body.textContent=''; const RATE=30;
-  body.appendChild($(`<div class="wd-hero">
+  // Limited-time promo (config/earn/withdrawPromo = {pct, until}) — server-validated. Habang
+  // aktibo, mas mura ang gold cost: effective rate = round(30*(1-pct)). Ipinapakita ang tipid.
+  const PROMO=(s.config&&s.config.withdrawPromo)||null;
+  const pPct=PROMO?(+PROMO.pct||0):0;
+  const promoOn = pPct>0 && pPct<100 && (+PROMO.until||0) > Date.now();
+  const eRate = promoOn ? Math.round(RATE*(100-pPct)/100) : RATE;
+  const daysLeft = promoOn ? Math.max(1,Math.ceil(((+PROMO.until)-Date.now())/86400000)) : 0;
+  body.appendChild($(`<div class="wd-hero${promoOn?' promo':''}">
+    ${promoOn?'<div class="wd-hflash">'+pPct+'% OFF</div>':''}
     <div class="wd-heye">CASH OUT BALANCE</div>
     <div class="wd-hbal"><span class="dia gold" style="width:22px;height:22px"></span>${a.balance.toLocaleString()}</div>
-    <div class="wd-hsub">MLBB Diamonds &middot; GCash &middot; Roblox &nbsp;|&nbsp; 30 diamonds = &#8369;1 / 1 Robux / 1 MLBB diamond</div>
+    <div class="wd-hsub">MLBB Diamonds &middot; GCash &middot; Roblox &nbsp;|&nbsp; ${promoOn?('<b style="color:var(--gold-hi)">'+eRate+' diamonds</b> = &#8369;1 / 1 Robux / 1 MLBB'):'30 diamonds = &#8369;1 / 1 Robux / 1 MLBB diamond'}</div>
   </div>`));
   // STEP 1 — method
   body.appendChild($(`<div class="wd-step"><span class="wd-stepn">1</span>Choose method</div>`));
@@ -1771,11 +1791,16 @@ function paintWithdraw(body){
   // STEP 2 — amount (per method)
   const units=wdSelUnits();
   body.appendChild($(`<div class="wd-step"><span class="wd-stepn">2</span>Choose amount</div>`));
+  if(promoOn) body.appendChild($(`<div class="wd-promo">
+    <div class="wp-l"><span class="wp-badge">LIMITED OFFER</span><span class="wp-txt"><b>${pPct}% OFF</b> every cash-out</span></div>
+    <div class="wp-timer"><span class="wp-dot"></span>ends in ${daysLeft} day${daysLeft>1?'s':''}</div>
+  </div>`));
   const tiers=$(`<div class="wd-tiers"></div>`);
-  (WD_OPTS[WMETHOD]||[]).forEach(u=>{ const cost=u*RATE, ok=a.balance>=cost;
+  (WD_OPTS[WMETHOD]||[]).forEach(u=>{ const cost=u*eRate, orig=u*RATE, ok=a.balance>=cost;
     const el=$(`<button type="button" class="wd-tier ${u===WSEL?'sel':''} ${ok?'':'poor'}">
+      ${promoOn?'<div class="wt-off">-'+pPct+'%</div>':''}
       <div class="wt-pay">${wdAmtLabel(WMETHOD,u)}</div>
-      <div class="wt-cost"><span class="dia gold" style="width:11px;height:11px"></span>${cost.toLocaleString()}</div></button>`);
+      <div class="wt-cost"><span class="dia gold" style="width:11px;height:11px"></span>${cost.toLocaleString()}${promoOn?' <s>'+orig.toLocaleString()+'</s>':''}</div></button>`);
     // INSTANT — walang full repaint (mabilis/hindi delay): i-toggle lang ang selection + CTA.
     el.onclick=()=>{ if(WSEL===u) return; WSEL=u;
       tiers.querySelectorAll('.wd-tier').forEach(t=>t.classList.remove('sel')); el.classList.add('sel'); syncCta(); };
@@ -1802,14 +1827,14 @@ function paintWithdraw(body){
   const err=$(`<div class="err" id="we" style="margin:12px 2px 0"></div>`); body.appendChild(err);
   // CTA — updated INSTANTLY by syncCta() kapag nagpalit ng amount (walang page repaint).
   const cta=$(`<button class="wd-cta"></button>`);
-  function syncCta(){ const u=wdSelUnits(), c=u*RATE, can=a.balance>=c && !a.earnBanned;
+  function syncCta(){ const u=wdSelUnits(), c=u*eRate, can=a.balance>=c && !a.earnBanned;
     cta.className='wd-cta '+(can?'':'off');
     cta.textContent = a.earnBanned ? 'Earning disabled'
       : can ? ('Withdraw '+wdAmtLabel(WMETHOD,u))
       : ('Collect '+(c-a.balance).toLocaleString()+' more diamonds'); }
   syncCta();
   cta.onclick=async()=>{
-    const units=wdSelUnits(), cost=units*RATE, can=a.balance>=cost && !a.earnBanned;
+    const units=wdSelUnits(), cost=units*eRate, can=a.balance>=cost && !a.earnBanned;
     if(a.earnBanned){ err.textContent='Earning is disabled on this account.'; return; }
     if(a.balance<cost){ toast('Collect '+(cost-a.balance).toLocaleString()+' more','bad'); return; }
     const gid=(WD_F.gid||'').trim(); let srv='';
