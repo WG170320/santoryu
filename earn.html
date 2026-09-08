@@ -1596,6 +1596,23 @@ function gemSVG(kind){
     <polygon points="118,52 70,64 92,100" fill="url(#g3)" opacity=".7"/><polygon points="70,12 54,40 70,40" fill="#fff" opacity=".55"/></svg>`;
 }
 
+//=== auto-refresh (fast cached load + fresh design) ===============================
+// Ang native ay CACHED ang load (instant, hindi na 15s na re-download). Dito naman: kapag
+// mas BAGO ang naka-deploy na earn.html (by Last-Modified) kaysa sa huling na-load, mag-re-reload
+// nang MINSAN papunta sa fresh. Zero-maintenance (walang version na ibi-bump) — awtomatikong
+// nade-detect ang bagong deploy. Same-origin HEAD kaya walang CORS, at magaan (walang body).
+(function(){ try{
+  var path = location.pathname.split('?')[0];
+  fetch(path, { method:'HEAD', cache:'no-store' }).then(function(r){
+    var lm = r.headers.get('Last-Modified') || '';
+    if(!lm) return;
+    var seen=''; try{ seen = localStorage.getItem('earn_lm')||''; }catch(e){}
+    if(seen && lm !== seen){ try{ localStorage.setItem('earn_lm', lm); }catch(e){}
+      location.replace(path + '?v=' + Date.now()); return; }
+    try{ localStorage.setItem('earn_lm', lm); }catch(e){}
+  }).catch(function(){});
+}catch(e){} })();
+
 //=== bridge (native Android or browser MOCK) ======================================
 const isNative=!!window.Android;
 let REQ=0; const pending={};
