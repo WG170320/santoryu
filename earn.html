@@ -1774,6 +1774,9 @@ function paintWithdraw(body){
   const promoOn = pPct>0 && pPct<100 && (+PROMO.until||0) > Date.now();
   const eRate = promoOn ? Math.round(RATE*(100-pPct)/100) : RATE;
   const daysLeft = promoOn ? Math.max(1,Math.ceil(((+PROMO.until)-Date.now())/86400000)) : 0;
+  // Ang 5 MLBB (first-withdraw/promo tier) ay HINDI kasali sa discount — full rate ito.
+  const promoApp=(u)=> promoOn && !(WMETHOD==='mlbb'&&+u===5);
+  const wdCost=(u)=> promoApp(u) ? u*eRate : u*RATE;
   body.appendChild($(`<div class="wd-hero${promoOn?' promo':''}">
     ${promoOn?'<div class="wd-hflash">'+pPct+'% OFF</div>':''}
     <div class="wd-heye">CASH OUT BALANCE</div>
@@ -1796,11 +1799,11 @@ function paintWithdraw(body){
     <div class="wp-timer"><span class="wp-dot"></span>ends in ${daysLeft} day${daysLeft>1?'s':''}</div>
   </div>`));
   const tiers=$(`<div class="wd-tiers"></div>`);
-  (WD_OPTS[WMETHOD]||[]).forEach(u=>{ const cost=u*eRate, orig=u*RATE, ok=a.balance>=cost;
+  (WD_OPTS[WMETHOD]||[]).forEach(u=>{ const disc=promoApp(u), cost=wdCost(u), orig=u*RATE, ok=a.balance>=cost;
     const el=$(`<button type="button" class="wd-tier ${u===WSEL?'sel':''} ${ok?'':'poor'}">
-      ${promoOn?'<div class="wt-off">-'+pPct+'%</div>':''}
+      ${disc?'<div class="wt-off">-'+pPct+'%</div>':''}
       <div class="wt-pay">${wdAmtLabel(WMETHOD,u)}</div>
-      <div class="wt-cost"><span class="dia gold" style="width:11px;height:11px"></span>${cost.toLocaleString()}${promoOn?' <s>'+orig.toLocaleString()+'</s>':''}</div></button>`);
+      <div class="wt-cost"><span class="dia gold" style="width:11px;height:11px"></span>${cost.toLocaleString()}${disc?' <s>'+orig.toLocaleString()+'</s>':''}</div></button>`);
     // INSTANT — walang full repaint (mabilis/hindi delay): i-toggle lang ang selection + CTA.
     el.onclick=()=>{ if(WSEL===u) return; WSEL=u;
       tiers.querySelectorAll('.wd-tier').forEach(t=>t.classList.remove('sel')); el.classList.add('sel'); syncCta(); };
@@ -1827,14 +1830,14 @@ function paintWithdraw(body){
   const err=$(`<div class="err" id="we" style="margin:12px 2px 0"></div>`); body.appendChild(err);
   // CTA — updated INSTANTLY by syncCta() kapag nagpalit ng amount (walang page repaint).
   const cta=$(`<button class="wd-cta"></button>`);
-  function syncCta(){ const u=wdSelUnits(), c=u*eRate, can=a.balance>=c && !a.earnBanned;
+  function syncCta(){ const u=wdSelUnits(), c=wdCost(u), can=a.balance>=c && !a.earnBanned;
     cta.className='wd-cta '+(can?'':'off');
     cta.textContent = a.earnBanned ? 'Earning disabled'
       : can ? ('Withdraw '+wdAmtLabel(WMETHOD,u))
       : ('Collect '+(c-a.balance).toLocaleString()+' more diamonds'); }
   syncCta();
   cta.onclick=async()=>{
-    const units=wdSelUnits(), cost=units*eRate, can=a.balance>=cost && !a.earnBanned;
+    const units=wdSelUnits(), cost=wdCost(units), can=a.balance>=cost && !a.earnBanned;
     if(a.earnBanned){ err.textContent='Earning is disabled on this account.'; return; }
     if(a.balance<cost){ toast('Collect '+(cost-a.balance).toLocaleString()+' more','bad'); return; }
     const gid=(WD_F.gid||'').trim(); let srv='';
