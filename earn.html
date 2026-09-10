@@ -1714,7 +1714,9 @@ function taskIcon(t){
 function isReview(t){ return t.id.includes('rate')||/review|star/i.test(t.title); }
 // Comment task = watch a YouTube video, then post an auto-generated Pinoy comment.
 // Detected by an explicit id prefix (yt_comment*) or a YouTube link + "comment" in the title/id.
-function isCommentTask(t){ return !!(t && (/^yt[_-]?comment/i.test(t.id||'') || (/youtu\.?be|youtube\.com/i.test(t.link||'') && /comment/i.test((t.id||'')+' '+(t.title||''))))); }
+function isCommentTask(t){ return !!(t && (/^(yt|tt)[_-]?comment/i.test(t.id||'') || (/youtu\.?be|youtube\.com|tiktok\.com/i.test(t.link||'') && /comment/i.test((t.id||'')+' '+(t.title||''))))); }
+// TikTok = Santoryu Toolkit na pool + 10s na away-timer. YouTube = lumang Tongits pool.
+function cmIsTikTok(t){ return !!(t && (/^tt[_-]?comment/i.test(t.id||'') || /tiktok\.com/i.test(t.link||''))); }
 // Social dwell task (hal. i-heart ang FB post) — kailangang manatili ~10s bago mag-claim.
 function isSocial(t){ return /facebook\.com|fb\.watch|fb\.me/i.test(t.link||'')||/facebook|fb\b/i.test(t.title||''); }
 // Download tasks = install / usage-verified offers (GearUp, boost, download-to-unlock).
@@ -3276,7 +3278,8 @@ function gmBindVis(){ if(gmVisBound) return; gmVisBound=true;
 // session so no two users copy the exact same line. All content lives here on purpose:
 // custom config fields are dropped by the app's RewardTask passthrough, so only the
 // task's id/title/desc/link/reward survive — everything else must be hardcoded.
-var CM={ taskId:null, opened:false, copied:false, current:'', used:{} };
+var CM={ taskId:null, opened:false, copied:false, current:'', used:{}, away:0, hiddenAt:0 };
+var CM_WATCH_MS=10000;   // 10s na TOTOONG panonood bago ma-claim (TikTok task lang)
 var CM_OPEN=["Wow","Grabe","Astig","Solid","Uy","Naks","Lupit","Sobrang galing","Ayos","Petmalu","Angas","Nice","Ang lupit","Sana all"];
 var CM_CORE=[
   "ang ganda naman ng update","ang laki ng improvement ngayon","sobrang smooth na maglaro",
@@ -3314,22 +3317,163 @@ function cmBuild(){
   }
   return s;
 }
-function genComment(){
+
+// ── Santoryu Toolkit comment pool (TikTok) ───────────────────────────────────
+// Ibang pool ito sa Tongits Go sa itaas. Tatlong panuntunan ang humuhubog nito:
+//   1. LAHAT ay may "Santoryu Toolkit" — yun ang punto ng task. Tamang baybay lagi
+//      para ma-search sa TikTok; sa PALIGID lang nagje-jejemon, hindi sa pangalan.
+//   2. Halo-halong tao ang dapat lumabas: bata, matanda, tamad mag-capital,
+//      may emoji, wala, nagtatanong, nagbabalita ng withdraw. Kapag pare-pareho
+//      ang porma ng comment, mukhang bot agad kay TikTok.
+//   3. Binubuo mula sa mga piyesa (hindi fixed list) kaya libo-libo ang kombinasyon,
+//      at dini-dedupe pa rin sa session — bihirang magkapareho ang dalawang tao.
+var SB = ["Santoryu Toolkit", "santoryu toolkit", "Santoryu toolkit"];
+
+var SC_OPEN = ["Grabe", "Uy", "Naks", "Astig", "Solid", "Ang galing", "Lupit",
+  "Sheesh", "Ayos", "Nice", "Wow", "Petmalu", "Angas", "Sana all"];
+
+// Papuri — {B} ang brand slot.
+var SC_PRAISE = [
+  "ang lupit ng {B}", "the best talaga {B}", "panalo ang {B}",
+  "ang dali gamitin ng {B}", "smooth na smooth ang {B}",
+  "wala nang tatalo sa {B}", "{B} talaga ang solusyon",
+  "sulit na sulit ang {B}", "walang kupas ang {B}",
+  "{B} pa rin ang gamit ko", "ang bilis ng {B} grabe"
+];
+
+// Pagkilala — "alam ko na yan" na tono, galing mismo sa sinabi ng owner.
+var SC_KNOW = [
+  "{B} yan diba", "alam ko na yan, {B} yan eh", "{B} yan mga bossing",
+  "{B} po yan", "ay {B} yan ah", "gamit ko din yan, {B}",
+  "{B} user din ako dito", "{B} yan sure ako", "yan yung {B} diba",
+  "hala {B} yan, gamit ko yan kahapon"
+];
+
+// Tanong — normal na curious na tao.
+var SC_ASK = [
+  "{B} po ba yan?", "{B} ba gamit mo?", "pa turo naman po ng {B}",
+  "san po pwede makuha ang {B}?", "{B} po ba yan? pa tulong naman",
+  "ilang araw po bago makuha sa {B}?", "totoo po ba {B}?",
+  "paano po mag simula sa {B}?", "may link po ba ng {B}?"
+];
+
+// Patunay ng bayad — ito ang hiningi: naka-withdraw na ng diamonds / Robux / GCash.
+// Totoong tier amounts ang ginagamit (22/112/223/336/570) para kapani-paniwala.
+var SC_DIA = ["22", "112", "223", "336", "570"];
+var SC_RBX = ["5", "10", "20", "40", "80"];
+var SC_PHP = ["10", "20", "50", "100"];
+var SC_WHEN = ["kahapon", "kanina", "kagabi", "nung isang araw", "kaninang umaga", "last week"];
+var SC_PAY = [
+  "legit to, nakawithdraw na ko ng {D} diamonds sa {B}",
+  "{N} nakuha ko na {D} diamonds ko sa {B}",
+  "totoo to ah, {D} diamonds na napunta sakin galing {B}",
+  "nakawithdraw na ko ng {R} robux sa {B} {N}",
+  "{N} pumasok na robux ko galing {B}, legit",
+  "{R} robux na natanggap ko sa {B} hindi scam",
+  "gcash ko dumating agad sa {B}, {P} pesos {N}",
+  "{N} nag cash out ako {P} pesos sa {B} ang bilis",
+  "2 beses na ko naka withdraw sa {B} walang problema",
+  "3 beses na ko nag withdraw ng diamonds dito sa {B}",
+  "isang linggo palang ako sa {B} may {D} diamonds na ko",
+  "akala ko fake pero nakuha ko talaga {D} diamonds sa {B}",
+  "sa wakas na claim ko na rin, salamat {B}",
+  "patunay lang na legit ang {B}, tuloy tuloy withdraw ko"
+];
+
+// Jejemon — kaunti lang, sadya, para hindi pare-pareho ang porma ng lahat.
+var SC_JEJE = [
+  "d q alam n pwd pla un s {B}, slmt idol",
+  "ang gnda nmn nito {B} po b to",
+  "gmit q din {B} ang lupet",
+  "w0w {B} p0h ang galing",
+  "s0bra tlgang okay ang {B} pramis"
+];
+
+var SC_TAIL = ["", "", "", "sana all", "salamat po", "recommended", "try nyo din",
+  "wala nang iba", "solid to", "keep it up po", "suki na ko dito"];
+
+var SC_EMO = ["🔥", "💯", "😍", "🤩", "💎", "🙏", "😎", "⚡", "✨", "❤️", "😁", "🤙", "👑", "🥹"];
+
+function scFill(tpl) {
+  return tpl
+    .replace("{B}", cmPick(SB))
+    .replace("{D}", cmPick(SC_DIA))
+    .replace("{R}", cmPick(SC_RBX))
+    .replace("{P}", cmPick(SC_PHP))
+    .replace("{N}", cmPick(SC_WHEN));
+}
+
+function scBuild() {
+  var r = Math.random(), s;
+  if (r < 0.34) {                       // patunay ng bayad — pinaka-mabigat ang timbang
+    s = scFill(cmPick(SC_PAY));
+  } else if (r < 0.56) {                // papuri
+    s = cmPick(SC_OPEN) + (Math.random() < 0.35 ? ", " : " ") + scFill(cmPick(SC_PRAISE));
+  } else if (r < 0.74) {                // pagkilala
+    s = (Math.random() < 0.4 ? cmPick(SC_OPEN) + " " : "") + scFill(cmPick(SC_KNOW));
+  } else if (r < 0.9) {                 // tanong
+    s = scFill(cmPick(SC_ASK));
+  } else {                              // jejemon
+    return scFill(cmPick(SC_JEJE));     // walang tail/emoji — sarili nitong porma
+  }
+  var tail = cmPick(SC_TAIL);
+  if (tail) s += ", " + tail;
+  // Tamad mag-capital ang iba — normal sa TikTok.
+  if (Math.random() < 0.25) s = s.charAt(0).toLowerCase() + s.slice(1);
+  if (Math.random() < 0.7) {
+    var e = cmPick(SC_EMO);
+    if (Math.random() < 0.2) s = e + " " + s;
+    else { s = s + " " + e; if (Math.random() < 0.25) { var e2 = cmPick(SC_EMO); if (e2 !== e) s += e2; } }
+  }
+  return s;
+}
+
+// ── Totoong away-time, hindi wall clock ─────────────────────────────────────
+// Ang lumang openDwell() ay nagbibilang kahit nakatitig ka lang sa app. Dito, ang
+// binibilang lang ay ang oras na TALAGANG naka-background ang app — ibig sabihin
+// nasa TikTok ka. Bumalik ka bago mag-10s, hihinto ang bilang at "Continue watching"
+// ang magiging button, pabalik sa video.
+function cmAwayMs(){ return CM.away + (CM.hiddenAt ? (Date.now()-CM.hiddenAt) : 0); }
+function cmWatched(t){ return cmIsTikTok(t) ? (cmAwayMs() >= CM_WATCH_MS) : CM.opened; }
+function cmLeftSecs(){ return Math.max(0, Math.ceil((CM_WATCH_MS - cmAwayMs())/1000)); }
+var cmVisBound=false;
+function cmBindVis(){
+  if(cmVisBound) return; cmVisBound=true;
+  document.addEventListener('visibilitychange', function(){
+    if(document.hidden){ if(!CM.hiddenAt) CM.hiddenAt=Date.now(); return; }
+    if(CM.hiddenAt){ CM.away += Date.now()-CM.hiddenAt; CM.hiddenAt=0; }
+    var body=document.getElementById('cmpagebody');
+    if(!body) return;
+    var t=((STATE&&STATE.tasks)||[]).find(function(x){ return x && x.id===CM.taskId; });
+    if(t) renderCMPage(body,t);
+  });
+}
+
+function genComment(t){
+  var build = cmIsTikTok(t) ? scBuild : cmBuild;
   var c="", tries=0;
-  do{ c=cmBuild(); tries++; }while(CM.used[c] && tries<14);
+  do{ c=build(); tries++; }while(CM.used[c] && tries<14);
   CM.used[c]=1; return c;
 }
 function openCommentPage(t){
-  if(CM.taskId!==t.id){ CM={ taskId:t.id, opened:false, copied:false, current:'', used:{} }; }
-  if(!CM.current) CM.current=genComment();
+  if(CM.taskId!==t.id){ cmStopTick(); CM={ taskId:t.id, opened:false, copied:false, current:'', used:{}, away:0, hiddenAt:0 }; }
+  cmBindVis();
+  if(!CM.current) CM.current=genComment(t);
   openPage(t.title||'Comment task', function(body){ body.className='cmpage'; body.id='cmpagebody'; renderCMPage(body,t); });
 }
 function renderCMPage(body,t){
   if(!body) return;
-  var ready=CM.opened&&CM.copied;
-  var claimLbl=!CM.opened?'WATCH THE VIDEO FIRST':(!CM.copied?'COPY A COMMENT FIRST':('CLAIM +'+t.reward));
+  var tt=cmIsTikTok(t);
+  var watched=cmWatched(t), left=cmLeftSecs();
+  var ready=watched&&CM.copied;
+  var claimLbl=!watched?(tt&&CM.opened?('KEEP WATCHING — '+left+'s LEFT'):'WATCH THE VIDEO FIRST')
+                       :(!CM.copied?'COPY A COMMENT FIRST':('CLAIM +'+t.reward));
+  var app=tt?'TikTok':'YouTube';
   var steps=[
-    ['Watch the video','Tap the red button — it opens the Tongits Go video on YouTube.',CM.opened],
+    [tt?('Watch for 10 seconds'):'Watch the video',
+     tt?('Tap the button — it opens the video on TikTok. Stay there for 10 seconds.')
+       :('Tap the red button — it opens the Tongits Go video on YouTube.'),
+     watched],
     ['Copy a comment','Generate a comment below and copy it. Tap again for a different one.',CM.copied],
     ['Paste it & post','Paste your comment on the video, then come back and claim.',false]
   ];
@@ -3344,10 +3488,14 @@ function renderCMPage(body,t){
   body.innerHTML=
     '<div class="cmp-hero"><div class="cmp-eyebrow"><i></i>COMMUNITY TASK</div>'+
       '<div class="cmp-reward"><span class="dia gold" style="width:24px;height:24px"></span>+'+esc(t.reward)+'</div>'+
-      '<div class="cmp-note">Watch the Tongits Go video and drop a comment. Use the generated comment below so it looks natural &mdash; walang kopyahan, iba-iba ang lalabas sa bawat isa.</div></div>'+
-    '<button class="cmp-watch'+(CM.opened?' done':'')+'" data-c="watch">'+
-      (CM.opened?'&#10003; WATCH AGAIN':'<span class="ytplay"><svg viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></span> WATCH & COMMENT')+'</button>'+
-    '<div class="cmp-watchhint">'+(CM.opened?'Watched? Now copy a comment below and post it on the video.':'Opening the video is required &mdash; watch it, then post your comment.')+'</div>'+
+      '<div class="cmp-note">'+(tt?'Watch our TikTok for 10 seconds, then drop a comment.':'Watch the Tongits Go video and drop a comment.')+' Use the generated comment below so it looks natural &mdash; walang kopyahan, iba-iba ang lalabas sa bawat isa.</div></div>'+
+    '<button class="cmp-watch'+(watched?' done':'')+'" data-c="watch">'+
+      (watched?'&#10003; WATCHED &mdash; WATCH AGAIN'
+             :(tt&&CM.opened?('CONTINUE WATCHING &mdash; '+left+'s LEFT')
+                            :'<span class="ytplay"><svg viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></span> WATCH & COMMENT'))+'</button>'+
+    '<div class="cmp-watchhint">'+(watched?'Watched? Now copy a comment below and post it on the video.'
+      :(tt&&CM.opened?('Masyadong maaga ang balik mo. '+left+'s pa ang kulang &mdash; tapikin ulit para bumalik sa '+app+'.')
+                     :('Opening the video is required &mdash; watch it'+(tt?' for 10 seconds':'')+', then post your comment.')))+'</div>'+
     '<div class="cmp-sh">HOW IT WORKS</div>'+
     '<div class="gmp-steps">'+stepHtml+'</div>'+
     '<div class="cmp-sh">YOUR COMMENT &mdash; TAP COPY, THEN PASTE ON THE VIDEO</div>'+
@@ -3367,12 +3515,33 @@ function renderCMPage(body,t){
   body.querySelectorAll('[data-c]').forEach(function(b){ b.onclick=function(){ cmAct(t,b.getAttribute('data-c')); }; });
 }
 function cmRerender(t){ var b=document.getElementById('cmpagebody'); if(b) renderCMPage(b,t); }
+// Panatilihing buhay ang "Xs left" habang nakabukas ang page. Humihinto pagkatapos ng 10s
+// o kapag umalis na sa page — walang naiiwang timer.
+var CM_TICK=null;
+function cmStopTick(){ if(CM_TICK){ clearInterval(CM_TICK); CM_TICK=null; } }
+function cmTick(t){
+  cmStopTick();
+  CM_TICK=setInterval(function(){
+    var b=document.getElementById('cmpagebody');
+    // Titigil kapag sarado na ang page O kapag ibang task na ang bukas. Kung hindi ito
+    // susuriin, ang huling render ng lumang task ay dadaan sa page ng BAGONG task at
+    // ise-set ang mga button nito sa maling state (at maling link).
+    var mine = CM.taskId===t.id;
+    if(!b || !mine){ cmStopTick(); return; }
+    if(cmWatched(t)){ cmStopTick(); renderCMPage(b,t); return; }
+    if(!document.hidden) renderCMPage(b,t);
+  },1000);
+}
 async function cmAct(t,kind){
   if(kind==='watch'){ CM.opened=true;
-    var link=(t.link&&t.link!=='#')?t.link:'https://youtu.be/z11eSYs5WMY';
+    var link=(t.link&&t.link!=='#')?t.link:(cmIsTikTok(t)?'':'https://youtu.be/z11eSYs5WMY');
+    if(!link){ toast('Walang link ang task na ito','bad'); return; }
     if(window.Android&&window.Android.openLink) window.Android.openLink(link); else window.open(link,'_blank');
+    // Kung hindi mag-fire ang visibilitychange (halimbawa, hindi nabuksan ang TikTok),
+    // ire-refresh pa rin natin ang countdown para hindi mukhang na-stuck ang page.
+    if(cmIsTikTok(t)) cmTick(t);
     cmRerender(t); return; }
-  if(kind==='regen'){ CM.current=genComment(); CM.copied=false;
+  if(kind==='regen'){ CM.current=genComment(t); CM.copied=false;
     var bub=document.getElementById('cmbub');
     if(bub){ bub.textContent=CM.current; bub.style.animation='none'; void bub.offsetWidth; bub.style.animation=''; }
     // reflect copy-reset + keep claim gating in sync
@@ -3382,7 +3551,10 @@ async function cmAct(t,kind){
     else if(navigator.clipboard) { try{ navigator.clipboard.writeText(CM.current); }catch(e){} }
     CM.copied=true; toast('Comment copied — paste it on the video','good'); cmRerender(t); return; }
   if(kind==='claim'){
-    if(!(CM.opened&&CM.copied)){ toast(!CM.opened?'Watch the video first':'Copy a comment first','bad'); return; }
+    if(!(cmWatched(t)&&CM.copied)){
+      toast(!cmWatched(t)?(cmIsTikTok(t)&&CM.opened?('Kulang pa ang panonood — '+cmLeftSecs()+'s pa'):'Watch the video first')
+                         :'Copy a comment first','bad');
+      return; }
     var btn=document.querySelector('#cmpagebody .gmh-claim'); if(btn){ btn.textContent='…'; btn.disabled=true; }
     var r; try{ r=await call('claimTask', t.id, t.reward); }catch(e){ r=null; }
     if(r&&r.ok){ gainFx(t.reward,'gold'); toast('Salamat sa comment! +'+t.reward,'good'); try{history.back();}catch(e){} requestState(); return; }
