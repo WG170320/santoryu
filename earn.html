@@ -1369,6 +1369,7 @@
   .evstat-t{font-size:13px; font-weight:800; color:#e8f2fb;}
   .evstat-s{font-size:11.5px; color:#90a6ba; margin-top:2px; line-height:1.5;}
   .evrules{margin-top:16px; border-radius:14px; border:1px solid #2a1e1e; background:#170f10; padding:14px 15px;}
+  .evrules-h svg{width:14px; height:14px; flex:0 0 auto;}
   .evrules-h{display:flex; align-items:center; gap:7px; font-size:10.5px; font-weight:800; letter-spacing:.12em;
     color:#ff9d8a; text-transform:uppercase;}
   .evrules ul{margin:10px 0 0; padding-left:17px;}
@@ -3794,7 +3795,7 @@ function openEventPage(){
         ${evStatusBlock(e)}
         <div id="evaction"></div>
         <div class="evrules">
-          <div class="evrules-h">${II('ic-rules')}Event rules</div>
+          <div class="evrules-h"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.6l7 2.8v6c0 4.5-3 8.2-7 10.1-4-1.9-7-5.6-7-10.1v-6z" fill="#F2705A"/><path d="M12 7.6v5.2" stroke="#2A0F0B" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="16.1" r="1.2" fill="#2A0F0B"/></svg>Event rules</div>
           <ul>${rules.map(r=>'<li>'+r+'</li>').join('')}</ul>
         </div>`;
       const act=wrap.querySelector('#evaction');
