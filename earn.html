@@ -1301,6 +1301,88 @@
   .tabbar{background:var(--bg); border-bottom:1px solid var(--line); backdrop-filter:none;}
   .tab{color:var(--txt3);} .tab.active{color:var(--txt); border-bottom-color:var(--gold);}
 
+  /* ── INVITE EVENT — MLBB diamonds nang diretso. Asul, hindi ginto: ang ginto ay ang
+     balance nila, ang asul ay tunay na MLBB diamonds na hindi dumadaan sa wallet. ── */
+  .evb{position:relative; overflow:hidden; border-radius:16px; padding:14px 15px; margin:0 0 12px;
+    background:linear-gradient(135deg,#0b2647 0%,#123a68 46%,#0d2a50 100%);
+    border:1px solid rgba(96,185,255,.32); cursor:pointer;}
+  .evb::after{content:''; position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(120% 90% at 88% 8%, rgba(120,205,255,.30), transparent 62%);}
+  .evb-top{display:flex; align-items:flex-start; justify-content:space-between; gap:12px; position:relative;}
+  .evb-eyebrow{display:inline-flex; align-items:center; gap:6px; font-size:9.5px; font-weight:800;
+    letter-spacing:.14em; color:#8fd4ff; text-transform:uppercase;}
+  .evb-eyebrow i{width:6px; height:6px; border-radius:50%; background:#49c3ff; box-shadow:0 0 0 3px rgba(73,195,255,.18);
+    animation:evpulse 1.9s ease-in-out infinite;}
+  @keyframes evpulse{0%,100%{opacity:1}50%{opacity:.35}}
+  .evb-title{font-size:16px; font-weight:800; color:#fff; margin-top:3px; line-height:1.18;}
+  .evb-sub{font-size:11.5px; color:#a9c9e8; margin-top:2px;}
+  .evb-prize{flex:0 0 auto; text-align:right;}
+  .evb-amt{display:flex; align-items:center; gap:5px; justify-content:flex-end; font-size:21px;
+    font-weight:900; color:#fff; letter-spacing:-.02em; font-variant-numeric:tabular-nums;}
+  .evb-plab{font-size:9px; font-weight:700; letter-spacing:.1em; color:#7fb6e4; text-transform:uppercase;}
+  .evb-bar{position:relative; height:7px; border-radius:99px; background:rgba(255,255,255,.13); margin-top:11px; overflow:hidden;}
+  .evb-fill{position:absolute; inset:0 auto 0 0; border-radius:99px;
+    background:linear-gradient(90deg,#3aa8ff,#7fe0ff); transition:width .45s cubic-bezier(.22,1,.36,1);}
+  .evb-meta{display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:7px; position:relative;}
+  .evb-cnt{font-size:11.5px; color:#d5e9fb; font-weight:700; font-variant-numeric:tabular-nums;}
+  .evb-cnt b{color:#fff;}
+  .evb-reset{font-size:10.5px; color:#8fb4d8;}
+  .evb.done{border-color:rgba(126,231,166,.45);}
+  .evb.done .evb-fill{background:linear-gradient(90deg,#34c97a,#89f0b6);}
+
+  /* full event page */
+  .evp{padding:0 14px 26px;}
+  .evhero{position:relative; overflow:hidden; border-radius:18px; padding:20px 16px 18px; text-align:center;
+    background:linear-gradient(160deg,#0a2242 0%,#14406f 52%,#0b2748 100%); border:1px solid rgba(96,185,255,.3);}
+  .evhero::after{content:''; position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(85% 62% at 50% 0%, rgba(130,210,255,.28), transparent 66%);}
+  .evh-gem{width:64px; height:64px; margin:0 auto 8px; display:block; position:relative;
+    filter:drop-shadow(0 6px 18px rgba(60,170,255,.5)); animation:evfloat 3.4s ease-in-out infinite;}
+  @keyframes evfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+  .evh-amt{position:relative; font-size:38px; font-weight:900; color:#fff; line-height:1; letter-spacing:-.03em;
+    font-variant-numeric:tabular-nums;}
+  .evh-unit{position:relative; font-size:12px; font-weight:800; letter-spacing:.1em; color:#93cdf4;
+    text-transform:uppercase; margin-top:5px;}
+  .evh-note{position:relative; font-size:12px; color:#b6d4ef; margin-top:9px; line-height:1.5;}
+  .evh-note b{color:#eaf6ff;}
+  .evring{display:flex; align-items:center; gap:13px; margin:14px 0 0; padding:13px 14px; border-radius:14px;
+    background:#101a26; border:1px solid #1e2d3d;}
+  .evring-n{font-size:26px; font-weight:900; color:#fff; font-variant-numeric:tabular-nums; line-height:1;}
+  .evring-n span{font-size:14px; color:#7f93a8; font-weight:700;}
+  .evring-r{flex:1; min-width:0;}
+  .evring-lab{font-size:10px; font-weight:800; letter-spacing:.11em; color:#7f9ab4; text-transform:uppercase;}
+  .evring-bar{height:8px; border-radius:99px; background:#1b2836; margin-top:7px; overflow:hidden; position:relative;}
+  .evring-fill{position:absolute; inset:0 auto 0 0; border-radius:99px;
+    background:linear-gradient(90deg,#3aa8ff,#7fe0ff); transition:width .5s cubic-bezier(.22,1,.36,1);}
+  .evring-sub{font-size:11px; color:#8aa0b6; margin-top:6px;}
+  .evcta{width:100%; margin-top:13px; padding:15px; border:0; border-radius:13px; font-size:14.5px; font-weight:900;
+    letter-spacing:.04em; color:#04121f; cursor:pointer;
+    background:linear-gradient(135deg,#5cc6ff,#9ae9ff); box-shadow:0 8px 22px rgba(58,168,255,.3);}
+  .evcta[disabled]{background:#1c2a38; color:#63788c; box-shadow:none; cursor:default;}
+  .evstat{margin-top:13px; padding:13px 14px; border-radius:13px; border:1px solid #24384a; background:#0f1a25;
+    display:flex; gap:11px; align-items:flex-start;}
+  .evstat-ic{flex:0 0 auto; width:26px; height:26px; border-radius:50%; display:grid; place-items:center;
+    font-size:14px; font-weight:900;}
+  .evstat.pending .evstat-ic{background:rgba(255,196,84,.16); color:#ffc454;}
+  .evstat.fulfilled .evstat-ic{background:rgba(74,222,128,.16); color:#4ade80;}
+  .evstat.rejected .evstat-ic{background:rgba(248,113,113,.16); color:#f87171;}
+  .evstat-t{font-size:13px; font-weight:800; color:#e8f2fb;}
+  .evstat-s{font-size:11.5px; color:#90a6ba; margin-top:2px; line-height:1.5;}
+  .evrules{margin-top:16px; border-radius:14px; border:1px solid #2a1e1e; background:#170f10; padding:14px 15px;}
+  .evrules-h{display:flex; align-items:center; gap:7px; font-size:10.5px; font-weight:800; letter-spacing:.12em;
+    color:#ff9d8a; text-transform:uppercase;}
+  .evrules ul{margin:10px 0 0; padding-left:17px;}
+  .evrules li{font-size:12px; color:#c2b5b3; line-height:1.62; margin-bottom:6px;}
+  .evrules li:last-child{margin-bottom:0;}
+  .evrules li b{color:#ffd9d2;}
+  .evform{margin-top:13px; padding:14px 15px; border-radius:14px; background:#101a26; border:1px solid #1e2d3d;}
+  .evform label{display:block; font-size:10px; font-weight:800; letter-spacing:.1em; color:#7f9ab4;
+    text-transform:uppercase; margin:0 0 6px;}
+  .evform input{width:100%; padding:12px 13px; border-radius:10px; border:1px solid #26374a; background:#0a121b;
+    color:#eaf2fa; font-size:14px; font-variant-numeric:tabular-nums; margin-bottom:11px;}
+  .evform input:focus{outline:2px solid #3aa8ff; outline-offset:1px; border-color:transparent;}
+  .evbanned{margin-top:13px; padding:14px 15px; border-radius:13px; border:1px solid #4a2222; background:#1a1010;
+    font-size:12.5px; color:#f0b4ac; line-height:1.55;}
   /* INVITE hero — calm gold, no foil bar */
   .ivhero{background:linear-gradient(160deg,#1B1810,#0E141C 66%); border:1px solid rgba(232,180,74,.2);
     box-shadow:var(--shadow); border-radius:var(--rad); padding:18px 16px 16px;}
@@ -1623,6 +1705,7 @@ function applyFnBase(s){ if(!s||!s.fnBase) return; const b=s.fnBase.replace(/\/+
   MYW_URL=b+'/earnMyWithdrawals'; TCLAIM_URL=b+'/tournamentClaim'; TLIST_URL=b+'/tournamentList';
   TCONS_URL=b+'/tournamentConsolation'; EPAY_URL=b+'/earnPayouts'; TVID_URL=b+'/tournamentVideos';
   MLBB_CHECK_URL=b+'/mlbbCheck'; PAYOUTS_URL=b+'/earnPayouts'; CLIP_BASE=b;
+  EVST_URL=b+'/eventInviteState';
   // Backend na-resolve na (arrows-puzzle-earn) — i-refresh ang floating payout proof gamit
   // ang tamang base, kung sakaling natalo ang unang fetch sa timing race (o 503 ang luma).
   if(typeof fetchPayouts==='function') fetchPayouts(); }
@@ -2138,6 +2221,8 @@ function renderClipping(host){
 }
 function renderInvite(host){
   const s=STATE;
+  eventBanner(host);
+  if(!EV) evFetch().then(e=>{ if(e&&e.enabled) render(); });
   inviteHero(host,s);
   host.appendChild($(`<div class="sh"><div class="t">FRIENDS YOU INVITED</div></div>`));
   inviteLedger(host);
@@ -3602,6 +3687,171 @@ function tongitsProgress(c,cs){
   return {installed,reg,regApproved,streak,daysClaimed,daysTotal,claimedToday,nextDay,allDaysDone,done};
 }
 // Compact gold banner (same visual language as the retired GearUp mission) → opens the ladder page.
+// ── INVITE EVENT — 30 qualified invites kada araw -> MLBB diamonds nang DIRETSO ────────
+// Hindi ito pumapasok sa balance: hiwalay itong event reward na ipinapadala sa Game ID,
+// gaya ng withdraw. Ang progreso ay galing sa `eventInviteState` (read-only, uid lang),
+// kaya gumagana ang buong pahina nang WALANG app update. Ang REDEEM lang ang dumadaan sa
+// native bridge — doon lang kasi nakalagay ang auth token.
+let EVST_URL='https://asia-southeast1-diamond-pang-ab4b2.cloudfunctions.net/eventInviteState';
+const EVENT_ID='invite30';
+let EV=null, EV_LOADING=false;
+
+function evFetch(){
+  if(EV_LOADING) return Promise.resolve(EV);
+  EV_LOADING=true;
+  return fetch(EVST_URL,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({uid:(STATE&&STATE.uid)||'',eventId:EVENT_ID})})
+    .then(r=>r.json()).catch(()=>null)
+    .then(r=>{ EV_LOADING=false; if(r&&r.ok) EV=r; return EV; });
+}
+
+/** Oras hanggang hatinggabi sa Maynila — doon nagre-reset ang bilang. */
+function evResetIn(){
+  const ph=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Manila'}));
+  const mins=(24*60)-(ph.getHours()*60+ph.getMinutes());
+  const h=Math.floor(mins/60), m=mins%60;
+  return h>0 ? (h+'h '+m+'m') : (m+'m');
+}
+
+function evPct(e){ return Math.max(0,Math.min(100, Math.round(((e.progress||0)/(e.goal||1))*100))); }
+
+/** Banner sa Invite tab. Tahimik kung naka-patay ang event. */
+function eventBanner(host){
+  if(!EV || !EV.enabled) return;
+  const e=EV, pct=evPct(e), hit=(e.progress||0)>=(e.goal||30);
+  const card=$(`<div class="evb ${hit?'done':''}">
+    <div class="evb-top">
+      <div style="min-width:0">
+        <div class="evb-eyebrow"><i></i>Daily event</div>
+        <div class="evb-title">${esc(e.title||('Invite '+e.goal+' today'))}</div>
+        <div class="evb-sub">MLBB Diamonds straight to your account</div>
+      </div>
+      <div class="evb-prize">
+        <div class="evb-amt"><span class="dia blue" style="width:22px;height:22px"></span>${(e.reward||0).toLocaleString()}</div>
+        <div class="evb-plab">MLBB Diamonds</div>
+      </div>
+    </div>
+    <div class="evb-bar"><div class="evb-fill" style="width:${pct}%"></div></div>
+    <div class="evb-meta">
+      <div class="evb-cnt"><b>${e.progress||0}</b> / ${e.goal} qualified today</div>
+      <div class="evb-reset">${hit?'Ready to redeem':('Resets in '+evResetIn())}</div>
+    </div>
+  </div>`);
+  card.onclick=()=>openEventPage();
+  host.appendChild(card);
+}
+
+function evStatusBlock(e){
+  const c=e.claim;
+  if(e.banned) return `<div class="evbanned"><b>You are banned from this event.</b><br>
+    Our checks flagged this account for bots, clones or fake invites. Every other part of the app still works.</div>`;
+  if(!c) return '';
+  if(c.status==='pending') return `<div class="evstat pending"><div class="evstat-ic">!</div><div>
+    <div class="evstat-t">Redeemed — being sent</div>
+    <div class="evstat-s">${(c.reward||0).toLocaleString()} MLBB Diamonds to <b>${esc(c.ign||c.gameId||'')}</b>.
+      We send these by hand, so give it a little time. Come back tomorrow to do it again.</div></div></div>`;
+  if(c.status==='fulfilled') return `<div class="evstat fulfilled"><div class="evstat-ic">&#10003;</div><div>
+    <div class="evstat-t">Sent to your account</div>
+    <div class="evstat-s">${(c.reward||0).toLocaleString()} MLBB Diamonds went to <b>${esc(c.ign||c.gameId||'')}</b>.
+      Check your in-game mail. You can do this again tomorrow.</div></div></div>`;
+  return `<div class="evstat rejected"><div class="evstat-ic">&times;</div><div>
+    <div class="evstat-t">Rejected</div>
+    <div class="evstat-s">This claim did not pass our checks.</div></div></div>`;
+}
+
+function openEventPage(){
+  openPage('Daily Invite Event', b=>{
+    const wrap=$(`<div class="evp"></div>`);
+    b.appendChild(wrap);
+    const paint=()=>{
+      const e=EV;
+      if(!e){ wrap.innerHTML='<div class="empty">Could not load the event — reopen this page to try again.</div>'; return; }
+      const pct=evPct(e), hit=(e.progress||0)>=(e.goal||30), claimed=!!e.claim, blocked=e.banned||e.earnBanned;
+      const rules=(e.rules&&e.rules.length)?e.rules:[
+        'Only <b>qualified</b> invites count — your friend has to actually use the app and earn first.',
+        'Bots, fake accounts and clones are <b>not allowed</b>.',
+        'One phone, one account. Multiple accounts on one device will be caught.',
+        'Get caught and you are <b>banned from this event permanently</b>.',
+        'The count resets at midnight. Unfinished progress does not carry over.',
+        'Rewards are sent by hand to the Game ID you enter, so double-check it.'
+      ];
+      wrap.innerHTML=`
+        <div class="evhero">
+          <img class="evh-gem" src="gem-blue.png" alt="">
+          <div class="evh-amt">${(e.reward||0).toLocaleString()}</div>
+          <div class="evh-unit">MLBB Diamonds</div>
+          <div class="evh-note">Invite <b>${e.goal}</b> real players in one day and we send these
+            <b>straight to your MLBB account</b> — separate from your diamond balance.</div>
+        </div>
+        <div class="evring">
+          <div class="evring-n">${e.progress||0}<span>/${e.goal}</span></div>
+          <div class="evring-r">
+            <div class="evring-lab">Qualified today</div>
+            <div class="evring-bar"><div class="evring-fill" style="width:${pct}%"></div></div>
+            <div class="evring-sub">${hit?'Goal reached — redeem below.':('Resets in '+evResetIn()+' at midnight.')}</div>
+          </div>
+        </div>
+        ${evStatusBlock(e)}
+        <div id="evaction"></div>
+        <div class="evrules">
+          <div class="evrules-h">${II('ic-rules')}Event rules</div>
+          <ul>${rules.map(r=>'<li>'+r+'</li>').join('')}</ul>
+        </div>`;
+      const act=wrap.querySelector('#evaction');
+      if(blocked||claimed) return;
+      if(!hit){
+        act.appendChild($(`<button class="evcta" disabled>INVITE ${(e.goal-(e.progress||0))} MORE TODAY</button>`));
+        return;
+      }
+      const btn=$(`<button class="evcta">REDEEM ${(e.reward||0).toLocaleString()} MLBB DIAMONDS</button>`);
+      btn.onclick=()=>evOpenForm(wrap,paint);
+      act.appendChild(btn);
+    };
+    paint();
+    evFetch().then(paint);
+  });
+}
+
+/** Form ng destinasyon — Game ID + Server, kapareho ng withdraw, may live IGN check. */
+function evOpenForm(wrap,paint){
+  const act=wrap.querySelector('#evaction');
+  act.innerHTML=`<div class="evform">
+    <label>Game ID</label><input id="evgid" inputmode="numeric" placeholder="e.g. 123456789">
+    <label>Server ID</label><input id="evsrv" inputmode="numeric" placeholder="e.g. 1234">
+    <div id="evchk" style="min-height:18px;margin:-4px 2px 4px"></div>
+  </div>`;
+  const gid=act.querySelector('#evgid'), srv=act.querySelector('#evsrv'), chk=act.querySelector('#evchk');
+  if(typeof wireMlbb==='function') wireMlbb(gid,srv,chk);
+  const send=$(`<button class="evcta">CONFIRM &amp; SEND</button>`);
+  send.onclick=async()=>{
+    const g=(gid.value||'').trim(), sv=(srv.value||'').trim();
+    if(!/^\d{5,12}$/.test(g)||!/^\d{1,6}$/.test(sv)){ toast('Enter a valid Game ID and Server','bad'); return; }
+    if(!isNative||!window.Android.eventRedeem){ toast('Update the app to redeem this event','bad'); return; }
+    send.textContent='SENDING…'; send.disabled=true;
+    let r; try{ r=await call('eventRedeem',EVENT_ID,g,sv); }catch(err){ r=null; }
+    if(r&&r.ok){
+      toast('Redeemed! '+(r.reward||0).toLocaleString()+' MLBB Diamonds on the way','good');
+      await evFetch(); paint(); requestState(); return;
+    }
+    send.textContent='CONFIRM & SEND'; send.disabled=false;
+    toast(evErr(r&&r.error,r),'bad');
+    if(r&&(r.error==='already_today'||r.error==='event_banned')){ await evFetch(); paint(); }
+  };
+  act.appendChild(send);
+  gid.focus();
+}
+
+function evErr(e,r){
+  if(e==='not_enough') return 'You need '+(((r&&r.goal)||30)-((r&&r.have)||0))+' more qualified invites today';
+  if(e==='already_today') return 'Already redeemed today — come back tomorrow';
+  if(e==='event_banned') return 'You are banned from this event';
+  if(e==='banned') return 'This account is banned from earning';
+  if(e==='clone'||e==='emulator') return 'Blocked — one account per device';
+  if(e==='disabled') return 'The event is not running right now';
+  if(e==='bad_dest') return 'Enter a valid Game ID and Server';
+  if(e==='auth_failed') return 'Session expired — reopen the app';
+  return 'Could not redeem — try again';
+}
 // ── Invite hero (THE highlight): code + conditional +perInvite + status ledger ──
 function inviteHero(app,s){
   const a=s.account,c=s.config,inv=s.invited||[];
