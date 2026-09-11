@@ -1413,6 +1413,11 @@
   .evhero-art::after{content:''; position:absolute; inset:0;
     background:linear-gradient(180deg,rgba(6,18,32,.18) 0%,rgba(7,22,40,.72) 58%,#08182b 100%);}
   .evhero-badges{position:absolute; top:11px; left:11px; right:11px; display:flex; justify-content:space-between; gap:8px;}
+  /* Ang art ay maliwanag at hindi mahuhulaan, kaya ang badge sa ibabaw nito ay nangangailangan
+     ng sarili nitong madilim na plato -- hindi sapat ang manipis na kulay. */
+  .evhero-badges .evb-live{padding:4px 9px; background:rgba(6,14,24,.78); backdrop-filter:blur(5px);
+    border-color:rgba(255,255,255,.18); color:#ffd2d2; text-shadow:0 1px 2px rgba(0,0,0,.6);}
+  .evhero-badges .evb-live.cool{color:#a9e9ff;}
   .evhero-body{position:relative; margin-top:-52px; padding:0 16px 18px; text-align:center;}
   .evh-gem{width:58px; height:58px; margin:0 auto 6px; display:block;
     filter:drop-shadow(0 8px 20px rgba(60,170,255,.6)); animation:evfloat 3.4s ease-in-out infinite;}
@@ -3894,8 +3899,7 @@ function openEventPage(){
           <div class="evhero-art" style="background-image:url('${evArt(e)}')">
             <div class="evhero-badges">
               <span class="evb-live"><i></i>Event is live</span>
-              <span class="evb-live" style="background:rgba(127,224,255,.14);border-color:rgba(127,224,255,.36);color:#8fe2ff">
-                Resets in ${evResetIn()}</span>
+              <span class="evb-live cool">Resets in ${evResetIn()}</span>
             </div>
           </div>
           <div class="evhero-body">
