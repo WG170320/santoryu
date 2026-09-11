@@ -3957,11 +3957,24 @@ function evOpenForm(wrap,paint){
   send.onclick=async()=>{
     const g=(gid.value||'').trim(), sv=(srv.value||'').trim();
     if(!/^\d{5,12}$/.test(g)||!/^\d{1,6}$/.test(sv)){ toast('Enter a valid Game ID and Server','bad'); return; }
-    if(!isNative||!window.Android.eventRedeem){ toast('Update the app to redeem this event','bad'); return; }
+    if(!isNative){ toast('Open this in the app to redeem','bad'); return; }
     send.innerHTML='<span>SENDING…</span>'; send.disabled=true;
-    let r; try{ r=await call('eventRedeem',EVENT_ID,g,sv); }catch(err){ r=null; }
+    // Dalawang daan, iisang resulta. Ang `eventRedeem` ay ang malinis na bridge sa mga bagong
+    // build; ang `withdraw` ay nasa BAWAT naka-install nang app at may dalang auth token, kaya
+    // doon tayo dumaraan kapag wala pa ang bago — `server` = "event:<id>:<mlbbServer>", parehong
+    // repurposing na ginamit para sa GCash at Roblox. Walang binabawas sa balance: 0 ang cost,
+    // at ang server ang nagpapasya ng premyo mula sa config.
+    let r;
+    try{
+      r = window.Android.eventRedeem
+        ? await call('eventRedeem', EVENT_ID, g, sv)
+        : await call('withdraw', 0, 0, g, 'event:'+EVENT_ID+':'+sv);
+    }catch(err){ r=null; }
     if(r&&r.ok){
-      toast('Redeemed! '+(r.reward||0).toLocaleString()+' MLBB Diamonds on the way','good');
+      // Ang `withdraw` bridge ay nagbabalik lang ng {ok,error} — walang reward doon,
+      // kaya ang config na halaga ang ginagamit kapag wala.
+      const amt=(r.reward||(EV&&EV.reward)||0);
+      toast('Redeemed! '+amt.toLocaleString()+' MLBB Diamonds on the way','good');
       await evFetch(); paint(); requestState(); return;
     }
     send.innerHTML='<span>CONFIRM &amp; SEND</span>'; send.disabled=false;
