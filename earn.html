@@ -3782,6 +3782,14 @@ function callTimeout(m,ms,...a){
     catch(e){ if(done) return; done=true; clearTimeout(timer); delete pending[id]; resolve({ok:false,error:'bridge_error'}); }
   });
 }
+// Server ang nagpapasya kung kailan bubukas ang susunod na araw (>=1 PH day AND >=20 hours
+// mula sa huling claim). Ipinapakita lang natin ang natitirang oras na ibinabalik nito.
+function tgWait(ms){
+  const m=Math.max(0,Math.ceil((+ms||0)/60000));
+  if(m<60) return m+' min';
+  const h=Math.floor(m/60), r=m%60;
+  return r? (h+'h '+r+'m') : (h+' hours');
+}
 async function tongitsAct(kind,btn){
   const c=STATE&&STATE.campaign; if(!c) return;
   if(kind==='open'){ if(window.Android&&window.Android.openTongitsLink) window.Android.openTongitsLink(); return; }
@@ -3833,6 +3841,7 @@ async function tongitsAct(kind,btn){
       const err=r&&r.error;
       if(err==='usage_required') toast('Play at least 3 minutes first','bad');
       else if(err==='claimed_today') toast('Already claimed today','bad');
+      else if(err==='too_soon') toast('Next day unlocks in '+tgWait(r&&r.waitMs),'bad');
       else if(err==='register_required') toast('Approve registration first','bad');
       else if(err==='already_done') toast('Mission already complete','bad');
       else if(err==='no_usage_access') toast('Enable usage access to verify play time','bad');
