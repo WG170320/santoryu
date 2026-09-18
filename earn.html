@@ -1800,7 +1800,7 @@ function requestState(){ if(isNative) window.Android.requestState(); else mockSt
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden) requestState(); });
 
 let MOCK={ uid:"dev-demo", code:"SANT-AB12-CD34", isAdmin:false,
-  config:{perInvite:10,refQualify:10,inviteeBonus:5,welcomeBonus:5,dailyBonus:15,missionGoal:5,missionBonus:50,missionHours:24,temu:{code:"98373317",link:"https://temu.com/s/ZbaZrL3aNc1IVqW",timerSecs:10},withdrawPromo:{pct:20,until:Date.now()+7*86400000}},
+  config:{perInvite:10,refQualify:50,inviteeBonus:5,welcomeBonus:5,dailyBonus:15,missionGoal:5,missionBonus:50,missionHours:24,temu:{code:"98373317",link:"https://temu.com/s/ZbaZrL3aNc1IVqW",timerSecs:10},withdrawPromo:{pct:20,until:Date.now()+7*86400000}},
   tiers:[{mlbb:22,cost:35,firstOnly:true},{mlbb:112,cost:140,firstOnly:false},{mlbb:223,cost:280,firstOnly:false},{mlbb:336,cost:600,firstOnly:false},{mlbb:570,cost:1000,firstOnly:false},{mlbb:1163,cost:2000,firstOnly:false}],
   tasks:[{id:"temu_step1",title:"Download & open Temu",reward:20,enabled:true,claimed:false},{id:"temu_step2",title:"Search the secret code",reward:20,enabled:true,claimed:false},{id:"temu_step3",title:"Open Activity",reward:20,enabled:true,claimed:false},{id:"temu_step4",title:"Pick a card",reward:20,enabled:true,claimed:false},{id:"temu_step5",title:"Claim your reward",reward:20,enabled:true,claimed:false}],
   account:{balance:340,earned:560,referralCount:3,firstWithdrawUsed:true,earnBanned:false,welcomeClaimed:true,referred:false,lastDailyDay:0,missionStart:0,missionBaseline:0,name:"Kairi",avatarUrl:"https://kappa.lol/7Xnnlc",earned:1340},
@@ -2692,12 +2692,12 @@ async function fillRejectReasons(scope){
 }
 // Invited-friends ledger — reused by the Invite tab and the standalone page.
 function inviteLedger(b){
-  const inv=(STATE.invited)||[], per=STATE.config.perInvite, q=STATE.config.refQualify||10;
+  const inv=(STATE.invited)||[], per=STATE.config.perInvite, q=STATE.config.refQualify||50;
   const stt=x=>(x&&x.status)||'pending';
   const nA=inv.filter(x=>stt(x)==='accepted').length;
   b.appendChild($(`<div class="sh" style="margin-top:0"><div class="t">${inv.length} INVITED · ${nA} QUALIFIED</div><div class="x">+${per} each</div></div>`));
-  if(!inv.length){ b.appendChild($(`<div class="empty">No invites yet.<br>Share your code — you earn ${per} once a friend reaches ${q} diamonds.</div>`)); return; }
-  const sub={pending:`Needs ${q} diamonds to qualify`, accepted:`Qualified — you earned +${per}`, rejected:'Rejected — flagged as a bot'};
+  if(!inv.length){ b.appendChild($(`<div class="empty">No invites yet.<br>Share your code — you earn ${per} once a friend earns ${q} diamonds after joining.</div>`)); return; }
+  const sub={pending:`Needs to earn ${q} diamonds to qualify`, accepted:`Qualified — you earned +${per}`, rejected:'Rejected — flagged as a bot'};
   const c=$(`<div class="card"></div>`);
   inv.forEach(f=>{ const st=stt(f);
     c.appendChild($(`<div class="litem"><div class="fav fini">${esc((f.name||'?')[0].toUpperCase())}${f.avatarUrl?`<img src="${esc(f.avatarUrl)}" alt="" onerror="this.remove()">`:''}</div>
@@ -4003,7 +4003,7 @@ function inviteHero(app,s){
   const nP=inv.filter(x=>st(x)==='pending').length;
   const nA=inv.filter(x=>st(x)==='accepted').length;
   const nR=inv.filter(x=>st(x)==='rejected').length;
-  const q=c.refQualify||10;
+  const q=c.refQualify||50;
   const link='https://santoryutoolkit.com/?ref='+encodeURIComponent(s.code||'');
   const card=$(`<div class="ivhero">
     <div class="ivh-top">
@@ -4011,7 +4011,7 @@ function inviteHero(app,s){
         <div class="ivh-title">Recruit real players</div></div>
       <div class="ivh-reward"><span class="dia gold" style="width:20px;height:20px"></span>+${c.perInvite}<span class="ivh-per">/ friend</span></div>
     </div>
-    <div class="ivh-tag">You earn <b>+${c.perInvite}</b> once a friend you invited reaches <b>${q} diamonds</b> — real players only, no bots.</div>
+    <div class="ivh-tag">You earn <b>+${c.perInvite}</b> once a friend you invited earns <b>${q} diamonds</b> after joining — real players only, no bots.</div>
     <div class="ivh-code">
       <div class="ivh-codebox"><span class="ivh-codeval">${esc(s.code||'—')}</span><button class="ivh-copy" id="ivcpy">COPY</button></div>
       <button class="ivh-share" id="ivshr">${II('ic-share')}<span>Share</span></button>
