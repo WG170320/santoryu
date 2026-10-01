@@ -2042,7 +2042,7 @@ document.addEventListener('visibilitychange',()=>{ if(!document.hidden) requestS
 let MOCK={ uid:"dev-demo", code:"SANT-AB12-CD34", isAdmin:false,
   config:{perInvite:15,refQualify:50,inviteeBonus:5,welcomeBonus:5,dailyBonus:15,missionGoal:5,missionBonus:50,missionHours:24,temu:{code:"98373317",link:"https://temu.com/s/ZbaZrL3aNc1IVqW",timerSecs:10},withdrawPromo:{pct:20,until:Date.now()+7*86400000}},
   tiers:[{mlbb:22,cost:35,firstOnly:true},{mlbb:112,cost:140,firstOnly:false},{mlbb:223,cost:280,firstOnly:false},{mlbb:336,cost:600,firstOnly:false},{mlbb:570,cost:1000,firstOnly:false},{mlbb:1163,cost:2000,firstOnly:false}],
-  tasks:[{id:"gearup_boost",title:"Play MLBB with GearUp",desc:"Install GearUp, then boost one MLBB game",link:"https://gearup.onelink.me/Zmq0/zongxotic",reward:40,enabled:true,claimed:false,hero:true,verifyPkg:"com.gearup.booster",usageSecs:15,mlbbPkg:"com.mobile.legends",mlbbSecs:480,steps:["Install GearUp","Boost Mobile Legends"]},
+  tasks:[{id:"gearup_boost",title:"Play MLBB with GearUp",desc:"Install GearUp, then boost one MLBB game",link:"https://gearup.onelink.me/Zmq0/zongxotic",reward:75,enabled:true,claimed:false,hero:true,verifyPkg:"com.gearup.booster",usageSecs:15,mlbbPkg:"com.mobile.legends",mlbbSecs:480,steps:["Install GearUp","Boost Mobile Legends"]},
     {id:"fb_follow_page",title:"Follow our Facebook page",desc:"Tap Follow on the Santoryu page",link:"https://www.facebook.com/share/1AjdM7tbEZ/",reward:5,enabled:true,claimed:false},
     {id:"fb_react_post",title:"React to our latest post",desc:"Leave a reaction on our Facebook post",link:"https://www.facebook.com/share/p/18q94ZJ4S4/",reward:5,enabled:true,claimed:false},
     {id:"tt_comment_santoryu",title:"Comment on our TikTok",desc:"Watch the video and drop a comment",link:"https://www.tiktok.com/@warlitogaming",reward:10,enabled:true,claimed:false},
@@ -3840,7 +3840,7 @@ function renderGMPage(body,t){
   // Pareho pa rin ang verification: totoong GearUp + MLBB usage, isang claim sa dulo.
   var d=gmDefaults(t), st=gmStepState(d.need,d.mNeed);
   var grantNeeded=(GM.access===false);
-  var total=+t.reward||0, r1=Math.round(total*0.25), r2=total-r1;
+  var total=+t.reward||0, r1=Math.round(total/3), r2=total-r1;
   var mlbbNow=Math.min(GM.mlbb,d.mNeed), mlbbPct=d.mNeed?Math.round(mlbbNow/d.mNeed*100):0;
   var steps=[
     { t:'Install GearUp', d:'Tap Download, install GearUp from the store, then open it once.', r:r1, done:st.s1, prog:'' },
