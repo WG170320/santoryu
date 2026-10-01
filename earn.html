@@ -1838,6 +1838,36 @@
   .ofw-empty{border:1px dashed var(--line2); border-radius:18px; margin-bottom:4px;}
   .ofw-soon{margin-top:18px; padding:20px 18px 18px;}
   .ofw-soon p{margin-top:10px;}
+
+  /* Offer detail page (GearUp) — header, description, how-to card, fine print */
+  .gmpage.gx{padding:4px 16px 40px;}
+  .gx-head{display:flex; align-items:center; gap:16px; margin-top:6px;}
+  .gx-logo{width:104px; height:104px; border-radius:24px; flex:0 0 auto; object-fit:cover; background:#0c0f14; box-shadow:0 12px 26px -14px rgba(0,0,0,.9);}
+  .gx-hm{flex:1; min-width:0;}
+  .gx-amt{display:flex; align-items:center; gap:8px; font-family:'Teko'; font-weight:700; font-size:50px; line-height:.82; color:#fff;}
+  .gx-amt .dia{width:28px; height:28px;}
+  .gx-amt small{font-family:'Rajdhani'; font-weight:600; font-size:15px; color:var(--txt2); align-self:flex-end; padding-bottom:6px;}
+  .gx-name{font-family:'Rajdhani'; font-weight:700; font-size:20px; margin-top:6px;}
+  .gx-meta{display:flex; align-items:center; gap:7px; font-size:13px; color:var(--txt2); margin-top:4px;}
+  .gx-meta svg{width:15px; height:15px; color:var(--txt);}
+  .gx-desc{font-size:14px; line-height:1.55; color:var(--txt); margin:16px 2px 0;}
+  .gx-card{margin-top:18px; padding:18px 16px 16px; border-radius:20px; background:linear-gradient(160deg,#1b2029,#14181f); border:1px solid var(--line);}
+  .gx-ct{font-family:'Rajdhani'; font-weight:700; font-size:22px; line-height:1.1;}
+  .gx-cs{font-size:13px; color:var(--txt2); margin-top:4px;}
+  .gx-dl{width:100%; margin-top:16px; border:none; border-radius:16px; padding:16px; cursor:pointer; font-family:'Rajdhani'; font-weight:700; font-size:19px; color:#fff;
+    background:linear-gradient(180deg,#4DA6FF,#2f7fe0); box-shadow:0 12px 26px -14px rgba(77,166,255,.85); transition:transform .15s;}
+  .gx-dl:active{transform:scale(.98);}
+  .gx-steps{margin-top:16px;}
+  .gx-claim{width:100%; margin-top:14px; border:none; border-radius:14px; padding:15px; font-family:'Rajdhani'; font-weight:700; font-size:16px; letter-spacing:.3px;
+    background:var(--surf3) !important; color:var(--txt3) !important; box-shadow:none !important;}
+  .gx-claim.ready{background:linear-gradient(180deg,#FFE08A,#E8B44A) !important; color:#1a1204 !important; box-shadow:0 12px 24px -12px rgba(232,180,74,.8) !important;}
+  /* step 2 guide: gamitin ang buong lapad ng step (sa ilalim din ng +reward column) at ituloy ang text */
+  .gx .gmp-step{padding:13px 12px;}
+  .gx .gmp-guide{margin-right:-58px;}
+  .gx .gmp-gstep{display:block; line-height:1.55;}
+  .gx .gmp-gstep span{display:inline-flex; vertical-align:-3px; margin-right:7px;}
+  .gx .gmp-gimg{max-width:100%;}
+  .gx-fine{font-size:12.5px; line-height:1.6; color:var(--txt2); margin:18px 2px 0;}
   .wtab-hist{margin-top:6px;}
   @keyframes v5in{from{opacity:0; transform:translateY(10px);}to{opacity:1; transform:none;}}
   @keyframes v5float{0%,100%{transform:translateY(0) rotate(-4deg);}50%{transform:translateY(-5px) rotate(4deg);}}
@@ -3617,7 +3647,7 @@ function gearMissionHero(app,t){
 // Full mission page (slide-in): explains each step + shows live progress + claim.
 function openMissionPage(t){
   if(GM.taskId!==t.id){ GM={ startTs:0, gear:0, mlbb:0, active:false, done:false, taskId:t.id, access:undefined }; }
-  openPage(t.title||'GearUp Mission', function(body){ body.className='gmpage'; body.id='gmpagebody'; renderGMPage(body,t); });
+  openPage('Offer details', function(body){ body.className='gmpage gx'; body.id='gmpagebody'; renderGMPage(body,t); });
   if(GM.access===undefined){ (async()=>{ try{ var r=await call('usageSeconds', t.verifyPkg, "0"); GM.access=!!(r&&r.hasAccess); gmRerender(t); }catch(e){} })(); }
 }
 function renderGMPage(body,t){
@@ -3645,17 +3675,31 @@ function renderGMPage(body,t){
       '<div class="gmp-d">'+esc(descs[i])+(prog[i]?(' <b style="color:var(--gold-hi)">'+prog[i]+'</b>'):'')+'</div>'+codeBtn+guide+'</div>'+
       '<div class="gmp-rw">+'+stepR[i]+'</div></div>';
   }
+  // Offer detail — estilo ng partner offerwalls: header (logo + reward + steps + oras),
+  // maikling description, "How to earn the reward" card na may Download, tapos fine print.
+  var mins=Math.max(1,Math.round((d.need+d.mNeed)/60));
+  var bars='<svg viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="13" width="3.4" height="7" rx="1"/><rect x="10.3" y="9" width="3.4" height="11" rx="1"/><rect x="16.6" y="5" width="3.4" height="15" rx="1"/></svg>';
+  var clock='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm1 10.4 3.2 1.9-.9 1.5L11 13.3V6.5h2Z"/></svg>';
+  var nDone=done.filter(Boolean).length;
   body.innerHTML=
-    '<div class="gmp-hero"><div class="gmp-eyebrow">HIGH-VALUE MISSION</div>'+
-      '<div class="gmp-reward"><span class="dia gold" style="width:24px;height:24px"></span>+'+esc(t.reward)+'</div>'+
-      '<div class="gmp-note">Do every step with real gameplay. We check GearUp and Mobile Legends usage, so shortcuts won’t count.</div></div>'+
-    '<button class="gmp-dl" data-g="open"><span class="dlic">&#11015;</span> '+(GM.active?'RE-OPEN GEARUP':'DOWNLOAD GEARUP HERE')+'</button>'+
-    '<div class="gmp-dlhint">Install GearUp through this link to start earning &mdash; tap above, then finish the steps.</div>'+
-    '<div class="gmp-steps">'+stepHtml+'</div>'+
-    (grantNeeded?('<div class="gmp-grant"><div class="gg-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg></div>'+
-      '<div class="gg-tx"><b>Turn on usage access</b>One-time toggle so we can confirm your GearUp &amp; MLBB play. Nothing else is read.</div>'+
-      '<button class="gg-btn" data-g="grant">Allow</button></div>'):'')+
-    '<button class="gmh-claim" data-g="claim" '+(st.ready?'':'disabled')+'>'+(st.ready?('CLAIM +'+t.reward):'COMPLETE ALL STEPS')+'</button>';
+    '<div class="gx-head"><img class="gx-logo" src="'+esc(t.logo||'gearup-logo.png')+'" alt="">'+
+      '<div class="gx-hm"><div class="gx-amt"><span class="dia gold"></span>+'+esc(t.reward)+'<small>diamonds</small></div>'+
+      '<div class="gx-name">GearUp</div>'+
+      '<div class="gx-meta">'+bars+'3 steps'+(nDone?(' &middot; '+nDone+' done'):'')+'</div>'+
+      '<div class="gx-meta">'+clock+'About '+mins+' min to finish</div></div></div>'+
+    '<div class="gx-desc">Free game booster that lowers ping and lag in Mobile Legends. Install it with our link, use code WARLITO, then boost one MLBB game.</div>'+
+    '<div class="gx-card"><div class="gx-ct">How to earn the reward</div>'+
+      '<div class="gx-cs">Finish all 3 steps on this phone</div>'+
+      '<button class="gx-dl" data-g="open">'+(GM.active?'Open GearUp':'Download')+'</button>'+
+      '<div class="gmp-steps gx-steps">'+stepHtml+'</div>'+
+      (grantNeeded?('<div class="gmp-grant"><div class="gg-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg></div>'+
+        '<div class="gg-tx"><b>Turn on usage access</b>One-time toggle so we can confirm your GearUp &amp; MLBB play. Nothing else is read.</div>'+
+        '<button class="gg-btn" data-g="grant">Allow</button></div>'):'')+
+      '<button class="gmh-claim gx-claim'+(st.ready?' ready':'')+'" data-g="claim" '+(st.ready?'':'disabled')+'>'+(st.ready?('Claim +'+t.reward+' diamonds'):'Complete all steps to claim')+'</button>'+
+    '</div>'+
+    '<div class="gx-fine">This offer is only for new players who have not used GearUp before, and it can be claimed once per phone. '+
+      'We check real GearUp and Mobile Legends usage on this device, so do every step normally &mdash; shortcuts and other phones do not count. '+
+      'Your diamonds are added to your balance as soon as all steps are verified. Usage access is only used to read GearUp and MLBB play time.</div>';
   body.querySelectorAll('[data-g]').forEach(function(b){ b.onclick=function(){ gmAct(t,b.getAttribute('data-g')); }; });
 }
 function gmRerender(t){ var b=document.getElementById('gmpagebody'); if(b) renderGMPage(b,t); }
