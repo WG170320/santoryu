@@ -1554,7 +1554,7 @@
     border:1px solid rgba(255,206,90,.4) !important; box-shadow:0 40px 100px -34px rgba(232,180,74,.6) !important;}
   .cg .cgburst{background:radial-gradient(circle, rgba(255,206,90,.4), rgba(45,212,167,.14) 46%, transparent 70%) !important;}
   .cg .cgkick{color:var(--green);}
-  .cg .cgh{font-size:27px; background:linear-gradient(90deg,#FFE08A,#FFC24D 50%,#FFE08A) !important; -webkit-background-clip:text !important; background-clip:text !important; -webkit-text-fill-color:transparent !important;}
+  .cg .cgh{font-size:clamp(16px,5.8vw,27px); white-space:nowrap; padding:0 .06em; background:linear-gradient(90deg,#FFE08A,#FFC24D 50%,#FFE08A) !important; -webkit-background-clip:text !important; background-clip:text !important; -webkit-text-fill-color:transparent !important;}
   .cg .cgamt{font-size:34px; margin-top:2px;}
   .cg .cgamt .cgnum{font-size:38px; font-family:'Teko','Rajdhani',sans-serif;}
   .cg .cgamt span{font-size:12px;}
@@ -1737,8 +1737,10 @@
     display:flex; align-items:center; justify-content:center; background:#2a2416; font-family:'Chakra Petch'; font-weight:700; color:var(--gold-hi);}
   .bh-who{flex:1; min-width:0;}
   .bh-name{font-family:'Rajdhani'; font-weight:700; font-size:16px; line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
-  .bh-code{font-size:11px; color:var(--txt2); margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .bh-code{font-size:11px; color:var(--txt2); margin-top:1px; line-height:1.4;}
+  .bh-code b{white-space:nowrap;}
   .ivh-reward{white-space:nowrap;}
+  .ivh-codeval{white-space:normal; overflow:visible; text-overflow:clip; overflow-wrap:anywhere; font-size:clamp(12px,3.9vw,15px); letter-spacing:.6px;}
   .bh-code b{color:var(--gold-hi); font-weight:700; letter-spacing:.5px;}
   .bh-earned{text-align:right; flex:0 0 auto;}
   .bh-earned .v{font-family:'Rajdhani'; font-weight:700; font-size:16px; color:var(--txt); line-height:1;}
@@ -1824,14 +1826,16 @@
   .ofc-logo{width:74px; height:74px; border-radius:20px; flex:0 0 auto; object-fit:cover; background:#0c0f14; box-shadow:0 8px 18px -10px rgba(0,0,0,.9);}
   .ofc-mid{flex:1; min-width:0;}
   .ofc-amt{display:flex; align-items:center; gap:7px; font-family:'Teko'; font-weight:700; font-size:40px; line-height:.85; color:#fff;}
-  .ofc-amt .dia{width:24px; height:24px;}
+  .ofc-amt .dia{width:24px; height:24px; flex:0 0 auto;}
+  .gx-amt .dia,.bh-bal .gem{flex:0 0 auto;}
   .ofc-amt small{font-family:'Rajdhani'; font-weight:600; font-size:14px; color:var(--txt2); margin-left:2px; align-self:flex-end; padding-bottom:5px;}
   .ofc-name{display:flex; align-items:center; gap:7px; font-family:'Rajdhani'; font-weight:700; font-size:17px; color:var(--txt); margin-top:5px; min-width:0;}
-  .ofc-name span{white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .ofc-name{flex-wrap:wrap; row-gap:4px;}
+  .ofc-name span{overflow-wrap:anywhere;}
   .ofc-name em{flex:0 0 auto; font-style:normal; font-family:'Inter'; font-size:9px; font-weight:800; letter-spacing:.08em; color:#7EEBC2; padding:3px 7px; border-radius:6px; background:rgba(52,211,153,.12); border:1px solid rgba(52,211,153,.3);}
   .ofc-desc{font-size:12px; color:var(--txt2); margin-top:2px; line-height:1.35;}
-  .ofc-meta{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--txt2); margin-top:3px; line-height:1.3;}
-  .ofc-meta svg{width:14px; height:14px; flex:0 0 auto; color:var(--txt);}
+  .ofc-meta{display:flex; align-items:flex-start; gap:6px; font-size:12px; color:var(--txt2); margin-top:3px; line-height:1.3;}
+  .ofc-meta svg{width:14px; height:14px; flex:0 0 auto; color:var(--txt); margin-top:1px;}
   .ofc-go{width:38px; height:38px; border-radius:50%; flex:0 0 auto; display:flex; align-items:center; justify-content:center; color:#d9ecff; background:#2f7fe0;}
   .ofc-go svg{width:18px; height:18px;}
   .ofw-load,.ofw-empty{text-align:center; color:var(--txt2); font-size:13px; line-height:1.6; padding:30px 10px;}
@@ -1867,6 +1871,51 @@
   .gx .gmp-gstep{display:block; line-height:1.55;}
   .gx .gmp-gstep span{display:inline-flex; vertical-align:-3px; margin-right:7px;}
   .gx .gmp-gimg{max-width:100%;}
+
+  /* Offer detail v2 — walang naputol na text: lahat ay nagwa-wrap, walang fixed na lapad sa text */
+  .gx-top{position:relative; border-radius:22px; padding:16px; margin-top:4px;
+    background:radial-gradient(120% 90% at 0% 0%,rgba(77,166,255,.22),transparent 60%),linear-gradient(160deg,#18202c,#12161d);
+    border:1px solid rgba(77,166,255,.25);}
+  .gx-top .gx-head{margin-top:0;}
+  .gx-top .gx-logo{width:88px; height:88px; border-radius:22px;}
+  .gx-top .gx-amt{font-size:54px;}
+  .gx-unit{font-family:'Rajdhani'; font-weight:600; font-size:14px; color:var(--txt2); margin-top:2px;}
+  .gx-top .gx-name{font-size:21px; margin-top:4px; overflow-wrap:anywhere;}
+  .gx-chips{display:flex; flex-wrap:wrap; gap:7px; margin-top:14px;}
+  .gx-chips span{display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:20px; font-size:12px; font-weight:600; color:var(--txt);
+    background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1);}
+  .gx-chips svg{width:13px; height:13px;}
+  .gx-chips .new{color:#7EEBC2; background:rgba(52,211,153,.12); border-color:rgba(52,211,153,.3);}
+  .gx-prog{display:flex; align-items:center; gap:10px; margin-top:12px;}
+  .gx-progbar{flex:1; height:7px; border-radius:6px; background:rgba(0,0,0,.4); overflow:hidden;}
+  .gx-progbar i{display:block; height:100%; border-radius:6px; background:linear-gradient(90deg,#34D399,#7EEBC2); transition:width .6s;}
+  .gx-prog span{flex:0 0 auto; font-size:12px; font-weight:700; color:var(--txt2);}
+  .gx-steps2{margin-top:18px;}
+  .gx-st{display:flex; gap:13px; position:relative;}
+  .gx-rail{position:relative; flex:0 0 auto; display:flex; flex-direction:column; align-items:center;}
+  .gx-st:not(:last-child) .gx-rail::after{content:''; position:absolute; top:34px; bottom:-4px; width:2px; border-radius:2px; background:var(--line2);}
+  .gx-st.done:not(:last-child) .gx-rail::after{background:rgba(52,211,153,.55);}
+  .gx-n{width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Rajdhani'; font-weight:700; font-size:15px;
+    color:#1a1204; background:linear-gradient(180deg,#FFE08A,#E8B44A);}
+  .gx-st.done .gx-n{color:#04140f; background:#34D399;}
+  .gx-sb{flex:1; min-width:0; padding-bottom:20px;}
+  .gx-st:last-child .gx-sb{padding-bottom:4px;}
+  .gx-sh{display:flex; align-items:flex-start; gap:10px;}
+  .gx-stt{flex:1; min-width:0; font-family:'Rajdhani'; font-weight:700; font-size:17px; line-height:1.2; padding-top:5px; overflow-wrap:anywhere;}
+  .gx-st.done .gx-stt{color:var(--txt2);}
+  .gx-sr{flex:0 0 auto; margin-top:3px; padding:4px 10px; border-radius:9px; font-family:'Rajdhani'; font-weight:700; font-size:13px; color:var(--gold-hi);
+    background:rgba(232,180,74,.12); border:1px solid rgba(232,180,74,.3);}
+  .gx-st.done .gx-sr{color:#7EEBC2; background:rgba(52,211,153,.12); border-color:rgba(52,211,153,.3);}
+  .gx-sd{font-size:13px; line-height:1.5; color:var(--txt2); margin-top:4px;}
+  .gx-pbar{height:6px; border-radius:6px; background:rgba(0,0,0,.4); overflow:hidden; margin-top:10px;}
+  .gx-pbar i{display:block; height:100%; background:linear-gradient(90deg,#E8B44A,#FFE08A);}
+  .gx-ptx{font-size:11.5px; font-weight:600; color:var(--gold-hi); margin-top:5px;}
+  .gx-grant{display:flex; align-items:center; gap:11px; margin-top:6px; padding:12px; border-radius:14px; background:rgba(77,166,255,.08); border:1px solid rgba(77,166,255,.28);}
+  .gx-gi{width:34px; height:34px; flex:0 0 auto; border-radius:10px; display:flex; align-items:center; justify-content:center; color:var(--blue-hi); background:rgba(77,166,255,.14);}
+  .gx-gi svg{width:18px; height:18px;}
+  .gx-gt{flex:1; min-width:0; font-size:12px; line-height:1.45; color:var(--txt2);}
+  .gx-gt b{display:block; color:var(--txt); font-size:13px; margin-bottom:1px;}
+  .gx-gb{flex:0 0 auto; border:none; border-radius:10px; padding:9px 14px; font-family:'Rajdhani'; font-weight:700; font-size:14px; color:#fff; background:#2f7fe0; cursor:pointer;}
   .gx-fine{font-size:12.5px; line-height:1.6; color:var(--txt2); margin:18px 2px 0;}
   .wtab-hist{margin-top:6px;}
   @keyframes v5in{from{opacity:0; transform:translateY(10px);}to{opacity:1; transform:none;}}
@@ -1971,7 +2020,7 @@ document.addEventListener('visibilitychange',()=>{ if(!document.hidden) requestS
 let MOCK={ uid:"dev-demo", code:"SANT-AB12-CD34", isAdmin:false,
   config:{perInvite:15,refQualify:50,inviteeBonus:5,welcomeBonus:5,dailyBonus:15,missionGoal:5,missionBonus:50,missionHours:24,temu:{code:"98373317",link:"https://temu.com/s/ZbaZrL3aNc1IVqW",timerSecs:10},withdrawPromo:{pct:20,until:Date.now()+7*86400000}},
   tiers:[{mlbb:22,cost:35,firstOnly:true},{mlbb:112,cost:140,firstOnly:false},{mlbb:223,cost:280,firstOnly:false},{mlbb:336,cost:600,firstOnly:false},{mlbb:570,cost:1000,firstOnly:false},{mlbb:1163,cost:2000,firstOnly:false}],
-  tasks:[{id:"gearup_boost",title:"Play MLBB with GearUp",desc:"Install GearUp, use code WARLITO, then boost MLBB",link:"https://gearup.onelink.me/Zmq0/zongxotic",reward:40,enabled:true,claimed:false,hero:true,verifyPkg:"com.gearup.booster",usageSecs:15,mlbbPkg:"com.mobile.legends",mlbbSecs:480,steps:["Install GearUp here","Use my code WARLITO","Boost MLBB with GearUp!"]},
+  tasks:[{id:"gearup_boost",title:"Play MLBB with GearUp",desc:"Install GearUp, then boost one MLBB game",link:"https://gearup.onelink.me/Zmq0/zongxotic",reward:40,enabled:true,claimed:false,hero:true,verifyPkg:"com.gearup.booster",usageSecs:15,mlbbPkg:"com.mobile.legends",mlbbSecs:480,steps:["Install GearUp","Boost Mobile Legends"]},
     {id:"fb_follow_page",title:"Follow our Facebook page",desc:"Tap Follow on the Santoryu page",link:"https://www.facebook.com/share/1AjdM7tbEZ/",reward:5,enabled:true,claimed:false},
     {id:"fb_react_post",title:"React to our latest post",desc:"Leave a reaction on our Facebook post",link:"https://www.facebook.com/share/p/18q94ZJ4S4/",reward:5,enabled:true,claimed:false},
     {id:"tt_comment_santoryu",title:"Comment on our TikTok",desc:"Watch the video and drop a comment",link:"https://www.tiktok.com/@warlitogaming",reward:10,enabled:true,claimed:false},
@@ -2803,8 +2852,8 @@ function renderOffers(host){
   const offers=[];
   if(gear && GU_OK===true){
     const mins=Math.max(1,Math.round(((+gear.mlbbSecs||0)+(+gear.usageSecs||0))/60));
-    offers.push({ logo:gear.logo||'gearup-logo.png', name:'GearUp', tag:'NEW PLAYERS', desc:'Install, use code WARLITO, boost MLBB', reward:+gear.reward||0, total:true,
-      steps:(gear.steps&&gear.steps.length)||3, time:'About '+mins+' min to finish',
+    offers.push({ logo:gear.logo||'gearup-logo.png', name:'GearUp', tag:'NEW PLAYERS', desc:'Install GearUp, then boost one MLBB game', reward:+gear.reward||0, total:true,
+      steps:2, time:'About '+mins+' min to finish',
       onClick:()=>openMissionPage(gear) });
   }
   if(gear && GU_OK===null){ host.appendChild($(`<div class="ofw-load">Loading offers…</div>`)); loadGearupStatus(); return; }
@@ -3652,54 +3701,51 @@ function openMissionPage(t){
 }
 function renderGMPage(body,t){
   if(!body) return;
+  // Offer detail — 2 steps lang (wala nang code): i-install ang GearUp, tapos i-boost ang MLBB.
+  // Pareho pa rin ang verification: totoong GearUp + MLBB usage, isang claim sa dulo.
   var d=gmDefaults(t), st=gmStepState(d.need,d.mNeed);
   var grantNeeded=(GM.access===false);
-  var descs=['Tap “Download” to install GearUp Booster.','Open GearUp and enter code WARLITO for your bonus.','In GearUp, tap Boost on Mobile Legends — then play one full game.'];
-  var stepR=[10,10,20];
-  var done=[st.s1,st.s2,st.s3];
-  var prog=['','',(GM.active&&!st.s3)?(fmtDur(Math.min(GM.mlbb,d.mNeed))+' / '+fmtDur(d.mNeed)):''];
-  var stepHtml='';
-  for(var i=0;i<3;i++){
-    var codeBtn=(i===1)?'<button class="gmp-code" data-g="copycode">WARLITO '+IC.copy+'</button>':'';
-    var guide=(i===1)?'<div class="gmp-guide">'+
-      '<div class="gmp-vip">&#127881; FREE 1-DAY VIP</div>'+
-      '<div class="gmp-gcap">After installing, open GearUp and follow these:</div>'+
-      '<div class="gmp-gstep"><span>1</span>Tap <b style="margin-left:3px">Redeem</b></div>'+
-      '<img class="gmp-gimg" src="assets/gearup_redeem.jpg" alt="Tap Redeem in GearUp" loading="lazy">'+
-      '<div class="gmp-gstep"><span>2</span>Enter code <b style="margin-left:3px">WARLITO</b> &rarr; Redeem Now</div>'+
-      '<img class="gmp-gimg" src="assets/gearup_code.jpg" alt="Enter WARLITO code" loading="lazy">'+
-      '</div>':'';
-    stepHtml+='<div class="gmp-step'+(done[i]?' done':'')+'">'+
-      '<span class="gmp-dot">'+(done[i]?'&#10003;':(i+1))+'</span>'+
-      '<div class="gmp-txt"><div class="gmp-t">'+esc(d.steps[i])+'</div>'+
-      '<div class="gmp-d">'+esc(descs[i])+(prog[i]?(' <b style="color:var(--gold-hi)">'+prog[i]+'</b>'):'')+'</div>'+codeBtn+guide+'</div>'+
-      '<div class="gmp-rw">+'+stepR[i]+'</div></div>';
-  }
-  // Offer detail — estilo ng partner offerwalls: header (logo + reward + steps + oras),
-  // maikling description, "How to earn the reward" card na may Download, tapos fine print.
+  var total=+t.reward||0, r1=Math.round(total*0.25), r2=total-r1;
+  var mlbbNow=Math.min(GM.mlbb,d.mNeed), mlbbPct=d.mNeed?Math.round(mlbbNow/d.mNeed*100):0;
+  var steps=[
+    { t:'Install GearUp', d:'Tap Download, install GearUp from the store, then open it once.', r:r1, done:st.s1, prog:'' },
+    { t:'Boost Mobile Legends', d:'In GearUp, tap Boost on Mobile Legends, then play one full game.', r:r2, done:st.s3,
+      prog:(GM.active&&!st.s3)?('<div class="gx-pbar"><i style="width:'+mlbbPct+'%"></i></div><div class="gx-ptx">'+fmtDur(mlbbNow)+' of '+fmtDur(d.mNeed)+' played</div>'):'' }
+  ];
+  var nDone=steps.filter(function(x){return x.done;}).length;
   var mins=Math.max(1,Math.round((d.need+d.mNeed)/60));
   var bars='<svg viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="13" width="3.4" height="7" rx="1"/><rect x="10.3" y="9" width="3.4" height="11" rx="1"/><rect x="16.6" y="5" width="3.4" height="15" rx="1"/></svg>';
   var clock='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm1 10.4 3.2 1.9-.9 1.5L11 13.3V6.5h2Z"/></svg>';
-  var nDone=done.filter(Boolean).length;
+  var shield='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>';
+  var stepHtml='';
+  steps.forEach(function(x,i){
+    stepHtml+='<div class="gx-st'+(x.done?' done':'')+'">'+
+      '<div class="gx-rail"><span class="gx-n">'+(x.done?'&#10003;':(i+1))+'</span></div>'+
+      '<div class="gx-sb"><div class="gx-sh"><div class="gx-stt">'+esc(x.t)+'</div><span class="gx-sr">+'+x.r+'</span></div>'+
+      '<div class="gx-sd">'+esc(x.d)+'</div>'+x.prog+'</div></div>';
+  });
   body.innerHTML=
-    '<div class="gx-head"><img class="gx-logo" src="'+esc(t.logo||'gearup-logo.png')+'" alt="">'+
-      '<div class="gx-hm"><div class="gx-amt"><span class="dia gold"></span>+'+esc(t.reward)+'<small>diamonds</small></div>'+
-      '<div class="gx-name">GearUp</div>'+
-      '<div class="gx-meta">'+bars+'3 steps'+(nDone?(' &middot; '+nDone+' done'):'')+'</div>'+
-      '<div class="gx-meta">'+clock+'About '+mins+' min to finish</div></div></div>'+
-    '<div class="gx-desc">Free game booster that lowers ping and lag in Mobile Legends. Install it with our link, use code WARLITO, then boost one MLBB game.</div>'+
-    '<div class="gx-card"><div class="gx-ct">How to earn the reward</div>'+
-      '<div class="gx-cs">Finish all 3 steps on this phone</div>'+
-      '<button class="gx-dl" data-g="open">'+(GM.active?'Open GearUp':'Download')+'</button>'+
-      '<div class="gmp-steps gx-steps">'+stepHtml+'</div>'+
-      (grantNeeded?('<div class="gmp-grant"><div class="gg-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg></div>'+
-        '<div class="gg-tx"><b>Turn on usage access</b>One-time toggle so we can confirm your GearUp &amp; MLBB play. Nothing else is read.</div>'+
-        '<button class="gg-btn" data-g="grant">Allow</button></div>'):'')+
-      '<button class="gmh-claim gx-claim'+(st.ready?' ready':'')+'" data-g="claim" '+(st.ready?'':'disabled')+'>'+(st.ready?('Claim +'+t.reward+' diamonds'):'Complete all steps to claim')+'</button>'+
+    '<div class="gx-top">'+
+      '<div class="gx-head"><img class="gx-logo" src="'+esc(t.logo||'gearup-logo.png')+'" alt="">'+
+        '<div class="gx-hm"><div class="gx-amt"><span class="dia gold"></span>+'+total+'</div>'+
+        '<div class="gx-unit">diamonds</div>'+
+        '<div class="gx-name">GearUp</div></div></div>'+
+      '<div class="gx-chips"><span>'+bars+'2 steps</span><span>'+clock+'About '+mins+' min</span><span class="new">New players</span></div>'+
+    '</div>'+
+    '<div class="gx-desc">Free game booster that lowers ping and lag in Mobile Legends. Install it with our link and boost one game to earn.</div>'+
+    '<div class="gx-card">'+
+      '<div class="gx-ct">How to earn the reward</div>'+
+      '<div class="gx-prog"><div class="gx-progbar"><i style="width:'+(nDone*50)+'%"></i></div><span>'+nDone+' of 2 done</span></div>'+
+      '<button class="gx-dl" data-g="open">'+(GM.active?'Open GearUp':'Download GearUp')+'</button>'+
+      '<div class="gx-steps2">'+stepHtml+'</div>'+
+      (grantNeeded?('<div class="gx-grant"><span class="gx-gi">'+shield+'</span>'+
+        '<div class="gx-gt"><b>Turn on usage access</b><span>One-time toggle so we can confirm your GearUp and MLBB play. Nothing else is read.</span></div>'+
+        '<button class="gx-gb" data-g="grant">Allow</button></div>'):'')+
+      '<button class="gmh-claim gx-claim'+(st.ready?' ready':'')+'" data-g="claim" '+(st.ready?'':'disabled')+'>'+(st.ready?('Claim +'+total+' diamonds'):'Finish both steps to claim')+'</button>'+
     '</div>'+
     '<div class="gx-fine">This offer is only for new players who have not used GearUp before, and it can be claimed once per phone. '+
-      'We check real GearUp and Mobile Legends usage on this device, so do every step normally &mdash; shortcuts and other phones do not count. '+
-      'Your diamonds are added to your balance as soon as all steps are verified. Usage access is only used to read GearUp and MLBB play time.</div>';
+      'We check real GearUp and Mobile Legends play on this device, so do both steps normally. Shortcuts and other phones do not count. '+
+      'Your diamonds are added as soon as both steps are verified. Usage access is only used to read GearUp and MLBB play time.</div>';
   body.querySelectorAll('[data-g]').forEach(function(b){ b.onclick=function(){ gmAct(t,b.getAttribute('data-g')); }; });
 }
 function gmRerender(t){ var b=document.getElementById('gmpagebody'); if(b) renderGMPage(b,t); }
