@@ -1705,6 +1705,115 @@
   @keyframes lvblink{0%,100%{opacity:1;}50%{opacity:.25;}}
   @keyframes lvpulse{0%,100%{box-shadow:0 0 0 4px rgba(254,44,85,.10),0 6px 16px -6px rgba(37,244,238,.5);}50%{box-shadow:0 0 0 7px rgba(254,44,85,.04),0 6px 22px -4px rgba(37,244,238,.7);}}
   @keyframes lvring{0%{transform:scale(.62); opacity:.9;}100%{transform:scale(1.15); opacity:0;}}
+
+  /* =======================================================================
+     EARN v5 (2026-10-01) — Home / Offerwall / Withdraw. Isang malakas na hero (balance),
+     buhay na mga card sa ilalim. Naka-layer sa ibabaw ng CLEAN layer, kaya dito lang ang bago.
+     ======================================================================= */
+  /* tab bar: segmented pill na may icon */
+  .tabbar.v5{position:sticky; top:0; z-index:30; display:flex; gap:4px; margin:0 0 16px; padding:5px;
+    background:rgba(18,21,27,.92); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+    border:1px solid var(--line); border-radius:16px;}
+  .tabbar.v5 .tab{flex:1; display:flex; align-items:center; justify-content:center; gap:7px; padding:10px 6px; border-radius:12px;
+    font-family:'Chakra Petch'; font-weight:700; font-size:12.5px; letter-spacing:.6px; color:var(--txt2); cursor:pointer;
+    border:none; transition:background .25s,color .25s; position:relative;}
+  .tabbar.v5 .tab svg{width:17px; height:17px; flex:0 0 auto;}
+  .tabbar.v5 .tab.active{color:#1a1204; background:linear-gradient(180deg,#FFD98A,#E8B44A); box-shadow:0 6px 18px -8px rgba(232,180,74,.75);}
+  .tabbar.v5 .tab .cdot{position:absolute; top:7px; right:12px; width:7px; height:7px; border-radius:50%; background:#FF5E6C; box-shadow:0 0 0 2px var(--surf);}
+  .tabbar.v5 .tab::after{display:none !important;}
+
+  /* balance hero — ang iisang malakas na elemento sa Home */
+  .bh{position:relative; overflow:hidden; border-radius:22px; padding:18px 18px 16px; margin-bottom:8px;
+    background:radial-gradient(130% 90% at 100% 0%,rgba(232,180,74,.30),transparent 55%),
+               radial-gradient(90% 80% at 0% 100%,rgba(77,166,255,.16),transparent 60%),
+               linear-gradient(160deg,#1d1a12,#11141a 70%);
+    border:1px solid rgba(232,180,74,.38); box-shadow:0 22px 44px -26px rgba(232,180,74,.55), inset 0 1px 0 rgba(255,255,255,.07);
+    animation:v5in .5s cubic-bezier(.2,.8,.2,1) both;}
+  .bh::after{content:''; position:absolute; inset:0; pointer-events:none;
+    background:linear-gradient(115deg,transparent 35%,rgba(255,232,170,.10) 48%,transparent 60%); background-size:250% 100%;
+    animation:v5sheen 5.5s ease-in-out infinite;}
+  .bh-top{display:flex; align-items:center; gap:11px; position:relative; z-index:1;}
+  .bh-av{width:38px; height:38px; border-radius:50%; object-fit:cover; flex:0 0 auto; border:2px solid rgba(232,180,74,.7);
+    display:flex; align-items:center; justify-content:center; background:#2a2416; font-family:'Chakra Petch'; font-weight:700; color:var(--gold-hi);}
+  .bh-who{flex:1; min-width:0;}
+  .bh-name{font-family:'Rajdhani'; font-weight:700; font-size:16px; line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .bh-code{font-size:11px; color:var(--txt2); margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .ivh-reward{white-space:nowrap;}
+  .bh-code b{color:var(--gold-hi); font-weight:700; letter-spacing:.5px;}
+  .bh-earned{text-align:right; flex:0 0 auto;}
+  .bh-earned .v{font-family:'Rajdhani'; font-weight:700; font-size:16px; color:var(--txt); line-height:1;}
+  .bh-earned .l{font-size:9px; font-weight:700; letter-spacing:.14em; color:var(--txt3); margin-top:3px;}
+  .bh-lbl{position:relative; z-index:1; margin-top:16px; font-size:10px; font-weight:800; letter-spacing:.2em; color:rgba(255,217,138,.8);}
+  .bh-bal{position:relative; z-index:1; display:flex; align-items:center; gap:10px; margin-top:2px;}
+  .bh-bal .gem{width:40px; height:40px; animation:v5float 3.2s ease-in-out infinite; filter:drop-shadow(0 6px 14px rgba(232,180,74,.55));}
+  .bh-bal .n{font-family:'Teko'; font-weight:700; font-size:58px; line-height:.85; letter-spacing:.5px;
+    background:linear-gradient(180deg,#FFF3D0,#FFD98A 45%,#D9A23A); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .bh-worth{position:relative; z-index:1; font-size:12px; color:var(--txt2); margin-top:6px;}
+  .bh-worth b{color:var(--txt); font-weight:600;}
+  .bh-track{position:relative; z-index:1; height:9px; border-radius:6px; background:rgba(0,0,0,.45); overflow:hidden; margin-top:14px; border:1px solid rgba(232,180,74,.18);}
+  .bh-track .fill{background:linear-gradient(90deg,#E8B44A,#FFE08A) !important; position:relative; overflow:hidden;}
+  .bh-track .fill::after{content:''; position:absolute; inset:0; background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);
+    transform:translateX(-100%); animation:v5shim 2.2s ease-in-out infinite;}
+  .bh-goal{position:relative; z-index:1; display:flex; justify-content:space-between; gap:10px; margin-top:8px; font-size:11.5px; color:var(--txt2);}
+  .bh-goal b{color:var(--gold-hi); font-weight:700;}
+  .bh-btns{position:relative; z-index:1; display:flex; gap:9px; margin-top:15px;}
+  .bh-btn{flex:1; display:flex; align-items:center; justify-content:center; gap:7px; border-radius:13px; padding:13px 10px; cursor:pointer;
+    font-family:'Chakra Petch'; font-weight:700; font-size:13px; letter-spacing:.5px; border:1px solid transparent; transition:transform .15s;}
+  .bh-btn:active{transform:scale(.97);}
+  .bh-btn svg{width:17px; height:17px;}
+  .bh-btn.pri{color:#1a1204; background:linear-gradient(180deg,#FFE08A,#E8B44A); box-shadow:0 10px 22px -10px rgba(232,180,74,.8);}
+  .bh-btn.sec{color:var(--txt); background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.12);}
+  .bh-btn.sec b{color:var(--gold-hi);}
+
+  /* section header na may icon chip */
+  .hs{display:flex; align-items:center; gap:11px; margin:24px 2px 11px;}
+  .hs-ic{width:32px; height:32px; border-radius:10px; flex:0 0 auto; display:flex; align-items:center; justify-content:center;
+    background:rgba(232,180,74,.12); border:1px solid rgba(232,180,74,.28); color:var(--gold-hi);}
+  .hs-ic svg{width:17px; height:17px;}
+  .hs-ic.blue{background:rgba(77,166,255,.12); border-color:rgba(77,166,255,.3); color:var(--blue-hi);}
+  .hs-ic.green{background:rgba(52,211,153,.12); border-color:rgba(52,211,153,.3); color:#7EEBC2;}
+  .hs-tx{flex:1; min-width:0;}
+  .hs-t{font-family:'Chakra Petch'; font-weight:700; font-size:13px; letter-spacing:1.6px; color:var(--txt);}
+  .hs-s{font-size:11px; color:var(--txt3); margin-top:1px;}
+  .hs-x{flex:0 0 auto; font-family:'Rajdhani'; font-weight:700; font-size:12.5px; color:var(--gold-hi); padding:4px 10px; border-radius:20px;
+    background:rgba(232,180,74,.1); border:1px solid rgba(232,180,74,.25);}
+
+  /* task list — buong row ay tappable, may reward pill */
+  .tkl{display:flex; flex-direction:column; gap:9px;}
+  .tk{display:flex; align-items:center; gap:13px; padding:13px 13px; border-radius:16px; cursor:pointer;
+    background:linear-gradient(160deg,#171c24,#11151b); border:1px solid var(--line); transition:transform .15s,border-color .2s;
+    animation:v5in .45s cubic-bezier(.2,.8,.2,1) both;}
+  .tk:active{transform:scale(.985); border-color:rgba(232,180,74,.45);}
+  .tk-ic{width:44px; height:44px; border-radius:13px; flex:0 0 auto; display:flex; align-items:center; justify-content:center; overflow:hidden;
+    background:#0c0f14; border:1px solid var(--line2);}
+  .tk-ic img{width:100%; height:100%; object-fit:cover;}
+  .tk-ic svg{width:22px; height:22px;}
+  .tk-mid{flex:1; min-width:0;}
+  .tk-t{font-family:'Rajdhani'; font-weight:700; font-size:15.5px; line-height:1.15; color:var(--txt);}
+  .tk-d{font-size:11.5px; color:var(--txt2); margin-top:2px; line-height:1.35; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
+  .tk-r{flex:0 0 auto; display:flex; align-items:center; gap:5px; padding:8px 11px; border-radius:11px;
+    font-family:'Rajdhani'; font-weight:700; font-size:14px; color:#1a1204; background:linear-gradient(180deg,#FFE08A,#E8B44A);}
+
+  /* Offerwall — coming soon */
+  .ofw{position:relative; overflow:hidden; border-radius:22px; padding:26px 20px 22px; text-align:center;
+    background:radial-gradient(120% 80% at 50% 0%,rgba(77,166,255,.22),transparent 60%),linear-gradient(170deg,#141b26,#0f1217);
+    border:1px solid rgba(77,166,255,.3); animation:v5in .5s cubic-bezier(.2,.8,.2,1) both;}
+  .ofw-badge{display:inline-flex; align-items:center; gap:7px; font-size:10px; font-weight:800; letter-spacing:.2em; color:var(--blue-hi);
+    padding:6px 12px; border-radius:20px; background:rgba(77,166,255,.12); border:1px solid rgba(77,166,255,.3);}
+  .ofw-badge i{width:6px; height:6px; border-radius:50%; background:var(--blue); box-shadow:0 0 8px var(--blue); animation:gmblink 1.5s ease-in-out infinite;}
+  .ofw h3{font-family:'Teko'; font-weight:700; font-size:34px; line-height:.95; margin-top:14px;}
+  .ofw p{font-size:13px; color:var(--txt2); line-height:1.55; margin:9px auto 0; max-width:30ch;}
+  .ofw-tiles{display:grid; grid-template-columns:repeat(3,1fr); gap:9px; margin-top:20px;}
+  .ofw-tile{border-radius:14px; padding:14px 6px 12px; background:rgba(255,255,255,.04); border:1px dashed rgba(255,255,255,.12);}
+  .ofw-tile svg{width:24px; height:24px; color:var(--blue-hi);}
+  .ofw-tile div{font-size:11px; color:var(--txt2); margin-top:6px; font-weight:600;}
+
+  .wtab-hist{margin-top:6px;}
+  @keyframes v5in{from{opacity:0; transform:translateY(10px);}to{opacity:1; transform:none;}}
+  @keyframes v5float{0%,100%{transform:translateY(0) rotate(-4deg);}50%{transform:translateY(-5px) rotate(4deg);}}
+  @keyframes v5sheen{0%,60%{background-position:150% 0;}100%{background-position:-60% 0;}}
+  @keyframes v5shim{0%{transform:translateX(-100%);}70%,100%{transform:translateX(100%);}}
+  @media (prefers-reduced-motion:reduce){ .bh,.bh::after,.bh-bal .gem,.tk,.ofw,.bh-track .fill::after{animation:none !important;} }
 </style>
 </head>
 <body>
@@ -1800,9 +1909,13 @@ function requestState(){ if(isNative) window.Android.requestState(); else mockSt
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden) requestState(); });
 
 let MOCK={ uid:"dev-demo", code:"SANT-AB12-CD34", isAdmin:false,
-  config:{perInvite:10,refQualify:50,inviteeBonus:5,welcomeBonus:5,dailyBonus:15,missionGoal:5,missionBonus:50,missionHours:24,temu:{code:"98373317",link:"https://temu.com/s/ZbaZrL3aNc1IVqW",timerSecs:10},withdrawPromo:{pct:20,until:Date.now()+7*86400000}},
+  config:{perInvite:15,refQualify:50,inviteeBonus:5,welcomeBonus:5,dailyBonus:15,missionGoal:5,missionBonus:50,missionHours:24,temu:{code:"98373317",link:"https://temu.com/s/ZbaZrL3aNc1IVqW",timerSecs:10},withdrawPromo:{pct:20,until:Date.now()+7*86400000}},
   tiers:[{mlbb:22,cost:35,firstOnly:true},{mlbb:112,cost:140,firstOnly:false},{mlbb:223,cost:280,firstOnly:false},{mlbb:336,cost:600,firstOnly:false},{mlbb:570,cost:1000,firstOnly:false},{mlbb:1163,cost:2000,firstOnly:false}],
-  tasks:[{id:"temu_step1",title:"Download & open Temu",reward:20,enabled:true,claimed:false},{id:"temu_step2",title:"Search the secret code",reward:20,enabled:true,claimed:false},{id:"temu_step3",title:"Open Activity",reward:20,enabled:true,claimed:false},{id:"temu_step4",title:"Pick a card",reward:20,enabled:true,claimed:false},{id:"temu_step5",title:"Claim your reward",reward:20,enabled:true,claimed:false}],
+  tasks:[{id:"gearup_boost",title:"Play MLBB with GearUp",desc:"Install GearUp, use code WARLITO, then boost MLBB",link:"https://gearup.onelink.me/Zmq0/zongxotic",reward:40,enabled:true,claimed:false,hero:true,verifyPkg:"com.gearup.booster",usageSecs:15,mlbbPkg:"com.mobile.legends",mlbbSecs:480,steps:["Install GearUp here","Use my code WARLITO","Boost MLBB with GearUp!"]},
+    {id:"fb_follow_page",title:"Follow our Facebook page",desc:"Tap Follow on the Santoryu page",link:"https://www.facebook.com/share/1AjdM7tbEZ/",reward:5,enabled:true,claimed:false},
+    {id:"fb_react_post",title:"React to our latest post",desc:"Leave a reaction on our Facebook post",link:"https://www.facebook.com/share/p/18q94ZJ4S4/",reward:5,enabled:true,claimed:false},
+    {id:"tt_comment_santoryu",title:"Comment on our TikTok",desc:"Watch the video and drop a comment",link:"https://www.tiktok.com/@warlitogaming",reward:10,enabled:true,claimed:false},
+    {id:"yt_comment_slot",title:"Comment on our YouTube video",desc:"Watch the video and leave a comment",link:"https://youtube.com/",reward:10,enabled:true,claimed:false}],
   account:{balance:340,earned:560,referralCount:3,firstWithdrawUsed:true,earnBanned:false,welcomeClaimed:true,referred:false,lastDailyDay:0,missionStart:0,missionBaseline:0,name:"Kairi",avatarUrl:"https://kappa.lol/7Xnnlc",earned:1340},
   history:[{mlbb:20,cost:600,status:"fulfilled",ts:Date.now()-86400000,refunded:false},{mlbb:5,cost:150,status:"refunded",ts:Date.now()-3600000,refunded:true,reason:"We hit a top-up (Codashop) issue while processing your withdrawal, so we refunded your diamonds. Please withdraw again."}],
   invited:[{name:"Justin",ts:Date.now()-7200000,avatarUrl:"https://kappa.lol/Z9cLjS",status:"accepted"},{name:"Vince",ts:Date.now()-90000000,avatarUrl:"",status:"pending"},{name:"Maher",ts:Date.now()-180000000,avatarUrl:"https://kappa.lol/oF8JPO",status:"accepted"},{name:"BotFarm01",ts:Date.now()-260000000,avatarUrl:"",status:"rejected"}],
@@ -1941,7 +2054,7 @@ function withdrawBanner(app,s){
 }
 // Buong Withdraw page — goal hero + tier grid + payout proof. Nag-re-repaint sa tier select
 // (hindi render() na nagre-rebuild ng dashboard sa likod) para di masira ang page.
-function openWithdrawPage(){ openPage('Withdraw', body=>paintWithdraw(body)); }
+function openWithdrawPage(){ selectTab('withdraw'); }
 // Payout in the target unit for a tier under the current method. 30 diamonds = P1 / 1 Robux.
 // Per-method amount options. Pricing: 30 gold diamonds = 1 unit (P1 / 1 Robux / 1 MLBB diamond).
 const WD_OPTS={ mlbb:[5,20,50,100,250,500], roblox:[50,100,200,400,800], gcash:[500,750,1000] };
@@ -2172,14 +2285,18 @@ function renderEarnMaintenance(app){
 }
 // ── Dashboard tabs (Home / Clipping / Invite / Tasks) ──────────────────────────
 let TAB='home';
-const TAB_LABELS={home:'Home',invite:'Invite',tasks:'Tasks'};
+const TAB_LABELS={home:'Home',offers:'Offerwall',withdraw:'Withdraw'};
+const TAB_ICONS={
+  home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>',
+  offers:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><path d="M17.25 13.5v7.5M13.5 17.25H21"/></svg>',
+  withdraw:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V5.5A1.5 1.5 0 0 0 17.5 4h-12A2.5 2.5 0 0 0 3 6.5v11A2.5 2.5 0 0 0 5.5 20h14a1.5 1.5 0 0 0 1.5-1.5v-10A1.5 1.5 0 0 0 19.5 7H5.5"/><circle cx="16.5" cy="13.5" r="1.3" fill="currentColor"/></svg>'};
 function selectTab(id){ if(!TAB_LABELS[id]) return; TAB=id;
   document.querySelectorAll('.tabbar .tab').forEach(el=>el.classList.toggle('active',el.dataset.tab===id));
   const body=document.getElementById('tabbody'); if(body) renderTab(body);
   window.scrollTo(0,0);
 }
 function renderTab(host){ host.innerHTML='';
-  ({home:renderHome,invite:renderInvite,tasks:renderTasks}[TAB]||renderHome)(host);
+  ({home:renderHome,offers:renderOffers,withdraw:renderWithdrawTab}[TAB]||renderHome)(host);
   requestAnimationFrame(()=>document.querySelectorAll('.fill[data-w]').forEach(f=>f.style.width=f.dataset.w+'%'));
 }
 // Placeholders — filled by later tasks (Invite=Task3, Tasks=Task4, Clipping=Task6).
@@ -2373,9 +2490,9 @@ function renderShell(){
 
   // tab bar — Home / Clipping / Invite / Tasks (client-side switch, no reload)
   // actionable dot: Tasks shows a dot when there are unclaimed tasks the user can do now.
-  const openTasks=(s.tasks||[]).filter(t=>!t.claimed && (!isUsage(t)||usageSupported())).length;
-  const tabDot={tasks:openTasks>0};
-  const bar=$(`<div class="tabbar">${Object.keys(TAB_LABELS).map(id=>`<div class="tab${id===TAB?' active':''}" data-tab="${id}">${TAB_LABELS[id]}${tabDot[id]?'<span class="cdot"></span>':''}</div>`).join('')}</div>`);
+  // dot sa Withdraw kapag abot na ang minimum cash-out.
+  const tabDot={withdraw:(a.balance>=150 && !a.earnBanned)};
+  const bar=$(`<div class="tabbar v5">${Object.keys(TAB_LABELS).map(id=>`<div class="tab${id===TAB?' active':''}" data-tab="${id}">${TAB_ICONS[id]||''}<span>${TAB_LABELS[id]}</span>${tabDot[id]?'<span class="cdot"></span>':''}</div>`).join('')}</div>`);
   bar.querySelectorAll('.tab').forEach(el=>el.onclick=()=>selectTab(el.dataset.tab));
   app.appendChild(bar);
   const tabbody=$(`<div id="tabbody"></div>`); app.appendChild(tabbody);
@@ -2398,11 +2515,10 @@ function homeQuickStats(host,s){
 
 // Home tab — dashboard: profile + withdraw + quick stats + Featured promos + activity.
 // `app` is aliased to the tab body so the moved markup below is unchanged.
+// Home — balance hero, GearUp (new users lang), Invite, Tasks, Giveaway code.
 function renderHome(host){
   const app=host; const s=STATE, a=s.account, c=s.config;
 
-  // Device/earn gate warning — kapag naka-earnBanned ang account (neutralized clone/cheat, o
-  // ibang account na ang may-ari ng device), agad na ipakita ang malinaw na babala sa taas.
   if(a.earnBanned) app.appendChild($(`<div class="banwarn">
     <div class="bwic">!</div>
     <div class="bwtx"><div class="bwt">Earning is not available on this device</div>
@@ -2417,36 +2533,26 @@ function renderHome(host){
       <div class="bwd">You're running Santoryu inside a cloner / dual-space app. Earning only works on a normal install. Open the real app to keep earning.</div></div>
   </div>`));
 
-  // profile card (sino ka — avatar, pangalan, invite code, total earned)
-  const pfav = a.avatarUrl ? `<img class="pf-av" src="${esc(a.avatarUrl)}" alt="" onerror="this.removeAttribute('src');this.classList.add('pf-ini');this.textContent='${esc((a.name||'U').slice(0,1).toUpperCase())}'">`
-    : `<div class="pf-av pf-ini">${esc((a.name||'U').slice(0,1).toUpperCase())}</div>`;
-  app.appendChild($(`<div class="profile">
-    ${pfav}
-    <div class="pf-mid">
-      <div class="pf-name">${esc(a.name||'Player')}${s.isAdmin?'<span class="pf-badge">ADMIN</span>':''}</div>
-      <div class="pf-sub">Invite code · <b>${esc(s.code||'—')}</b></div>
-    </div>
-    <div class="pf-stat"><div class="pf-sv">${kFmt(a.earned||0)}</div><div class="pf-sl">TOTAL EARNED</div></div>
-  </div>`));
+  balanceHero(app,s);
 
-  // WITHDRAW banner — compact na hero na nagbubukas ng buong Withdraw page (tiers naka-hiwalay
-  // na para malinis ang dashboard; earning-focused ang dashboard, cash-out ang page).
-  withdrawBanner(app,s);
+  // GearUp — PARA SA BAGONG USER LANG. Itinatago sa sinumang may record na sa database
+  // (earnGearupStatus). Habang hindi pa alam ang sagot, o kapag nag-error, hindi ipinapakita.
+  const gear=gearupTask(s);
+  if(gear && GU_OK===true){
+    app.appendChild(homeSec('NEW PLAYER OFFER','One-time bonus for new players','+'+gear.reward,IC5.bolt,''));
+    gearMissionHero(app,gear);
+  } else if(gear && GU_OK===null) loadGearupStatus();
 
-  // quick stats: balance / earned / qualified invites / open tasks
-  homeQuickStats(host,s);
+  // INVITE — +perInvite bawat friend na ma-qualify.
+  const iv=homeSec('INVITE FRIENDS','Earn when your friends earn','+'+c.perInvite+' each',IC5.users,'blue'); iv.id='invsec';
+  app.appendChild(iv);
+  inviteHero(app,s);
 
-  // (INVITE HERO moved to the Invite tab — renderInvite.)
+  // TASKS — one-time, mabilis na diamonds.
+  homeTasks(app,s,gear);
 
-  // FEATURED — promotional / optional earners (Tongits, redeem, tournament, jogos).
-  app.appendChild($(`<div class="sh"><div class="t">FEATURED</div></div>`));
-
-  // WATCH ME LIVE — REMOVED (owner request 2026-08-29): no TikTok live card + no auto-dialog.
-
-  // TONGITS GO — high-value campaign hero, prominent (di na nakabaon sa tasks).
-  tongitsHero(app,s);
-
-  // REDEEM giveaway code (one-time per user + Congrats dialog).
+  // GIVEAWAY CODE
+  app.appendChild(homeSec('GIVEAWAY CODE','Got a code from our page or live?','',IC5.gift,''));
   redeemEntry(app);
 
   // tournament banner (LIVE EVENT) — naka-gate: nagpapakita LANG kapag may aktibong event
@@ -2522,17 +2628,6 @@ function renderHome(host){
     app.appendChild(pe2);
   }
 
-  // (Daily check-in ay naka-DIALOG na — buksan via check-in icon sa header.)
-  // (TASKS moved to the Tasks tab — renderTasks, split into Download / Other.)
-
-  // (Referral Mission tinanggal — ang invite hero na sa itaas ang referral highlight.)
-
-  // history + invited → sariling pages (mas magaan ang main, mas mabilis)
-  app.appendChild($(`<div class="sh"><div class="t">YOUR ACTIVITY</div></div>`));
-  const r1=$(`<div class="navrow acthist"><div class="di" style="width:30px;height:30px;background:rgba(95,160,255,.12)">${II('ic-history')}</div><div class="gl"><div class="n">Withdrawal history</div><div class="s">${(s.history||[]).length} total</div></div><div class="ch">›</div></div>`);
-  r1.onclick=openHistory;
-  app.appendChild(r1);
-
   // legal footer (Terms / Privacy / Delete account)
   const ft=$(`<div class="legal">
     <button class="lgl" id="lglTerms">Terms of Use</button><span class="lgd">·</span>
@@ -2546,6 +2641,109 @@ function renderHome(host){
 
   // animate progress fills after layout
   requestAnimationFrame(()=>document.querySelectorAll('.fill[data-w]').forEach(f=>f.style.width=f.dataset.w+'%'));
+}
+
+
+// ── EARN v5 helpers ───────────────────────────────────────────────────────────
+const IC5={
+  bolt:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>',
+  users:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.2a6.5 6.5 0 0 1 3.5 5.8"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="m8 12.5 2.7 2.7L16.5 9"/></svg>',
+  gift:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M5 12v8h14v-8M12 8v12M12 8S11 4 8.5 4 6 7 8.5 8M12 8s1-4 3.5-4S18 7 15.5 8"/></svg>',
+  wallet:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V5.5A1.5 1.5 0 0 0 17.5 4h-12A2.5 2.5 0 0 0 3 6.5v11A2.5 2.5 0 0 0 5.5 20h14a1.5 1.5 0 0 0 1.5-1.5v-10A1.5 1.5 0 0 0 19.5 7H5.5"/><circle cx="16.5" cy="13.5" r="1.3" fill="currentColor"/></svg>',
+  share:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>',
+  game:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 10.5v4M5 12.5h4"/><circle cx="16" cy="11.5" r="1" fill="currentColor"/><circle cx="18" cy="14" r="1" fill="currentColor"/></svg>',
+  survey:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>',
+  app:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M12 7v7m-3-3 3 3 3-3"/></svg>',
+};
+const MIN_CASHOUT=150; // 5 MLBB diamonds x 30
+function homeSec(title,sub,badge,icon,tone){
+  return $(`<div class="hs"><span class="hs-ic ${tone||''}">${icon}</span><div class="hs-tx"><div class="hs-t">${title}</div>${sub?`<div class="hs-s">${sub}</div>`:''}</div>${badge?`<span class="hs-x">${badge}</span>`:''}</div>`);
+}
+// Balance hero: sino ka + balance + katumbas + progress papunta sa unang cash-out + 2 CTA.
+function balanceHero(app,s){
+  const a=s.account, c=s.config, bal=a.balance||0;
+  const reached=bal>=MIN_CASHOUT, frac=Math.min(100,Math.round(bal/MIN_CASHOUT*100));
+  const units=Math.floor(bal/30);
+  const ini=esc((a.name||'U').slice(0,1).toUpperCase());
+  const av=a.avatarUrl?`<img class="bh-av" src="${esc(a.avatarUrl)}" alt="" onerror="this.outerHTML='<div class=&quot;bh-av&quot;>${ini}</div>'">`:`<div class="bh-av">${ini}</div>`;
+  const el=$(`<div class="bh">
+    <div class="bh-top">${av}
+      <div class="bh-who"><div class="bh-name">${esc(a.name||'Player')}</div><div class="bh-code">Invite code <b>${esc(s.code||'—')}</b></div></div>
+      <div class="bh-earned"><div class="v">${kFmt(a.earned||0)}</div><div class="l">TOTAL EARNED</div></div>
+    </div>
+    <div class="bh-lbl">YOUR DIAMONDS</div>
+    <div class="bh-bal"><span class="dia gold gem"></span><span class="n">${bal.toLocaleString()}</span></div>
+    <div class="bh-worth">Worth <b>&#8369;${units.toLocaleString()}</b> &middot; <b>${units.toLocaleString()}</b> MLBB diamonds &middot; <b>${units.toLocaleString()}</b> Robux</div>
+    <div class="bh-track"><div class="fill" data-w="${frac}"></div></div>
+    <div class="bh-goal"><span>${reached?'<b>Ready to cash out</b>':('<b>'+(MIN_CASHOUT-bal).toLocaleString()+'</b> more to your first cash-out')}</span><span>${Math.min(bal,MIN_CASHOUT)}/${MIN_CASHOUT}</span></div>
+    <div class="bh-btns">
+      <button class="bh-btn pri" id="bhw">${IC5.wallet}Withdraw</button>
+      <button class="bh-btn sec" id="bhi">${IC5.share}Invite <b>+${c.perInvite}</b></button>
+    </div>
+  </div>`);
+  el.querySelector('#bhw').onclick=()=>{ if(a.earnBanned){ toast('Earning is disabled on this device','bad'); return; } selectTab('withdraw'); };
+  el.querySelector('#bhi').onclick=()=>{ const t=document.getElementById('invsec'); if(t) t.scrollIntoView({behavior:'smooth',block:'start'}); };
+  app.appendChild(el);
+}
+// GearUp mission task (hero + usage-verified) na hindi pa na-claim. Sa browser preview, palaging
+// ipinapakita para makita ang design (walang usage bridge doon).
+function gearupTask(s){
+  return (s.tasks||[]).find(t=>t && !t.claimed && t.hero===true && isUsage(t) && /gearup/i.test((t.id||'')+' '+(t.verifyPkg||'')) && (usageSupported()||!isNative)) || null;
+}
+// null = hindi pa alam, true = bagong user (ipakita), false = may record na (itago).
+let GU_OK=null, GU_LOADING=false;
+function loadGearupStatus(){
+  if(GU_LOADING || !STATE) return; GU_LOADING=true;
+  if(!isNative){ setTimeout(()=>{ GU_OK=true; GU_LOADING=false; if(TAB==='home') render(); },120); return; }
+  fetch(CLIP_BASE+'/earnGearupStatus',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid:STATE.uid})})
+    .then(r=>r.json()).then(r=>{ GU_OK=!!(r&&r.ok&&r.eligible===true); })
+    .catch(()=>{ GU_OK=false; })
+    .finally(()=>{ GU_LOADING=false; if(TAB==='home') render(); });
+}
+// Tasks sa Home: lahat ng one-time task na hindi pa tapos (maliban sa GearUp hero, Temu at
+// giveaway na may sariling card). Buong row ay tappable.
+function homeTasks(app,s,gear){
+  giveawayHero(app,s);
+  temuHero(app,s);
+  const list=(s.tasks||[]).filter(t=>t && !t.claimed && t!==gear && !isTemu(t) && !(t.hero===true && isUsage(t)) && (!isUsage(t) || usageSupported()));
+  if(!list.length) return;
+  const total=list.reduce((n,t)=>n+(+t.reward||0),0);
+  app.appendChild(homeSec('TASKS','Quick diamonds &middot; one time each','+'+total+' total',IC5.check,'green'));
+  const box=$(`<div class="tkl"></div>`);
+  list.forEach((t,i)=>{
+    const row=$(`<div class="tk" style="animation-delay:${Math.min(i,6)*45}ms"><div class="tk-ic">${taskIcon(t)}</div>
+      <div class="tk-mid"><div class="tk-t">${esc(t.title)}</div>${t.desc?`<div class="tk-d">${esc(t.desc)}</div>`:''}</div>
+      <div class="tk-r"><span class="dia gold" style="width:14px;height:14px"></span>+${t.reward}</div></div>`);
+    row.onclick=()=> isCommentTask(t)?openCommentPage(t): isUsage(t)?(usageSupported()?openUsage(t):toast('Update the app to do this task','bad')): isReview(t)?openReview(t): isSocial(t)?openDwell(t): doTask(t);
+    box.appendChild(row);
+  });
+  app.appendChild(box);
+}
+// Offerwall — paparating (CPA/CPI partner offers). Placeholder habang inihahanda.
+function renderOffers(host){
+  host.appendChild($(`<div class="ofw">
+    <div class="ofw-badge"><i></i>COMING SOON</div>
+    <h3>Offerwall</h3>
+    <p>Install apps, play games and answer surveys from our partners. Every completed offer pays diamonds straight to your balance.</p>
+    <div class="ofw-tiles">
+      <div class="ofw-tile">${IC5.app}<div>Apps</div></div>
+      <div class="ofw-tile">${IC5.game}<div>Games</div></div>
+      <div class="ofw-tile">${IC5.survey}<div>Surveys</div></div>
+    </div>
+  </div>`));
+  host.appendChild(homeSec('EARN WHILE YOU WAIT','These pay right now','',IC5.bolt,''));
+  const go=$(`<div class="tkl"><div class="tk"><div class="tk-ic" style="color:var(--gold-hi)">${IC5.check}</div><div class="tk-mid"><div class="tk-t">Tasks &amp; invites</div><div class="tk-d">Finish tasks and invite friends on Home</div></div><div class="tk-r">Go</div></div></div>`);
+  go.querySelector('.tk').onclick=()=>selectTab('home');
+  host.appendChild(go);
+}
+// Withdraw tab — ang dating Withdraw page, ngayon ay sariling tab, + history sa ilalim.
+function renderWithdrawTab(host){
+  const wrap=document.createElement('div'); host.appendChild(wrap); paintWithdraw(wrap);
+  host.appendChild(homeSec('HISTORY','Your past cash-outs','',IC5.wallet,'blue'));
+  const r1=$(`<div class="navrow acthist wtab-hist"><div class="di" style="width:30px;height:30px;background:rgba(95,160,255,.12)">${II('ic-history')}</div><div class="gl"><div class="n">Withdrawal history</div><div class="s">${(STATE.history||[]).length} total</div></div><div class="ch">›</div></div>`);
+  r1.onclick=openHistory;
+  host.appendChild(r1);
 }
 
 // Skin giveaway hero — bold promo banner na naka-link sa FB giveaway task.
