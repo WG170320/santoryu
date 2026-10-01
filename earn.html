@@ -1719,7 +1719,7 @@
     border:none; transition:background .25s,color .25s; position:relative;}
   .tabbar.v5 .tab svg{width:17px; height:17px; flex:0 0 auto;}
   .tabbar.v5 .tab.active{color:#1a1204; background:linear-gradient(180deg,#FFD98A,#E8B44A); box-shadow:0 6px 18px -8px rgba(232,180,74,.75);}
-  .tabbar.v5 .tab .cdot{position:absolute; top:7px; right:12px; width:7px; height:7px; border-radius:50%; background:#FF5E6C; box-shadow:0 0 0 2px var(--surf);}
+  .tabbar.v5 .tab .cdot{position:absolute; top:4px; right:5px; width:7px; height:7px; border-radius:50%; background:#FF5E6C; box-shadow:0 0 0 2px var(--surf);}
   .tabbar.v5 .tab::after{display:none !important;}
 
   /* balance hero — ang iisang malakas na elemento sa Home */
@@ -1808,6 +1808,36 @@
   .ofw-tile svg{width:24px; height:24px; color:var(--blue-hi);}
   .ofw-tile div{font-size:11px; color:var(--txt2); margin-top:6px; font-weight:600;}
 
+
+  /* Offerwall offer cards — logo + malaking reward + steps + oras (estilo ng partner offerwalls) */
+  .ofw-head{display:flex; align-items:flex-end; justify-content:space-between; gap:10px; margin:2px 2px 14px;}
+  .ofw-ht{font-family:'Teko'; font-weight:700; font-size:32px; line-height:.9;}
+  .ofw-hs{font-size:12px; color:var(--txt2); margin-top:3px;}
+  .ofw-cnt{flex:0 0 auto; font-size:11px; font-weight:700; color:var(--blue-hi); padding:5px 11px; border-radius:20px; background:rgba(77,166,255,.12); border:1px solid rgba(77,166,255,.3);}
+  .ofl{display:flex; flex-direction:column; gap:14px;}
+  .ofc{border-radius:24px; cursor:pointer; animation:v5in .45s cubic-bezier(.2,.8,.2,1) both; transition:transform .15s;}
+  .ofc:active{transform:scale(.985);}
+  .ofc-in{display:flex; align-items:center; gap:15px; padding:15px; border-radius:22px; background:linear-gradient(160deg,#1b2029,#14181f); border:1px solid var(--line);}
+  .ofc.top{padding:3px; background:linear-gradient(180deg,#4DA6FF,#2f7fe0); box-shadow:0 18px 36px -20px rgba(77,166,255,.75);}
+  .ofc.top .ofc-in{border-color:transparent;}
+  .ofc-rib{text-align:center; padding:8px 0 6px; font-family:'Chakra Petch'; font-weight:700; font-size:13px; letter-spacing:.4px; color:#fff;}
+  .ofc-logo{width:74px; height:74px; border-radius:20px; flex:0 0 auto; object-fit:cover; background:#0c0f14; box-shadow:0 8px 18px -10px rgba(0,0,0,.9);}
+  .ofc-mid{flex:1; min-width:0;}
+  .ofc-amt{display:flex; align-items:center; gap:7px; font-family:'Teko'; font-weight:700; font-size:40px; line-height:.85; color:#fff;}
+  .ofc-amt .dia{width:24px; height:24px;}
+  .ofc-amt small{font-family:'Rajdhani'; font-weight:600; font-size:14px; color:var(--txt2); margin-left:2px; align-self:flex-end; padding-bottom:5px;}
+  .ofc-name{display:flex; align-items:center; gap:7px; font-family:'Rajdhani'; font-weight:700; font-size:17px; color:var(--txt); margin-top:5px; min-width:0;}
+  .ofc-name span{white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .ofc-name em{flex:0 0 auto; font-style:normal; font-family:'Inter'; font-size:9px; font-weight:800; letter-spacing:.08em; color:#7EEBC2; padding:3px 7px; border-radius:6px; background:rgba(52,211,153,.12); border:1px solid rgba(52,211,153,.3);}
+  .ofc-desc{font-size:12px; color:var(--txt2); margin-top:2px; line-height:1.35;}
+  .ofc-meta{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--txt2); margin-top:3px; line-height:1.3;}
+  .ofc-meta svg{width:14px; height:14px; flex:0 0 auto; color:var(--txt);}
+  .ofc-go{width:38px; height:38px; border-radius:50%; flex:0 0 auto; display:flex; align-items:center; justify-content:center; color:#d9ecff; background:#2f7fe0;}
+  .ofc-go svg{width:18px; height:18px;}
+  .ofw-load,.ofw-empty{text-align:center; color:var(--txt2); font-size:13px; line-height:1.6; padding:30px 10px;}
+  .ofw-empty{border:1px dashed var(--line2); border-radius:18px; margin-bottom:4px;}
+  .ofw-soon{margin-top:18px; padding:20px 18px 18px;}
+  .ofw-soon p{margin-top:10px;}
   .wtab-hist{margin-top:6px;}
   @keyframes v5in{from{opacity:0; transform:translateY(10px);}to{opacity:1; transform:none;}}
   @keyframes v5float{0%,100%{transform:translateY(0) rotate(-4deg);}50%{transform:translateY(-5px) rotate(4deg);}}
@@ -2491,7 +2521,8 @@ function renderShell(){
   // tab bar — Home / Clipping / Invite / Tasks (client-side switch, no reload)
   // actionable dot: Tasks shows a dot when there are unclaimed tasks the user can do now.
   // dot sa Withdraw kapag abot na ang minimum cash-out.
-  const tabDot={withdraw:(a.balance>=150 && !a.earnBanned)};
+  const gearT=gearupTask(s); if(gearT && GU_OK===null) loadGearupStatus();
+  const tabDot={withdraw:(a.balance>=150 && !a.earnBanned), offers:!!(gearT && GU_OK===true)};
   const bar=$(`<div class="tabbar v5">${Object.keys(TAB_LABELS).map(id=>`<div class="tab${id===TAB?' active':''}" data-tab="${id}">${TAB_ICONS[id]||''}<span>${TAB_LABELS[id]}</span>${tabDot[id]?'<span class="cdot"></span>':''}</div>`).join('')}</div>`);
   bar.querySelectorAll('.tab').forEach(el=>el.onclick=()=>selectTab(el.dataset.tab));
   app.appendChild(bar);
@@ -2535,13 +2566,8 @@ function renderHome(host){
 
   balanceHero(app,s);
 
-  // GearUp — PARA SA BAGONG USER LANG. Itinatago sa sinumang may record na sa database
-  // (earnGearupStatus). Habang hindi pa alam ang sagot, o kapag nag-error, hindi ipinapakita.
+  // (GearUp offer ay nasa Offerwall tab na.)
   const gear=gearupTask(s);
-  if(gear && GU_OK===true){
-    app.appendChild(homeSec('NEW PLAYER OFFER','One-time bonus for new players','+'+gear.reward,IC5.bolt,''));
-    gearMissionHero(app,gear);
-  } else if(gear && GU_OK===null) loadGearupStatus();
 
   // INVITE — +perInvite bawat friend na ma-qualify.
   const iv=homeSec('INVITE FRIENDS','Earn when your friends earn','+'+c.perInvite+' each',IC5.users,'blue'); iv.id='invsec';
@@ -2720,22 +2746,56 @@ function homeTasks(app,s,gear){
   });
   app.appendChild(box);
 }
-// Offerwall — paparating (CPA/CPI partner offers). Placeholder habang inihahanda.
+// Offerwall — partner offers. Bawat card: logo, malaking reward, pangalan, steps, oras.
+// Ngayon: GearUp (new users lang). Dito rin papasok ang CPA/CPI offers (CPAlead) mamaya.
+function offerCard(o){
+  const bars='<svg viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="13" width="3.4" height="7" rx="1"/><rect x="10.3" y="9" width="3.4" height="11" rx="1"/><rect x="16.6" y="5" width="3.4" height="15" rx="1"/></svg>';
+  const clock='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm1 10.4 3.2 1.9-.9 1.5L11 13.3V6.5h2Z"/></svg>';
+  const el=$(`<div class="ofc${o.top?' top':''}">
+    <div class="ofc-in">
+      <img class="ofc-logo" src="${esc(o.logo)}" alt="">
+      <div class="ofc-mid">
+        <div class="ofc-amt"><span class="dia gold"></span>+${o.reward.toLocaleString()}<small>${o.total?'Total':'diamonds'}</small></div>
+        <div class="ofc-name"><span>${esc(o.name)}</span>${o.tag?`<em>${esc(o.tag)}</em>`:''}</div>
+        ${o.desc?`<div class="ofc-desc">${esc(o.desc)}</div>`:''}
+        <div class="ofc-meta">${bars}${o.steps} step${o.steps===1?'':'s'}</div>
+        <div class="ofc-meta">${clock}${esc(o.time)}</div>
+      </div>
+      <div class="ofc-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></div>
+    </div>
+    ${o.top?'<div class="ofc-rib">Top Performer</div>':''}
+  </div>`);
+  el.onclick=o.onClick;
+  return el;
+}
 function renderOffers(host){
-  host.appendChild($(`<div class="ofw">
-    <div class="ofw-badge"><i></i>COMING SOON</div>
-    <h3>Offerwall</h3>
-    <p>Install apps, play games and answer surveys from our partners. Every completed offer pays diamonds straight to your balance.</p>
+  const s=STATE, gear=gearupTask(s);
+  const offers=[];
+  if(gear && GU_OK===true){
+    const mins=Math.max(1,Math.round(((+gear.mlbbSecs||0)+(+gear.usageSecs||0))/60));
+    offers.push({ logo:gear.logo||'gearup-logo.png', name:'GearUp', tag:'NEW PLAYERS', desc:'Install, use code WARLITO, boost MLBB', reward:+gear.reward||0, total:true,
+      steps:(gear.steps&&gear.steps.length)||3, time:'About '+mins+' min to finish',
+      onClick:()=>openMissionPage(gear) });
+  }
+  if(gear && GU_OK===null){ host.appendChild($(`<div class="ofw-load">Loading offers…</div>`)); loadGearupStatus(); return; }
+  host.appendChild($(`<div class="ofw-head"><div><div class="ofw-ht">Offerwall</div><div class="ofw-hs">Complete an offer, get diamonds instantly</div></div>${offers.length?`<span class="ofw-cnt">${offers.length} offer${offers.length>1?'s':''}</span>`:''}</div>`));
+  if(offers.length){
+    const list=$(`<div class="ofl"></div>`);
+    offers.forEach((o,i)=>{ o.top=(i===0); const c=offerCard(o); c.style.animationDelay=(i*60)+'ms'; list.appendChild(c); });
+    host.appendChild(list);
+  } else {
+    host.appendChild($(`<div class="ofw-empty">No offers for you right now.<br>New partner offers are on the way.</div>`));
+  }
+  // paparating na mga kategorya
+  host.appendChild($(`<div class="ofw ofw-soon">
+    <div class="ofw-badge"><i></i>MORE OFFERS SOON</div>
+    <p>Apps, games and surveys from our partners. Every completed offer pays diamonds straight to your balance.</p>
     <div class="ofw-tiles">
       <div class="ofw-tile">${IC5.app}<div>Apps</div></div>
       <div class="ofw-tile">${IC5.game}<div>Games</div></div>
       <div class="ofw-tile">${IC5.survey}<div>Surveys</div></div>
     </div>
   </div>`));
-  host.appendChild(homeSec('EARN WHILE YOU WAIT','These pay right now','',IC5.bolt,''));
-  const go=$(`<div class="tkl"><div class="tk"><div class="tk-ic" style="color:var(--gold-hi)">${IC5.check}</div><div class="tk-mid"><div class="tk-t">Tasks &amp; invites</div><div class="tk-d">Finish tasks and invite friends on Home</div></div><div class="tk-r">Go</div></div></div>`);
-  go.querySelector('.tk').onclick=()=>selectTab('home');
-  host.appendChild(go);
 }
 // Withdraw tab — ang dating Withdraw page, ngayon ay sariling tab, + history sa ilalim.
 function renderWithdrawTab(host){
