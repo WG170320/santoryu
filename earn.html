@@ -2946,7 +2946,9 @@ function renderShotOffer(body,id){
     let act='';
     if(stt==='approved') act='<div class="sx-ok">Approved &middot; +'+(v.paid||sx.reward)+' added to your balance</div>';
     else if(stt==='pending') act='<div class="sx-wait">Waiting for review. We check every screenshot by hand.</div>';
-    else if(stt==='locked') act='<div class="sx-lock">Finish the step above first</div>';
+    else if(stt==='locked') act=v.waitReview
+      ? '<div class="sx-lock">Unlocks once &ldquo;'+esc((c.steps[i-1]||{}).title||'the step above')+'&rdquo; is approved</div>'
+      : '<div class="sx-lock">Finish the step above first</div>';
     else act=(stt==='rejected'?'<div class="sx-rej"><b>Not approved:</b> '+esc(v.reason||'Screenshot did not show this step.')+' Please upload a new one.</div>':'')+
       '<button class="sx-up" data-up="'+esc(sx.id)+'">'+cam+(stt==='rejected'?'Upload a new screenshot':'Upload screenshot')+'</button>';
     const ex=imgs.length&&stt!=='approved'?('<button class="sx-ex" data-ex="'+i+'">See example</button><div class="sx-imgs" id="sximg'+i+'" hidden>'+imgs.map(u=>'<img src="'+esc(u)+'" alt="" loading="lazy">').join('')+'</div>'):'';
@@ -2977,7 +2979,7 @@ function renderShotOffer(body,id){
   const g=body.querySelector('[data-act="get"]'); if(g) g.onclick=()=>{ const u=c.link||('market://details?id='+c.pkg); if(window.Android&&window.Android.openLink) window.Android.openLink(u); else window.open(u,'_blank'); };
   const cp=body.querySelector('[data-act="copy"]'); if(cp) cp.onclick=()=>{ if(window.Android&&window.Android.copy) window.Android.copy(c.code); toast('Code copied: '+c.code,'good'); };
 }
-const SHOT_ERR={ locked:'Finish the step above first.', pending:'This step is already waiting for review.', approved:'This step is already approved.',
+const SHOT_ERR={ locked:'Finish the step above first.', needs_approval:'Wait until the step above is approved.', pending:'This step is already waiting for review.', approved:'This step is already approved.',
   disabled:'This offer is not available right now.', device_used:'This offer was already done on this phone.', banned:'Earning is disabled on this device.',
   upload_failed:'Upload failed. Check your connection and try again.', decode_failed:'Could not read that image. Pick another screenshot.',
   picker_unavailable:'Could not open your gallery. Restart the app and try again.', bad_url:'Upload failed. Try again.' };
@@ -2991,7 +2993,8 @@ async function uploadShotStep(id,step,btn){
   }
   if(!r||!r.ok){ reset(); toast(SHOT_ERR[r&&r.error]||'Something went wrong. Try again.','bad'); return; }
   if(!isNative){ // browser preview: kunwari na-upload
-    const v=(OF_ST[id].steps.find(x=>x.id===step)); v.status='pending'; const i=OF_ST[id].steps.indexOf(v), nx=OF_ST[id].steps[i+1]; if(nx&&nx.status==='locked') nx.status='open';
+    const v=(OF_ST[id].steps.find(x=>x.id===step)); v.status='pending'; const i=OF_ST[id].steps.indexOf(v), nx=OF_ST[id].steps[i+1], nc=OF_ST[id].cfg.steps[i+1];
+    if(nx&&nx.status==='locked'){ if(nc&&nc.gate==='approved') nx.waitReview=true; else nx.status='open'; }
     toast('Screenshot sent for review','good'); shotOfferRefresh(id); return; }
   let res; try{ res=await call('tongitsSubmitShot'); }catch(e){ res=null; }
   if(res&&res.ok){ toast('Screenshot sent for review','good'); loadShotOffer(id,true); return; }
@@ -3004,10 +3007,10 @@ const MOCK_OFFERS={ fruitwins:{ usedElsewhere:false,
     total:160, steps:[
       {id:'install',title:'Download FruitWins',desc:'Install FruitWins from the Play Store and open it. Screenshot the game home screen.',reward:10,img:''},
       {id:'code',title:'Enter invite code 405340',desc:'Tap the 50 peso bills on the left, enter 405340 in Bind Your Inviter, then Submit. Screenshot the code before you submit.',reward:10,img:'fw-code1.jpg,fw-code2.jpg'},
-      {id:'level10',title:'Reach Level 10',desc:'Keep playing until the top of the screen shows Level 10. Screenshot it.',reward:20,img:'fw-level.jpg'},
-      {id:'level50',title:'Reach Level 50',desc:'Keep going until you reach Level 50. Screenshot it.',reward:20,img:'fw-level.jpg'},
-      {id:'level100',title:'Reach Level 100',desc:'The big one. Reach Level 100 and screenshot it.',reward:100,img:'fw-level.jpg'}]},
-  steps:[{id:'install',status:'approved',paid:10},{id:'code',status:'pending'},{id:'level10',status:'rejected',reason:'The level number is not visible.'},{id:'level50',status:'locked'},{id:'level100',status:'locked'}] } };
+      {id:'level10',title:'Reach Level 10',desc:'Keep playing until the top of the screen shows Level 10. Screenshot it.',reward:20,img:'fw-level.jpg',gate:'approved'},
+      {id:'level50',title:'Reach Level 50',desc:'Keep going until you reach Level 50. Screenshot it.',reward:20,img:'fw-level.jpg',gate:'approved'},
+      {id:'level100',title:'Reach Level 100',desc:'The big one. Reach Level 100 and screenshot it.',reward:100,img:'fw-level.jpg',gate:'approved'}]},
+  steps:[{id:'install',status:'approved',paid:10},{id:'code',status:'pending'},{id:'level10',status:'locked',waitReview:true},{id:'level50',status:'locked'},{id:'level100',status:'locked'}] } };
 // Withdraw tab — ang dating Withdraw page, ngayon ay sariling tab, + history sa ilalim.
 function renderWithdrawTab(host){
   const wrap=document.createElement('div'); host.appendChild(wrap); paintWithdraw(wrap);
