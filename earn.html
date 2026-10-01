@@ -1916,6 +1916,28 @@
   .gx-gt{flex:1; min-width:0; font-size:12px; line-height:1.45; color:var(--txt2);}
   .gx-gt b{display:block; color:var(--txt); font-size:13px; margin-bottom:1px;}
   .gx-gb{flex:0 0 auto; border:none; border-radius:10px; padding:9px 14px; font-family:'Rajdhani'; font-weight:700; font-size:14px; color:#fff; background:#2f7fe0; cursor:pointer;}
+
+  /* Screenshot offers (FruitWins) */
+  .sx-code{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:10px; padding:10px 12px 10px 14px; border-radius:14px;
+    background:#0c0f14; border:1px dashed rgba(232,180,74,.45);}
+  .sx-cl{font-size:10px; font-weight:800; letter-spacing:.16em; color:var(--txt3);}
+  .sx-cv{font-family:'Teko'; font-weight:700; font-size:30px; line-height:.95; letter-spacing:2px; color:var(--gold-hi);}
+  .sx-code button{flex:0 0 auto; border:none; border-radius:10px; padding:10px 16px; font-family:'Rajdhani'; font-weight:700; font-size:15px; color:#1a1204; background:linear-gradient(180deg,#FFE08A,#E8B44A); cursor:pointer;}
+  .sx-up{display:flex; align-items:center; justify-content:center; gap:8px; width:100%; margin-top:10px; border:1px solid rgba(77,166,255,.45); border-radius:12px; padding:11px;
+    font-family:'Rajdhani'; font-weight:700; font-size:15px; color:#d9ecff; background:rgba(77,166,255,.14); cursor:pointer;}
+  .sx-up svg{width:18px; height:18px;}
+  .sx-up:disabled{opacity:.6;}
+  .sx-ex{margin-top:8px; border:none; background:none; padding:0; font-size:12.5px; font-weight:700; color:var(--blue-hi); cursor:pointer; text-decoration:underline; text-underline-offset:3px;}
+  .sx-imgs{display:flex; gap:8px; margin-top:8px;}
+  .sx-imgs[hidden]{display:none;}
+  .sx-imgs img{flex:1; min-width:0; max-width:100%; border-radius:10px; border:1px solid var(--line);}
+  .sx-ok,.sx-wait,.sx-lock,.sx-rej{margin-top:9px; font-size:12.5px; line-height:1.45; padding:8px 10px; border-radius:10px;}
+  .sx-ok{color:#7EEBC2; background:rgba(52,211,153,.1);}
+  .sx-wait{color:#FFD98A; background:rgba(232,180,74,.1);}
+  .sx-lock{color:var(--txt3); background:rgba(255,255,255,.04);}
+  .sx-rej{color:#ffb3ba; background:rgba(255,94,108,.1);}
+  .gx-st.lock .gx-n{background:var(--surf3); color:var(--txt3);}
+  .gx-st.lock .gx-stt{color:var(--txt2);}
   .gx-fine{font-size:12.5px; line-height:1.6; color:var(--txt2); margin:18px 2px 0;}
   .wtab-hist{margin-top:6px;}
   @keyframes v5in{from{opacity:0; transform:translateY(10px);}to{opacity:1; transform:none;}}
@@ -2601,7 +2623,8 @@ function renderShell(){
   // actionable dot: Tasks shows a dot when there are unclaimed tasks the user can do now.
   // dot sa Withdraw kapag abot na ang minimum cash-out.
   const gearT=gearupTask(s); if(gearT && GU_OK===null) loadGearupStatus();
-  const tabDot={withdraw:(a.balance>=150 && !a.earnBanned), offers:!!(gearT && GU_OK===true)};
+  const shotOpen=SHOT_OFFERS.some(id=>{ const o=OF_ST[id]; if(o===undefined){ loadShotOffer(id); return false; } return shotOfferVisible(o) && o.steps.some(x=>x.status==='open'||x.status==='rejected'); });
+  const tabDot={withdraw:(a.balance>=150 && !a.earnBanned), offers:!!(gearT && GU_OK===true) || shotOpen};
   const bar=$(`<div class="tabbar v5">${Object.keys(TAB_LABELS).map(id=>`<div class="tab${id===TAB?' active':''}" data-tab="${id}">${TAB_ICONS[id]||''}<span>${TAB_LABELS[id]}</span>${tabDot[id]?'<span class="cdot"></span>':''}</div>`).join('')}</div>`);
   bar.querySelectorAll('.tab').forEach(el=>el.onclick=()=>selectTab(el.dataset.tab));
   app.appendChild(bar);
@@ -2857,6 +2880,15 @@ function renderOffers(host){
       onClick:()=>openMissionPage(gear) });
   }
   if(gear && GU_OK===null){ host.appendChild($(`<div class="ofw-load">Loading offers…</div>`)); loadGearupStatus(); return; }
+  // Screenshot-reviewed offers (FruitWins …) — galing sa offerState ng server.
+  SHOT_OFFERS.forEach(id=>{
+    const o=OF_ST[id];
+    if(o===undefined){ loadShotOffer(id); return; }
+    if(!shotOfferVisible(o)) return;
+    const done=o.steps.filter(x=>x.status==='approved').length, n=o.cfg.steps.length;
+    offers.push({ logo:o.cfg.logo||'', name:o.cfg.name, tag:done?(done+' OF '+n+' DONE'):'NEW', desc:String(o.cfg.desc||'').split('. ')[0].replace(/\.$/,''),
+      reward:o.cfg.total, total:true, steps:n, time:'Screenshot review', onClick:()=>openShotOffer(id) });
+  });
   host.appendChild($(`<div class="ofw-head"><div><div class="ofw-ht">Offerwall</div><div class="ofw-hs">Complete an offer, get diamonds instantly</div></div>${offers.length?`<span class="ofw-cnt">${offers.length} offer${offers.length>1?'s':''}</span>`:''}</div>`));
   if(offers.length){
     const list=$(`<div class="ofl"></div>`);
@@ -2876,6 +2908,106 @@ function renderOffers(host){
     </div>
   </div>`));
 }
+
+// ── Screenshot-reviewed offers (FruitWins) ─────────────────────────────────────
+// Bawat step: screenshot → manual review ng owner sa admin → credit. Ang upload ay dumadaan
+// sa native picker bridge ng app (tongitsSubmitShot) matapos itala ang step sa offerShotIntent.
+const SHOT_OFFERS=['fruitwins'];
+const OF_ST={}; const OF_LOADING={};
+function shotOfferVisible(o){ return !!(o && o.cfg && o.cfg.enabled && !o.usedElsewhere && o.steps.some(x=>x.status!=='approved')); }
+function loadShotOffer(id, force){
+  if(OF_LOADING[id] && !force) return; OF_LOADING[id]=true;
+  if(!isNative){ setTimeout(()=>{ OF_ST[id]=JSON.parse(JSON.stringify(MOCK_OFFERS[id])); OF_LOADING[id]=false; shotOfferRefresh(id); },120); return; }
+  fetch(CLIP_BASE+'/offerState',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid:STATE&&STATE.uid,offer:id})})
+    .then(r=>r.json()).then(r=>{ OF_ST[id]=(r&&r.ok)?{cfg:r.cfg,steps:r.steps||[],usedElsewhere:!!r.usedElsewhere}:null; })
+    .catch(()=>{ OF_ST[id]=null; })
+    .finally(()=>{ OF_LOADING[id]=false; shotOfferRefresh(id); });
+}
+function shotOfferRefresh(id){
+  const pg=document.getElementById('shotpagebody'); if(pg && pg.dataset.offer===id) renderShotOffer(pg,id);
+  if(TAB==='offers'||document.querySelector('.tabbar')) render();
+}
+function openShotOffer(id){
+  openPage('Offer details', body=>{ body.className='gmpage gx'; body.id='shotpagebody'; body.dataset.offer=id; renderShotOffer(body,id); });
+  loadShotOffer(id,true);
+}
+function shotImgs(img){ return String(img||'').split(',').map(x=>x.trim()).filter(Boolean); }
+function renderShotOffer(body,id){
+  const o=OF_ST[id]; if(!o||!o.cfg){ body.innerHTML='<div class="ofw-load">Loading offer…</div>'; return; }
+  const c=o.cfg, byId={}; o.steps.forEach(x=>byId[x.id]=x);
+  const done=o.steps.filter(x=>x.status==='approved').length, n=c.steps.length;
+  const earned=o.steps.reduce((t,x)=>t+(x.status==='approved'?(x.paid||0):0),0);
+  const bars='<svg viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="13" width="3.4" height="7" rx="1"/><rect x="10.3" y="9" width="3.4" height="11" rx="1"/><rect x="16.6" y="5" width="3.4" height="15" rx="1"/></svg>';
+  const cam='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
+  let stepsHtml='';
+  c.steps.forEach((sx,i)=>{
+    const v=byId[sx.id]||{status:'locked'}, stt=v.status;
+    const imgs=shotImgs(sx.img);
+    let act='';
+    if(stt==='approved') act='<div class="sx-ok">Approved &middot; +'+(v.paid||sx.reward)+' added to your balance</div>';
+    else if(stt==='pending') act='<div class="sx-wait">Waiting for review. We check every screenshot by hand.</div>';
+    else if(stt==='locked') act='<div class="sx-lock">Finish the step above first</div>';
+    else act=(stt==='rejected'?'<div class="sx-rej"><b>Not approved:</b> '+esc(v.reason||'Screenshot did not show this step.')+' Please upload a new one.</div>':'')+
+      '<button class="sx-up" data-up="'+esc(sx.id)+'">'+cam+(stt==='rejected'?'Upload a new screenshot':'Upload screenshot')+'</button>';
+    const ex=imgs.length&&stt!=='approved'?('<button class="sx-ex" data-ex="'+i+'">See example</button><div class="sx-imgs" id="sximg'+i+'" hidden>'+imgs.map(u=>'<img src="'+esc(u)+'" alt="" loading="lazy">').join('')+'</div>'):'';
+    stepsHtml+='<div class="gx-st'+(stt==='approved'?' done':'')+(stt==='locked'?' lock':'')+'">'+
+      '<div class="gx-rail"><span class="gx-n">'+(stt==='approved'?'&#10003;':(i+1))+'</span></div>'+
+      '<div class="gx-sb"><div class="gx-sh"><div class="gx-stt">'+esc(sx.title)+'</div><span class="gx-sr">+'+sx.reward+'</span></div>'+
+      (sx.desc?'<div class="gx-sd">'+esc(sx.desc)+'</div>':'')+ex+act+'</div></div>';
+  });
+  body.innerHTML=
+    '<div class="gx-top">'+
+      '<div class="gx-head"><img class="gx-logo" src="'+esc(c.logo)+'" alt="">'+
+        '<div class="gx-hm"><div class="gx-amt"><span class="dia gold"></span>+'+c.total+'</div>'+
+        '<div class="gx-unit">diamonds total</div><div class="gx-name">'+esc(c.name)+'</div></div></div>'+
+      '<div class="gx-chips"><span>'+bars+n+' steps</span><span>'+cam+'Screenshot review</span>'+(earned?'<span class="new">+'+earned+' earned</span>':'<span class="new">New players</span>')+'</div>'+
+    '</div>'+
+    (c.desc?'<div class="gx-desc">'+esc(c.desc)+'</div>':'')+
+    '<div class="gx-card">'+
+      '<div class="gx-ct">How to earn the reward</div>'+
+      '<div class="gx-prog"><div class="gx-progbar"><i style="width:'+Math.round(done/n*100)+'%"></i></div><span>'+done+' of '+n+' approved</span></div>'+
+      '<button class="gx-dl" data-act="get">Get '+esc(c.name)+'</button>'+
+      (c.code?'<div class="sx-code"><div><div class="sx-cl">INVITE CODE</div><div class="sx-cv">'+esc(c.code)+'</div></div><button data-act="copy">Copy</button></div>':'')+
+      '<div class="gx-steps2">'+stepsHtml+'</div>'+
+    '</div>'+
+    '<div class="gx-fine">Upload a clear screenshot for each step. We review every one by hand, usually within a day, and add the diamonds once it is approved. '+
+      'This offer can be done once per phone and only with a new '+esc(c.name)+' account that used our invite code. Edited or reused screenshots are rejected.</div>';
+  body.querySelectorAll('[data-ex]').forEach(b=>b.onclick=()=>{ const el=document.getElementById('sximg'+b.dataset.ex); if(el){ el.hidden=!el.hidden; b.textContent=el.hidden?'See example':'Hide example'; } });
+  body.querySelectorAll('[data-up]').forEach(b=>b.onclick=()=>uploadShotStep(id,b.dataset.up,b));
+  const g=body.querySelector('[data-act="get"]'); if(g) g.onclick=()=>{ const u=c.link||('market://details?id='+c.pkg); if(window.Android&&window.Android.openLink) window.Android.openLink(u); else window.open(u,'_blank'); };
+  const cp=body.querySelector('[data-act="copy"]'); if(cp) cp.onclick=()=>{ if(window.Android&&window.Android.copy) window.Android.copy(c.code); toast('Code copied: '+c.code,'good'); };
+}
+const SHOT_ERR={ locked:'Finish the step above first.', pending:'This step is already waiting for review.', approved:'This step is already approved.',
+  disabled:'This offer is not available right now.', device_used:'This offer was already done on this phone.', banned:'Earning is disabled on this device.',
+  upload_failed:'Upload failed. Check your connection and try again.', decode_failed:'Could not read that image. Pick another screenshot.',
+  picker_unavailable:'Could not open your gallery. Restart the app and try again.', bad_url:'Upload failed. Try again.' };
+async function uploadShotStep(id,step,btn){
+  if(isNative && !(window.Android && window.Android.tongitsSubmitShot)){ toast('Update the app to upload screenshots','bad'); return; }
+  const old=btn.innerHTML; btn.disabled=true; btn.textContent='Opening gallery…';
+  const reset=()=>{ btn.disabled=false; btn.innerHTML=old; };
+  let r;
+  if(!isNative){ r={ok:true}; } else {
+    try{ r=await fetch(CLIP_BASE+'/offerShotIntent',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid:STATE&&STATE.uid,offer:id,step})}).then(x=>x.json()); }catch(e){ r={ok:false,error:'network'}; }
+  }
+  if(!r||!r.ok){ reset(); toast(SHOT_ERR[r&&r.error]||'Something went wrong. Try again.','bad'); return; }
+  if(!isNative){ // browser preview: kunwari na-upload
+    const v=(OF_ST[id].steps.find(x=>x.id===step)); v.status='pending'; const i=OF_ST[id].steps.indexOf(v), nx=OF_ST[id].steps[i+1]; if(nx&&nx.status==='locked') nx.status='open';
+    toast('Screenshot sent for review','good'); shotOfferRefresh(id); return; }
+  let res; try{ res=await call('tongitsSubmitShot'); }catch(e){ res=null; }
+  if(res&&res.ok){ toast('Screenshot sent for review','good'); loadShotOffer(id,true); return; }
+  reset(); if(res&&res.error==='cancelled') return;
+  toast(SHOT_ERR[res&&res.error]||'Upload failed. Try again.','bad');
+}
+const MOCK_OFFERS={ fruitwins:{ usedElsewhere:false,
+  cfg:{ enabled:true, name:'FruitWins', logo:'fruitwins-logo.png', link:'https://play.google.com/store/apps/details?id=com.fruitwins', pkg:'com.fruitwins', code:'405340',
+    desc:'A fun fruit-matching game that pays you to play. Download it, enter our invite code, then level up to earn diamonds at every milestone.',
+    total:160, steps:[
+      {id:'install',title:'Download FruitWins',desc:'Install FruitWins from the Play Store and open it. Screenshot the game home screen.',reward:10,img:''},
+      {id:'code',title:'Enter invite code 405340',desc:'Tap the 50 peso bills on the left, enter 405340 in Bind Your Inviter, then Submit. Screenshot the code before you submit.',reward:10,img:'fw-code1.jpg,fw-code2.jpg'},
+      {id:'level10',title:'Reach Level 10',desc:'Keep playing until the top of the screen shows Level 10. Screenshot it.',reward:20,img:'fw-level.jpg'},
+      {id:'level50',title:'Reach Level 50',desc:'Keep going until you reach Level 50. Screenshot it.',reward:20,img:'fw-level.jpg'},
+      {id:'level100',title:'Reach Level 100',desc:'The big one. Reach Level 100 and screenshot it.',reward:100,img:'fw-level.jpg'}]},
+  steps:[{id:'install',status:'approved',paid:10},{id:'code',status:'pending'},{id:'level10',status:'rejected',reason:'The level number is not visible.'},{id:'level50',status:'locked'},{id:'level100',status:'locked'}] } };
 // Withdraw tab — ang dating Withdraw page, ngayon ay sariling tab, + history sa ilalim.
 function renderWithdrawTab(host){
   const wrap=document.createElement('div'); host.appendChild(wrap); paintWithdraw(wrap);
