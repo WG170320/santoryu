@@ -1927,6 +1927,8 @@
     font-family:'Rajdhani'; font-weight:700; font-size:15px; color:#d9ecff; background:rgba(77,166,255,.14); cursor:pointer;}
   .sx-up svg{width:18px; height:18px;}
   .sx-up:disabled{opacity:.6;}
+  .sx-auto{margin-top:9px; font-size:12.5px; line-height:1.45; padding:8px 10px; border-radius:10px; color:#7EEBC2; background:rgba(52,211,153,.1);}
+  .sx-verify{border-color:rgba(52,211,153,.5) !important; background:rgba(52,211,153,.14) !important; color:#c8f7e4 !important;}
   .sx-ex{margin-top:8px; border:none; background:none; padding:0; font-size:12.5px; font-weight:700; color:var(--blue-hi); cursor:pointer; text-decoration:underline; text-underline-offset:3px;}
   .sx-imgs{display:flex; gap:8px; margin-top:8px;}
   .sx-imgs[hidden]{display:none;}
@@ -2043,6 +2045,7 @@ let MOCK={ uid:"dev-demo", code:"SANT-AB12-CD34", isAdmin:false,
   config:{perInvite:15,refQualify:50,inviteeBonus:5,welcomeBonus:5,dailyBonus:15,missionGoal:5,missionBonus:50,missionHours:24,temu:{code:"98373317",link:"https://temu.com/s/ZbaZrL3aNc1IVqW",timerSecs:10},withdrawPromo:{pct:20,until:Date.now()+7*86400000}},
   tiers:[{mlbb:22,cost:35,firstOnly:true},{mlbb:112,cost:140,firstOnly:false},{mlbb:223,cost:280,firstOnly:false},{mlbb:336,cost:600,firstOnly:false},{mlbb:570,cost:1000,firstOnly:false},{mlbb:1163,cost:2000,firstOnly:false}],
   tasks:[{id:"gearup_boost",title:"Play MLBB with GearUp",desc:"Install GearUp, then boost one MLBB game",link:"https://gearup.onelink.me/Zmq0/zongxotic",reward:75,enabled:true,claimed:false,hero:true,verifyPkg:"com.gearup.booster",usageSecs:15,mlbbPkg:"com.mobile.legends",mlbbSecs:480,steps:["Install GearUp","Boost Mobile Legends"]},
+    {id:"offer_fruitwins_install",title:"Install FruitWins",desc:"",link:"https://play.google.com/store/apps/details?id=com.fruitwins",reward:10,enabled:true,claimed:false,verifyPkg:"com.fruitwins",usageSecs:30},
     {id:"fb_follow_page",title:"Follow our Facebook page",desc:"Tap Follow on the Santoryu page",link:"https://www.facebook.com/share/1AjdM7tbEZ/",reward:5,enabled:true,claimed:false},
     {id:"fb_react_post",title:"React to our latest post",desc:"Leave a reaction on our Facebook post",link:"https://www.facebook.com/share/p/18q94ZJ4S4/",reward:5,enabled:true,claimed:false},
     {id:"tt_comment_santoryu",title:"Comment on our TikTok",desc:"Watch the video and drop a comment",link:"https://www.tiktok.com/@warlitogaming",reward:10,enabled:true,claimed:false},
@@ -2834,7 +2837,7 @@ function loadGearupStatus(){
 function homeTasks(app,s,gear){
   giveawayHero(app,s);
   temuHero(app,s);
-  const list=(s.tasks||[]).filter(t=>t && !t.claimed && t!==gear && !isTemu(t) && !(t.hero===true && isUsage(t)) && (!isUsage(t) || usageSupported()));
+  const list=(s.tasks||[]).filter(t=>t && !t.claimed && t!==gear && !/^offer_/.test(t.id||'') && !isTemu(t) && !(t.hero===true && isUsage(t)) && (!isUsage(t) || usageSupported()));
   if(!list.length) return;
   const total=list.reduce((n,t)=>n+(+t.reward||0),0);
   app.appendChild(homeSec('TASKS','Quick diamonds &middot; one time each','+'+total+' total',IC5.check,'green'));
@@ -2949,6 +2952,12 @@ function renderShotOffer(body,id){
     else if(stt==='locked') act=v.waitReview
       ? '<div class="sx-lock">Unlocks once &ldquo;'+esc((c.steps[i-1]||{}).title||'the step above')+'&rdquo; is approved</div>'
       : '<div class="sx-lock">Finish the step above first</div>';
+    else if(v.auto){
+      const tk=(STATE.tasks||[]).find(x=>x&&x.id===sx.task);
+      act = tk ? '<div class="sx-auto">No screenshot needed. Open '+esc(c.name)+' for '+fmtDur(+tk.usageSecs||30)+' and we verify it automatically.</div>'+
+          '<button class="sx-up sx-verify" data-auto="'+esc(sx.task)+'">'+(stt==='open'?'Install &amp; verify':'Verify')+'</button>'
+        : '<div class="sx-wait">Checking your install&hellip;</div>';
+    }
     else act=(stt==='rejected'?'<div class="sx-rej"><b>Not approved:</b> '+esc(v.reason||'Screenshot did not show this step.')+' Please upload a new one.</div>':'')+
       '<button class="sx-up" data-up="'+esc(sx.id)+'">'+cam+(stt==='rejected'?'Upload a new screenshot':'Upload screenshot')+'</button>';
     const ex=imgs.length&&stt!=='approved'?('<button class="sx-ex" data-ex="'+i+'">See example</button><div class="sx-imgs" id="sximg'+i+'" hidden>'+imgs.map(u=>'<img src="'+esc(u)+'" alt="" loading="lazy">').join('')+'</div>'):'';
@@ -2976,6 +2985,12 @@ function renderShotOffer(body,id){
       'This offer can be done once per phone and only with a new '+esc(c.name)+' account that used our invite code. Edited or reused screenshots are rejected.</div>';
   body.querySelectorAll('[data-ex]').forEach(b=>b.onclick=()=>{ const el=document.getElementById('sximg'+b.dataset.ex); if(el){ el.hidden=!el.hidden; b.textContent=el.hidden?'See example':'Hide example'; } });
   body.querySelectorAll('[data-up]').forEach(b=>b.onclick=()=>uploadShotStep(id,b.dataset.up,b));
+  // Auto step: native usage-verified claim (parehong daan ng GearUp), walang screenshot.
+  body.querySelectorAll('[data-auto]').forEach(b=>b.onclick=()=>{
+    const tk=(STATE.tasks||[]).find(x=>x&&x.id===b.dataset.auto); if(!tk) return;
+    if(!usageSupported()){ toast(isNative?'Update the app to verify':'Preview only','bad'); return; }
+    openUsage(tk);
+  });
   const g=body.querySelector('[data-act="get"]'); if(g) g.onclick=()=>{ const u=c.link||('market://details?id='+c.pkg); if(window.Android&&window.Android.openLink) window.Android.openLink(u); else window.open(u,'_blank'); };
   const cp=body.querySelector('[data-act="copy"]'); if(cp) cp.onclick=()=>{ if(window.Android&&window.Android.copy) window.Android.copy(c.code); toast('Code copied: '+c.code,'good'); };
 }
@@ -3005,12 +3020,12 @@ const MOCK_OFFERS={ fruitwins:{ usedElsewhere:false,
   cfg:{ enabled:true, name:'FruitWins', logo:'fruitwins-logo.png', link:'https://play.google.com/store/apps/details?id=com.fruitwins', pkg:'com.fruitwins', code:'405340',
     desc:'A fun fruit-matching game that pays you to play. Download it, enter our invite code, then level up to earn diamonds at every milestone.',
     total:170, steps:[
-      {id:'install',title:'Download FruitWins',desc:'Install FruitWins from the Play Store and open it. Screenshot the game home screen.',reward:10,img:''},
+      {id:'install',title:'Download FruitWins',desc:'Install FruitWins from the Play Store and open it.',reward:10,img:'',task:'offer_fruitwins_install'},
       {id:'code',title:'Enter invite code 405340',desc:'Tap the 50 peso bills on the left, enter 405340 in Bind Your Inviter, then Submit. Screenshot the code before you submit.',reward:20,img:'fw-code1.jpg,fw-code2.jpg'},
       {id:'level10',title:'Reach Level 10',desc:'Keep playing until the top of the screen shows Level 10. Screenshot it.',reward:20,img:'fw-level.jpg',gate:'approved'},
       {id:'level50',title:'Reach Level 50',desc:'Keep going until you reach Level 50. Screenshot it.',reward:20,img:'fw-level.jpg',gate:'approved'},
       {id:'level100',title:'Reach Level 100',desc:'The big one. Reach Level 100 and screenshot it.',reward:100,img:'fw-level.jpg',gate:'approved'}]},
-  steps:[{id:'install',status:'approved',paid:10},{id:'code',status:'pending'},{id:'level10',status:'locked',waitReview:true},{id:'level50',status:'locked'},{id:'level100',status:'locked'}] } };
+  steps:[{id:'install',status:'open',auto:true},{id:'code',status:'locked'},{id:'level10',status:'locked',waitReview:true},{id:'level50',status:'locked'},{id:'level100',status:'locked'}] } };
 // Withdraw tab — ang dating Withdraw page, ngayon ay sariling tab, + history sa ilalim.
 function renderWithdrawTab(host){
   const wrap=document.createElement('div'); host.appendChild(wrap); paintWithdraw(wrap);
@@ -3787,7 +3802,7 @@ function openUsage(t){
     if(ok.disabled||busy) return; busy=true; ok.textContent='…'; ok.disabled=true;
     let r; try{ r=await call('claimUsageTask', t.id, pkg, need, t.reward, String(startTs)); }catch(e){ r=null; }
     busy=false;
-    if(r&&r.ok){ close(); gainFx(t.reward,'gold'); toast('Verified! +'+t.reward,'good'); requestState(); return; }
+    if(r&&r.ok){ close(); gainFx(t.reward,'gold'); toast('Verified! +'+t.reward,'good'); requestState(); if(/^offer_/.test(t.id||'')) SHOT_OFFERS.forEach(o=>loadShotOffer(o,true)); return; }
     if(r&&r.error==='not_used'){ prog.textContent='Only '+fmtDur(Math.min(+r.secs||0,need))+' so far — use the app for the full '+fmtDur(need)+'.'; refresh(); }
     else if(r&&r.error==='no_access'){ grant.style.display='block'; ok.disabled=true; ok.textContent='Use '+fmtDur(need); prog.textContent='Enable usage access to verify.'; }
     else{ close(); toast(r&&r.error==='already_claimed'?'Already claimed':'Could not verify — try again','bad'); requestState(); }
