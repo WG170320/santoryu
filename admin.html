@@ -55,6 +55,7 @@
     .btn.ghost{background:var(--card2);color:var(--text);border:1px solid var(--line);box-shadow:none}
     .btn.ghost:hover{border-color:var(--line2);background:var(--card)}
     .btn.danger{background:linear-gradient(95deg,#f2555f,#d23b46);color:#fff;box-shadow:0 8px 22px -12px rgba(242,85,95,.6)}
+    .btn.pay{background:linear-gradient(95deg,#f2c14e,#caa53a);color:#241c00;box-shadow:0 8px 22px -12px rgba(202,165,58,.6)}
     .err{color:var(--red);font-size:13px;margin-top:10px;min-height:18px}
 
     /* ── shell ── */
@@ -113,6 +114,43 @@
     .kpi .sub{color:var(--muted2);font-size:11px;margin-top:3px}
     .kpi.click{cursor:pointer}
 
+    /* ── App Entries tracker (main earner: GearUp + Jogos) ── */
+    .entries{background:linear-gradient(180deg,#111722,var(--bg2));border-color:var(--line2)}
+    .egrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:2px 6px 8px}
+    @media(max-width:760px){.egrid{grid-template-columns:1fr}}
+    .epanel{position:relative;background:linear-gradient(180deg,var(--card),var(--bg2));border:1px solid var(--line);
+      border-radius:16px;padding:15px 16px 13px;overflow:hidden}
+    .epanel::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--acc,var(--blue))}
+    .ehead{display:flex;align-items:center;gap:11px;margin-bottom:12px}
+    .elogo{width:34px;height:34px;border-radius:9px;background:#fff;padding:3px;object-fit:contain;flex:none;
+      box-shadow:0 0 0 1px var(--line)}
+    .etitle{font-size:16px;font-weight:800;letter-spacing:-.02em}
+    .esub{color:var(--muted2);font-size:11px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-top:1px}
+    .estats{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:13px}
+    .ebig{font-size:32px;font-weight:900;letter-spacing:-.035em;line-height:1;color:var(--acc,var(--blue))}
+    .estats small{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+    .etoday{margin-left:auto;background:color-mix(in srgb,var(--acc,var(--blue)) 16%,transparent);
+      color:var(--acc,var(--blue));font-weight:800;font-size:12.5px;padding:4px 10px;border-radius:20px;white-space:nowrap}
+    .ebars{display:flex;align-items:flex-end;gap:4px;height:56px;margin-bottom:5px}
+    .bcol{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:3px}
+    .bcol .bv{font-size:9px;color:var(--muted2);font-weight:700;line-height:1}
+    .bcol .bar{width:100%;min-height:2px;border-radius:3px 3px 2px 2px;background:var(--acc,var(--blue));opacity:.45;transition:opacity .14s}
+    .bcol.today .bar{opacity:1}
+    .bcol:hover .bar{opacity:.85}
+    .edays{display:flex;gap:4px}
+    .edays span{flex:1;text-align:center;font-size:9px;color:var(--muted2);font-weight:600}
+    .edays span.today{color:var(--acc,var(--blue));font-weight:800}
+    .epanel[onclick]{cursor:pointer;transition:border-color .16s,transform .16s}
+    .epanel[onclick]:hover{border-color:var(--acc,var(--line2));transform:translateY(-2px)}
+    .elink{margin-left:auto;color:var(--acc,var(--blue));font-weight:800;font-size:12px;opacity:.85;white-space:nowrap}
+    /* entrants list modal */
+    .elist{max-height:60vh;overflow-y:auto;margin:0 -4px;border-top:1px solid var(--line)}
+    .erow{display:flex;align-items:center;gap:12px;padding:11px 8px;border-bottom:1px solid var(--line);cursor:pointer;border-radius:10px;text-align:left}
+    .erow:hover{background:var(--card2)}
+    .erow .name{font-weight:700;font-size:14px}
+    .erow .meta{color:var(--muted2);font-size:11.5px;margin-top:2px}
+    .erow .bal{font-weight:800;color:var(--gold);font-size:13px;white-space:nowrap}
+
     /* ── panels / rows ── */
     .panel{background:linear-gradient(180deg,var(--card),var(--bg2));border:1px solid var(--line);
       border-radius:18px;padding:6px;margin-bottom:16px;box-shadow:var(--shadow)}
@@ -137,6 +175,10 @@
     .pill.violet{background:rgba(167,139,250,.15);color:var(--violet)}
     .pill.orange{background:rgba(251,146,60,.15);color:var(--orange)}
     .pill.muted{background:var(--bg);color:var(--muted);border:1px solid var(--line)}
+    /* cheater warning sign sa withdrawals — pulsing red dot para makita agad nang di binubuksan */
+    .warndot{width:9px;height:9px;border-radius:50%;background:var(--red);flex:none;animation:wpulse 1.5s ease-in-out infinite}
+    @keyframes wpulse{0%,100%{box-shadow:0 0 0 3px rgba(242,85,95,.20)}50%{box-shadow:0 0 0 6px rgba(242,85,95,.04)}}
+    .row.flagged{border-left:3px solid var(--red)}
     .flag{background:rgba(242,85,95,.16);color:var(--red);padding:2px 9px;border-radius:20px;font-size:10.5px;font-weight:800;letter-spacing:.02em}
     .empty{color:var(--muted);text-align:center;padding:34px 16px;font-size:14px;line-height:1.7}
     .gid{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11.5px;background:var(--bg);
@@ -214,6 +256,8 @@
       border:1px solid var(--line2);border-radius:22px;padding:26px;box-shadow:var(--shadow-lg);
       transform:translateY(10px) scale(.97);transition:transform .2s cubic-bezier(.2,.9,.3,1.2)}
     .ovl.show .modal{transform:none}
+    .modal.wide{width:min(600px,100%);text-align:left}
+    .modal.wide h3{text-align:left} .modal.wide p{text-align:left}
     .modal .mi{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;
       margin:0 auto 14px;font-size:24px;font-weight:900}
     .modal .mi.blue{background:rgba(56,189,248,.15);color:var(--blue)} .modal .mi.green{background:rgba(52,211,153,.15);color:var(--green)}
@@ -295,15 +339,22 @@
 
 <script>
 // ── config ──────────────────────────────────────────────────────────────────
-const RTDB = "https://santoryu-chat.asia-southeast1.firebasedatabase.app";
-const FN = "https://asia-southeast1-diamond-bang-92125.cloudfunctions.net";
+// Host-aware: iisang admin.html, dalawang backend. Kapag naka-host sa bagong project
+// (arrows-puzzle-earn / santoryu-admin) → bagong data (santoryu-core). Kung diamond-bang → luma.
+const _NEWBACKEND = /arrows-puzzle-earn|santoryu-admin/.test(location.hostname);
+const RTDB = _NEWBACKEND
+  ? "https://santoryu-live.asia-southeast1.firebasedatabase.app"
+  : "https://santoryu-live.asia-southeast1.firebasedatabase.app";
+const FN = _NEWBACKEND
+  ? "https://asia-southeast1-diamond-pang-ab4b2.cloudfunctions.net"
+  : "https://asia-southeast1-diamond-pang-ab4b2.cloudfunctions.net";
 
 // ── modal + toast ──
 let _modalResolve = null;
 function closeModal(val){ document.getElementById('ovl').classList.remove('show');
   if(_modalResolve){ const r=_modalResolve; _modalResolve=null; r(val); } }
 document.addEventListener('keydown', e => { if(e.key==='Escape') closeModal(null); });
-function _openModal(html){ document.getElementById('modal').innerHTML = html; document.getElementById('ovl').classList.add('show'); }
+function _openModal(html, wide){ const m=document.getElementById('modal'); m.classList.toggle('wide', !!wide); m.innerHTML = html; document.getElementById('ovl').classList.add('show'); }
 function confirmModal({icon='!', tone='gold', title, message, confirmLabel='Confirm', danger=false}){
   return new Promise(res => { _modalResolve = res;
     _openModal(`<div class="mi ${tone}">${icon}</div><h3>${title}</h3><p>${message}</p>
@@ -359,21 +410,21 @@ let DASH = null;          // full dashboard payload (kpis, cheaters, clusters, u
 let DETAIL = null;        // current open user 360
 let SELECTED_UID = null;
 let CUR = 'overview';
-let HEAVY = { devices:null, activity:null, diag:null };  // lazily-loaded heavy nodes
+let HEAVY = { devices:null, activity:null, diag:null, anticheat:null };  // lazily-loaded heavy nodes
 let LAST_LOAD = 0;
 const DEFAULT_CFG = { perInvite:3, inviteeBonus:3, welcomeBonus:5, dailyBonus:15, missionGoal:5, missionBonus:50, missionHours:24,
   tiers:[{mlbb:22,cost:50,firstOnly:true},{mlbb:112,cost:200},{mlbb:223,cost:400},{mlbb:336,cost:600},{mlbb:570,cost:1000},{mlbb:1163,cost:2000}],
   tasks:[] };
 
 const NAV = [
-  ['Monitor', [['overview','Overview'],['users','Users'],['cheaters','Cheaters'],['withdrawals','Withdrawals'],['referrers','Referrers'],['devices','Devices'],['activity','Activity']]],
-  ['Manage',  [['tournament','Tournament'],['settings','Settings'],['bandwidth','Bandwidth']]],
+  ['Monitor', [['overview','Overview'],['users','Users'],['cheaters','Cheaters'],['anticheat','Anti-cheat'],['withdrawals','Withdrawals'],['referrers','Referrers'],['devices','Devices'],['activity','Activity']]],
+  ['Manage',  [['tournament','Tournament'],['community','Submissions'],['settings','Settings'],['bandwidth','Bandwidth'],['unlock','Unlock Apps']]],
   ['Content', [['carousel','Carousel'],['upcoming','Upcoming'],['catalog','Catalog']]],
   ['System',  [['diag','Diagnostics']]],
 ];
-const TITLES = {overview:'Overview',users:'Users',cheaters:'Cheaters',withdrawals:'Withdrawals',referrers:'Referrers',
-  devices:'Devices',activity:'Activity',tournament:'Tournament',settings:'Settings',bandwidth:'Bandwidth',
-  carousel:'Carousel',upcoming:'Upcoming',catalog:'Catalog',diag:'Inject Diagnostics'};
+const TITLES = {overview:'Overview',users:'Users',cheaters:'Cheaters',anticheat:'Anti-cheat',withdrawals:'Withdrawals',referrers:'Referrers',
+  devices:'Devices',activity:'Activity',tournament:'Tournament',community:'Submissions',settings:'Settings',bandwidth:'Bandwidth',
+  carousel:'Carousel',upcoming:'Upcoming',catalog:'Catalog',diag:'Inject Diagnostics',unlock:'Unlock Apps'};
 
 // ── auth ──
 async function login(){
@@ -395,7 +446,15 @@ function showApp(){
   document.getElementById('login').style.display='none';
   document.getElementById('app').style.display='block';
   buildNav();
-  refreshAll();
+  bootLoad();
+}
+// Login load = LIGHT (cache-served ~277KB), so it's instant. The full userIndex (7.7MB
+// at 85k users) is heavy and only the Users/Referrers tabs need it — lazy-loaded there.
+// Using full+force on every login is what made the console "not load" at scale.
+async function bootLoad(){
+  const ok = await loadDash({ light:true });
+  if(!ok){ document.getElementById('foot').textContent='Load failed — tap ↻ to retry.'; return; }
+  paintNav(); render();
 }
 if(ADMIN_KEY) showApp();
 
@@ -420,12 +479,38 @@ function paintNav(){
 }
 
 // ── data ──
+// getDashboard is a heavy full-scan and overlapping loads can resolve out of order.
+// LOAD_SEQ drops any response older than the newest in-flight load so a stale snapshot
+// can't clobber fresher data. ACTED remembers withdrawals the admin just fulfilled/declined
+// so a stale reload (or the server's shared cache) can never visually revert them.
+let LOAD_SEQ = 0;
+const ACTED = {};   // id → { status, refunded, reason, rejectReason, ts }
+const ACTED_TTL = 30*60*1000;   // stop overriding after 30 min (server has surely caught up)
+function markActed(id, patch){ ACTED[id] = Object.assign({ ts: Date.now() }, patch); }
+function applyActedOverlay(){
+  const now = Date.now();
+  const reapply = (arr) => { if(!Array.isArray(arr)) return;
+    for(const a of arr){ const ov = ACTED[a.id]; if(!ov) continue;
+      // server snapshot already agrees → drop the override (self-heal)
+      if((a.status||'pending') === ov.status){ if(now-ov.ts>1000) delete ACTED[a.id]; continue; }
+      a.status = ov.status;
+      if('refunded' in ov) a.refunded = ov.refunded;
+      if(ov.reason!=null) a.reason = ov.reason;
+      if(ov.rejectReason!=null) a.rejectReason = ov.rejectReason;
+    } };
+  for(const id in ACTED){ if(now - ACTED[id].ts > ACTED_TTL) delete ACTED[id]; }
+  reapply(DASH && DASH.redemptions);
+  reapply(DETAIL && DETAIL.withdrawals);
+}
 async function loadDash(opts){
   opts = opts || {};
+  const seq = ++LOAD_SEQ;
   const r = await adminApi('getDashboard', { light: !!opts.light, force: !!opts.force });
+  if(seq !== LOAD_SEQ) return true;   // a newer load superseded this one — drop stale result
   if(!r || !r.ok){ if(r && r.error==='unauthorized'){ logout(); return false; }
     document.getElementById('foot').textContent='Load failed — check network / re-login.'; return false; }
   DASH = Object.assign(DASH||{}, r.dash);   // light has no userIndex → keeps cached list
+  applyActedOverlay();                       // keep the admin's own recent actions from reverting
   LAST_LOAD = Date.now();
   document.getElementById('foot').textContent = `Last updated ${new Date().toLocaleTimeString()} · ${r.cached?'cached':'fresh'} · ${DASH.kpis.users.toLocaleString()} users tracked`;
   return true;
@@ -444,19 +529,21 @@ async function go(t){
   document.getElementById('pageTitle').textContent = TITLES[t] || t;
   paintNav(); toggleSide(false); render();
   // lazy heavy loads
-  if(t==='users' && (!DASH || !DASH.userIndex)){ await loadDash({force:false}); render(); }
+  if((t==='users'||t==='referrers') && (!DASH || !DASH.userIndex)){ render(); await loadDash({force:false}); render(); }
   else if(t==='devices' && !HEAVY.devices){ HEAVY.devices = await getNode('stats/devices') || {}; render(); }
   else if(t==='activity' && !HEAVY.activity){ HEAVY.activity = await getNode('activity') || {}; render(); }
   else if(t==='diag' && !HEAVY.diag){ HEAVY.diag = await getNode('diag') || {}; render(); }
+  else if(t==='anticheat' && !HEAVY.anticheat){ await loadAntiCheat(); render(); }
 }
 
 function render(){
   const v = document.getElementById('view');
   if(SELECTED_UID){ v.innerHTML = viewUserDetail(); return; }
-  const fn = {overview:viewOverview,users:viewUsers,cheaters:viewCheaters,withdrawals:viewWithdrawals,
+  const fn = {overview:viewOverview,users:viewUsers,cheaters:viewCheaters,anticheat:viewAntiCheat,withdrawals:viewWithdrawals,
     referrers:viewReferrers,devices:viewDevices,activity:viewActivity,tournament:viewTournament,
+    community:viewCommunity,
     settings:viewSettings,bandwidth:viewBandwidth,carousel:viewCarousel,upcoming:viewUpcoming,
-    catalog:viewCatalog,diag:viewDiag}[CUR];
+    catalog:viewCatalog,diag:viewDiag,unlock:viewUnlockApps}[CUR];
   v.innerHTML = fn ? fn() : '<div class="panel"><div class="empty">—</div></div>';
 }
 
@@ -469,6 +556,58 @@ function avatarBox(name){ return `<div class="av">${esc((name||'U').slice(0,1).t
 function riskTier(s){ return s>=80?['hi','HIGH']:s>=40?['md','MED']:['lo','LOW']; }
 const REASON = { clone:['red','CLONE'], ipfarm:['red','IP FARM'], velocity:['gold','VELOCITY'], held:['gold','HELD'], untrusted:['gold','UNTRUSTED HW'] };
 function reasonPills(arr){ return (arr||[]).map(r=>{ const m=REASON[r]||['muted',r]; return `<span class="pill ${m[0]}">${m[1]}</span>`; }).join(' '); }
+// Cheater warning para sa withdrawals: pulsing red dot + reason pills, para makita agad nang
+// di binubuksan ang details. Tumatanggap ng cheater object (mula sa uid→cheater map ng view).
+function warnDot(c){ return c?'<span class="warndot" title="Flagged — suspected cheater"></span>':''; }
+function warnPills(c){ return c?` <span class="pill red">⚠ RISK ${c.score}</span> ${reasonPills(c.reasons)}`:''; }
+
+// ── APP ENTRIES tracker (main earner: GearUp + Jogos, daily) ──
+const LOGO_GEARUP='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAUlSURBVHgBxVfNaxtXEJ95b1dfdu1VA0kKabIulPpQigy9BApZHdtLFAqFQIhteig9FDvtoZQepPTSo3NrIRDZjSE5FJLcCj1Y/gcaFdJLadA6bomTkEr+XEm7+6bzVpZjy7KxYzsdWHb37Zs3v/nNvHmzAK9A7MwP9qkPrjvWkjfS+Q3hCMV2ihaoZF6lzMWlWx9NopT3q32x9OY5Ao5I3jl7Z0xQfyVIW388+uXjAhsv8rDVOc+AQ5ZB51dHKX8iSBiZIGWO/H03O2Ut+3kgcrrNP7QQDDozNqJRJBWca/ZK9F8zR+dvn520qp7N3lfa8zgEW2wemAHbuW+lDBhDCsZDDCw/nQQVlyPzt4am9HeUYmY3/QMBeO/Dh2NKNfNEQVpxNjXSyRpJ/4I7PVTS39ept5EUEHZPt5cKQSb3zCG/kedYOwABBDKkhiUXldHIupPvliPj69SLMIDk6iqs9vVHugcKQSZXtQXICfY6x9wCCgI/IaDRC4skpePeePv3Dc+YerPZgMTaGiDRjmvuCUAmR5YQ9TGmc5xIWcjGCRU0ewX5iXCRhHQqN05sGNfUx701O+55G2sIpUAJsX8AmdxqDsGbYCdsiBwRoKSEehohEP6cbELu4fQm41XfYcoLsUadp4syAtkAZO3Ewo6F6P3csjN0wZtBxDucKXY0yNFTJkLdkvruhsrI/rnJuJae1aUMe55F5aUfnTk+xMbdFgNhVzvGdo+rloDEBE8f1h4zAGa+hT5IcKb3RoOu7ytOuLTbqf/PqWPXNr+TUrMoRAYU7Q5ga5zJYiOsTS3W+bmZAmqmSI+6TYlZ9/p2492EAMs67XcKQQRA0x1Cvciz7WjexkZBDiOg9tqPRWS4TcHGf0y6sEeREJaJzewYgkxuZUSBOE+8OHtcg9aBYQO0kPA4yEbrLTSgDKIO+xPfjfzcYSdiZrxqrbyVPPbXF3GXfdyAqUMCnG4ceXt9qg3S6A9MHg9g9sHPyRLsUU4/elIJDdNe6+3dVoiil8Fxz4Z+/CqUeIaL6r0ghqX5zxIP4ZDkdOXxpDKNYV0NuwJoy+DXnh2Yshj2kRMm8EEQhxKDuvvkU6O0mZ39il1ZGA8NMbHSb+0OYEPh2+YwSSqoHrTDHgQGs8RB/E0ZOI1xWXp6EXdn5xYXn4vovgDw2CGBM0vp1/cGoC2nvvPzJGhcxdHSQFSKoqRUgouQwJISamrlolnq1BO3w2vKEwUYxVoLQMUikawuWxb825/YOwAtJ7/n/EAzHyIMkwnIrJBK8EkQ47suFbqWCpwNAO9yuZ/1P8GycY/yQY3XHsZCe50zcwsVDoH93NongM1A/HhsRiHZSnJZSTKYJAOIkWYEdD+gwXDhcfWzWkGLGjDQZuHN+Wd36qlU7tmxni0299yULnyTdJ9/KQd4O4/yNad8ZmCFr2U+nJoQVUtdJzlktj470ODtasL5tr4MwlnsUgz23RXXrhiTIhRDzMRVQg6FYm89TlROU7WmqzdS5KKusQoKbb2Qmel2HrxUW167grW1z+VVUmKA7U1Ficlrh4FmhMPhrcdWn6LTNKwf/USsrHuCTjmUrph7YSeUUCRN/YvDs3WQAszCJczqgRNPl6pPjvcd/o9JMIoluowD7M4IW5yLjL/4fA5urv8TIJQ6dQ/3z+gSTvE5kWVD1zQJDEbnncaSj4yF4VynytH9GxZ5N0goMBWXdQvDz87JbG1g4Y30JLxS+YlG+KpwGGZ0qw7/m9yksYiVDvkPkVZZR+jxeNUAAAAASUVORK5CYII=';
+const LOGO_JOGOS='data:image/x-icon;base64,AAABAAEAICAAAAEAIACoEAAAFgAAACgAAAAgAAAAQAAAAAEAIAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAoBOiAKAo0gCgKNIAoCjSAKAo0gCgKNIAoCjSAKAo0gCgKNIAoBiyALAWogCwAiIAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgCwJEIAsC/yALAv8gCwL/IAsC/yALAv8gCwL/IAsC/yALAv8gCwL/IAsC/yAKAfsgCgGRIAoACAAAAAAAAAAAAAAAAAAAAAAAAAAAIBAAAiALASYgCwE6IAsCPiALAj4gCwI+IAsBQCAKAUggCgFIIAoBSCAKAUwgCgFUIAoBOCwZOgY+KYc0PyqLNj8qizY/Kos2PyqLNj8qizY/Kos2PyqLNjsmey4kEBkkIAsCViALAb0gCgGlIAkABgAAAAAAAAAAAAAAACALAgggCgGfIAsB9SALAf0gCwL/IAsC/yALAv8gCwL/IAsC/yALAv8gCwL/IAsC/yALAv8gCgHPTDfDClZC79FWQu/xVkLv8VZC7/FWQu/xVkLv8VZC7/FWQu/xVkLu7VVB7tVVQe+JTTnLJCALAWIgCgBMAAAAAAAAAAAAAAAAIAsBZiALAecgCgF6LhEJSj0YEk49GBJOPRgSTj0YEk49GBJOPRgSTj0YEk49GBJOPRgSTkAZE0ZtMlkGVkLvt1ZC7/9WQu//VkLv/1ZC7/9WQu//VkLv/1ZC7/9WQu//VkLv/1ZC7/9WQu//VUHv51VB71QiDQ4YAAAAAAAAAAAAAAAAIAsBkzUUDDb/anZw/2t2yf9rdtf/a3bX/2t21/9rdtf/a3bX/2t21/9rdtf/a3bX/2t21/9qdtf/anY0VkLviVZC7/9WQu//VkLv/1ZC7/9ZRe//W0fv/1ZC7/9WQu//VkLv/1ZC7/9WQu//VUHv91VB7lZPQO4AAAAAAAAAAAAgCgoq/mp2fP9rd/3/a3f//2t3//9rd///a3f//2t3//9rd///a3f//2t3//9rd///a3f//2p2aFZC71ZWQu//VkLv/1ZC7/9vXvH/3dn7/+/u/f+kmfb/VkLv/1ZC7/9WQu//VkLv/1ZC7/9VQe/nVEHvHAAAAAAAAAAA9GdzBv9rduX/a3f//2t3//9rd///a3f//2t3//9rd///a3f//2t3//9rd///a3f//2t3//9qdplVQe8kVkLv/1ZC7/9WQu//vbX4/////////////r5/v9pWPD/VkLv/1ZC7/9WQu//VkLv/1ZC7/9VQu+DAAAAAAAAAAD+a3YM/2t28f9rd///a3f//2t3//9rd///a3f//2t3//9rd///a3f//2t3//9rd///a3f//2p2yVVA7wJWQu/zVkLv/1ZC7/+3rvj////////////18/7/ZlTw/1ZC7/9WQu//VkLv/1ZC7/9WQu//VUHv01NA7wQAAAAAAAAAAP9qd9H/a3f//2t3//9rd///a3f//2t3//9rd///a3f//2t3//9rd///a3f//2t3//9rd///anbv/2p1DFZC78VWQu//VkLv/2hW8P/KxPn/4t/8/5SH9P9XQ+//ZVPw/2JP8P9WQu//VkLv/1ZC7/9VQu7vVULvHAAAAAAAAAAA/2t3pf9rd///a3f//2t3//9rd///a3f//2t3//9rd///a3f//2t3//9rd///a3f//2t3//5qdvn/anYyVULuk1ZC7/9WQu//VkLv/1ZC7/9WQu//VkLv/3pq8v/x8P3/5+T8/2VT8P9WQu//VkLv/1VB7/1VQe4+AAAAAAAAAAD/andy/2t3//9rd///a3f//2t3//9rd///a3f//2t3//9rd///a3f//2t3//9rd///a3f//2p2XFZC715WQu//VkLv/1ZC7/9WQu//VkLv/1ZC7/+NgPT//////1tH7/9WQu//VkLv/1ZC7/9VQe9qAAAAAAAAAAD/a3dA/2t3/f9rd///a3f//2t3//9rd///a3f//215//++xP//2dz//3eC//9rd///a3f//2t3//9rdo1WQu80VkLv+VZC7/9WQu//VkLv/1ZC7/9WQu//Wkfv/5aK9f+Mf/T/VkLv/1ZC7/9WQu//VkLv/1VB7p8AAAAAAAAAAP5qdh7/anbv/2t3//9rd///a3f//2t3//9rd///doH///T1////////lZ3//2t3//9rd///a3f//2p2v1VB7xBVQe/xVkLv/1ZC7/9WQu//VkLv/1ZC7/9WQu//VkLv/1ZC7/9WQu//VkLv/1ZC7/9WQu//VUHu0QAAAAAAAAAA/252BP9rdtv/a3f//2t3//9rd///bnr//7vA///b3f///f3////////i5P//zdH//3qF//9rd///a3bv/2h2AlZC7s1WQu//VkLv/1ZC7/9WQu//VkLv/1ZC7/9WQu//VkLv/1ZC7/9WQu//VkLv/1ZC7/9VQe7xVEHvDgAAAAAAAAAA/2t2rf9rd///a3f//2t3//98hv//9fb////////////////////////+/v//m6P//2t3//9rd//+aXYiVUHvnVZC7/9WQu//VkLv/1ZC7/9WQu//VkLv/1ZC7/9WQu//VkLv/1ZC7/9WQu//VkLv/1ZB7/tVQe82AAAAAAAAAAD/anZ8/2t3//9rd///a3f//2x4//+gqP//v8T///r7////////zdH//7C2//9yff//a3f//2t3//9qdlJWQu5qVkLv/1ZC7/9WQu//VkLv/1ZC7/9WQu//VkLv/1ZC7/9WQu//VkLv/1ZC7/9WQu//VkLv/1VC72IAAAAAAAAAAP9qd0r/a3f//2t3//9rd///a3f//2t3//92gf//8/T///////+Sm///a3f//2t3//9rd///a3f//2p2g1ZC7zxWQu/9VkLv/1ZC7/9WQu//VkLv/1ZC7/9WQu//VkLv/1ZC7/9WQu//VkLv/1ZC7/9WQu//VkHvlQAAAAAAAAAA/mt2GP9rd+v/a3f//2t3//9rd///a3f//2x4//+kq///vMH//3B7//9rd///a3f//2t3//9rd///ana1XkTpHlZC7+1WQu//VkLv/1ZC7/9WQu//VkLv/1ZC7/9WQu//VkLv/1ZC7/9WQu//VkLv/1ZC7/9WQu+ZAAAAAAAAAAD/cHcA/2t3jf9rd///a3f//2t3//9rd///a3f//2t3//9rd///a3f//2t3//9rd///a3f//2t3//9qdtvUYJQMVULv01ZC7/9WQu//VkLv/1ZC7/9WQu//VkLv/1ZC7/9WQu//VkLv/1ZC7/9WQu//VUHu+1ZC70wAAAAAAAAAAAAAAAD/bHYY/mt21/9rd///a3f//2t3//9rd///a3f//2t3//9rd///a3f//2t3//9rd///a3f//2p2+/9pdhpWQu+lVkHu+1ZB7vtWQe77VkHu+1ZB7vtWQe77VkHu+1ZB7vtWQe77VkHv+1ZB7+1VQe+BVUDvAgAAAAAAAAAAAAAAAAAAAAD/ancs/2p32f9qd///a3f//2t3//9rd///a3f//2t3//9rd///a3f//2t3//9rd///a3f//2p2RlZB7x5XQu82V0LvNldC7zZXQu82V0LvNldC7zZXQu82V0LvNldC7zZXQe40VkHvGgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+anYS/2t3i/9rd/H/a3f//2t3//9rd///a3f//2t3//9rd///a3f//2t3//9rd///anZ4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/bHcA/2t2DP9qdj7/a3de/2t3YP9rd2D/a3dg/2t3YP9rd2D/a3dg/2t3YP9qdjoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA///////////////////////+AP///gAf////z4ACAD+//gAfYAIAD8ADAAeAAQADgAEAA4ABAAOAAQADwAGAA8AAgAHAAIABwACAAcAAgAHgAMAB4ABAAOAAQADgAEAB8ABAAfgAf//8AH////////////////////////////8=';
+function num0(v){ return (typeof v==='number'&&isFinite(v))?v:0; }
+function phDayKey(back){ return new Date(Date.now()+8*3600e3-(back||0)*86400e3).toISOString().slice(0,10); }
+function entriesPanel(kind,logo,title,sub,acc,total,dailyMap){
+  const days=[]; for(let i=13;i>=0;i--) days.push(phDayKey(i));
+  const today=days[days.length-1];
+  const vals=days.map(d=>num0(dailyMap&&dailyMap[d]));
+  const max=Math.max(1,...vals);
+  const todayN=num0(dailyMap&&dailyMap[today]);
+  const bars=days.map((d,i)=>{ const v=vals[i]; const h=v?Math.round(6+(v/max)*48):2; const isT=(d===today);
+    return `<div class="bcol${isT?' today':''}" title="${d}: ${v}"><div class="bv">${v||''}</div><div class="bar" style="height:${h}px"></div></div>`; }).join('');
+  const labels=days.map(d=>`<span class="${d===today?'today':''}">${d.slice(8)}</span>`).join('');
+  return `<div class="epanel" style="--acc:${acc}" onclick="openEntries('${kind}')" title="Tap to see who entered">
+    <div class="ehead"><img class="elogo" src="${logo}" alt=""><div><div class="etitle">${title}</div><div class="esub">${sub}</div></div><span class="elink">list ›</span></div>
+    <div class="estats"><div class="ebig">${fmtN(total)}</div><small>all-time entries</small><div class="etoday">+${fmtN(todayN)} today</div></div>
+    <div class="ebars">${bars}</div><div class="edays">${labels}</div></div>`;
+}
+function entriesCard(){
+  const dy=(DASH&&DASH.daily)||{};
+  return `<div class="panel entries"><div class="sectitle">App Entries — where we earn <span class="cnt">· GearUp + Jogos · last 14 days (PH)</span></div>
+    <div class="egrid">
+      ${entriesPanel('gearup',LOGO_GEARUP,'GearUp','download-to-unlock','var(--blue)',num0(dy.gearupTotal),dy.gearup)}
+      ${entriesPanel('jogos',LOGO_JOGOS,'Jogos','3-min play & earn','var(--violet)',num0(dy.jogosTotal),dy.jogos)}
+    </div></div>`;
+}
+// Click a panel → list of everyone who entered via that funnel (recent 500).
+async function openEntries(kind){
+  const isG=(kind==='gearup');
+  _openModal(`<h3 style="margin-bottom:6px">${isG?'GearUp':'Jogos'} entrants</h3>
+    <p style="margin-bottom:0">Loading…</p>`, true);
+  const r = await adminApi('entriesList',{ kind });
+  if(!r||!r.ok){ closeModal(); toast('Failed to load list','err'); return; }
+  const rows = (r.items||[]).map(e=>{
+    const when = e.ts ? new Date(e.ts).toLocaleDateString('en-CA',{timeZone:'Asia/Manila'}) : '—';
+    return `<div class="erow" onclick="closeModal();openUser('${esc(e.u)}')">
+      ${avatarBox(e.n)}
+      <div class="grow"><div class="name">${esc(e.n||'User')}</div>
+        <div class="meta">${when} · <span class="gid">${esc(deriveCode(e.u))}</span></div></div>
+      <div class="bal">${fmtN(e.b)} ◆</div><span class="muted">›</span></div>`;
+  }).join('');
+  _openModal(`<h3 style="margin-bottom:4px">${isG?'GearUp':'Jogos'} entrants</h3>
+    <p style="margin-bottom:12px">${fmtN(r.total)} total${r.total>r.items.length?` · showing latest ${r.items.length}`:''}</p>
+    <div class="elist">${rows||'<div class="empty">None yet.</div>'}</div>
+    <div class="mbtns" style="margin-top:14px"><button class="btn" onclick="closeModal()">Close</button></div>`, true);
+}
 
 // ── OVERVIEW ──
 function viewOverview(){
@@ -497,13 +636,16 @@ function viewOverview(){
     <div class="grow"><div class="name">${esc(c.names[0]||'User')} <span class="pill red">${c.uids.length} accounts</span></div>
       <div class="meta">one device · hw <span class="gid">${esc((c.hw||'').slice(0,16))}…</span></div></div></div>`).join('') : '<div class="empty">No clone clusters.</div>';
   // pending withdrawals preview
-  const pw = (DASH.pendingW||[]).slice(0,5);
-  const pwHtml = pw.length ? pw.map(r=>`<div class="row" onclick="openUser('${esc(r.uid)}')">
-    <div class="grow"><div class="name">${esc(r.name||'User')} <span class="pill blue">${r.mlbb||'?'} ◆ MLBB</span></div>
+  const cheatByO = {}; (DASH.cheaters||[]).forEach(c=>cheatByO[c.u]=c);
+  const pw = (DASH.pendingW||[]).slice()
+    .sort((a,b)=>(((cheatByO[b.uid]||{}).score||0)-((cheatByO[a.uid]||{}).score||0)) || ((b.ts||0)-(a.ts||0)))
+    .slice(0,5);
+  const pwHtml = pw.length ? pw.map(r=>{ const ch=cheatByO[r.uid]; return `<div class="row${ch?' flagged':''}" onclick="openUser('${esc(r.uid)}')">
+    <div class="grow"><div class="name">${warnDot(ch)}${esc(r.name||'User')} <span class="pill blue">${r.mlbb||'?'} ◆ MLBB</span>${warnPills(ch)}</div>
       <div class="meta">cost ${r.cost||'?'}◆ · Game ID <span class="gid">${esc(r.gameId||'—')}</span> · ${ago(r.ts)}</div></div>
-    <span class="pill gold">pending</span></div>`).join('') : '<div class="empty">No pending withdrawals.</div>';
+    <span class="pill gold">pending</span></div>`; }).join('') : '<div class="empty">No pending withdrawals.</div>';
 
-  return cards +
+  return entriesCard() + cards +
     `<div class="panel"><div class="sectitle">Top risk accounts <span class="cnt">· ${DASH.kpis.cheaters} flagged</span></div>${chHtml}
       ${DASH.kpis.cheaters>6?`<div class="row" onclick="go('cheaters')" style="justify-content:center;color:var(--blue);font-weight:700">View all ${DASH.kpis.cheaters} cheaters →</div>`:''}</div>
      <div class="dgrid">
@@ -712,57 +854,108 @@ async function voidHeld(ref, inv){
 }
 
 // ── WITHDRAWALS ──
-let WSORT = 'oldest'; // 'oldest' | 'newest' | 'highest'
-function setWSort(s){ WSORT=s; render(); }
 function viewWithdrawals(){
   if(!DASH) return '<div class="panel"><div class="empty">Loading…</div></div>';
   const items = DASH.redemptions||[];
+  const cheatBy = {}; (DASH.cheaters||[]).forEach(c=>cheatBy[c.u]=c);   // uid → cheater flag
+  const pend = items.filter(r=>(r.status||'pending')==='pending');
+  const done = items.filter(r=>(r.status||'pending')!=='pending');
+  // Sa Pending: iuna ang flagged (mataas na risk) para hindi mo na hanapin isa-isa.
+  pend.sort((a,b)=>(((cheatBy[b.uid]||{}).score||0)-((cheatBy[a.uid]||{}).score||0)) || ((b.ts||0)-(a.ts||0)));
+  const flaggedPend = pend.filter(r=>cheatBy[r.uid]).length;
   if(!items.length) return `<div class="panel"><div class="empty">No withdrawal requests yet.</div></div>`;
-  // Farm flag: iisang Game ID na tinanggap mula sa >1 magkaibang account.
-  const gidUids={}; items.forEach(r=>{ if(r.gameId){ (gidUids[r.gameId]=gidUids[r.gameId]||new Set()).add(r.uid); } });
-  const isFarm = r => r.gameId && gidUids[r.gameId] && gidUids[r.gameId].size>1;
-  let pend = items.filter(r=>(r.status||'pending')==='pending');
-  const done = items.filter(r=>(r.status||'pending')!=='pending')
-    .sort((a,b)=>(b.rejectedTs||b.fulfilledTs||b.ts||0)-(a.rejectedTs||a.fulfilledTs||a.ts||0));
-  pend = pend.slice().sort((a,b)=>
-    WSORT==='highest' ? (b.cost||0)-(a.cost||0)
-    : WSORT==='newest' ? (b.ts||0)-(a.ts||0)
-    : (a.ts||0)-(b.ts||0)); // oldest waiting muna (default)
   const statusPill = r => { const s=r.status||'pending';
     if(s==='fulfilled') return `<span class="pill green">sent</span>`;
     if(s==='rejected') return `<span class="pill red">declined${r.refunded?' · refunded':' · no refund'}</span>`;
     return `<span class="pill gold">pending</span>`; };
-  const ageBadge = r => { if(!r.ts) return ''; const days=Math.floor((Date.now()-r.ts)/86400000);
-    return days>=1?` <span class="pill ${days>=3?'red':'gold'}">${days}d waiting</span>`:''; };
-  const card = r => `<div class="row">
+  const card = r => { const ch=cheatBy[r.uid]; return `<div class="row${ch?' flagged':''}">
     <div class="grow" onclick="openUser('${esc(r.uid)}')" style="cursor:pointer">
-      <div class="name">${esc(r.name||'User')} <span class="pill blue">${r.mlbb||'?'} ◆ MLBB</span>${r.ign?` <span class="pill green">IGN: ${esc(r.ign)}</span>`:' <span class="pill muted">IGN unverified</span>'}${isFarm(r)?' <span class="pill red">multi-acct game ID</span>':''}${(r.status||'pending')==='pending'?ageBadge(r):''}</div>
+      <div class="name">${warnDot(ch)}${esc(r.name||'User')} <span class="pill blue">${r.mlbb||'?'} ◆ MLBB</span>${r.ign?` <span class="pill green">IGN: ${esc(r.ign)}</span>`:' <span class="pill muted">IGN unverified</span>'}${warnPills(ch)}</div>
       <div class="meta">Cost ${r.cost||'?'}◆ · Game ID <span class="gid">${esc(r.gameId||'—')}</span>${copyBtn(r.gameId,'Game ID')} · Server <span class="gid">${esc(r.server||'—')}</span>${copyBtn(r.server,'Server')}</div>
-      <div class="meta">${r.ts?new Date(r.ts).toLocaleString():''}${r.reason?` · <span class="muted">reason: ${esc(r.reason)}</span>`:''}</div></div>
+      <div class="meta">${r.ts?new Date(r.ts).toLocaleString():''}</div></div>
     ${(r.status||'pending')==='pending'
       ? `<div style="display:flex;flex-direction:column;gap:6px">
+           <button class="btn sm pay" onclick="autopay('${r.id}')">Auto-pay</button>
            <button class="btn sm" onclick="fulfill('${r.id}')">Mark sent</button>
            <button class="btn sm danger" onclick="decline('${r.id}','${esc(r.uid||'')}',${r.cost||0})">Decline</button></div>`
-      : statusPill(r)}</div>`;
-  const chip=(v,l)=>`<button class="btn sm ${WSORT===v?'':'ghost'}" onclick="setWSort('${v}')">${l}</button>`;
-  const sortBar=`<div style="display:flex;gap:6px;margin:0 0 10px">${chip('oldest','Oldest waiting')}${chip('highest','Highest ◆')}${chip('newest','Newest')}</div>`;
-  return `${pend.length?`<div class="panel"><div class="sectitle">Pending <span class="cnt">· ${pend.length}</span></div>${sortBar}${pend.map(card).join('')}</div>`:''}
-    ${done.length?`<div class="panel"><div class="sectitle">History <span class="cnt">· ${done.length}</span></div>${done.map(card).join('')}</div>`:''}`;
+      : statusPill(r)}</div>`; };
+  // Ang History ay lumalaki nang walang hanggan. Kapag buo itong nire-render, bumabagal
+  // ang BAWAT render() — kasama ang instant-remove pagka-"Mark sent". Kaya i-cap.
+  const shown = W_HIST_ALL ? done : done.slice(0, W_HIST_PAGE);
+  const moreBtn = done.length > shown.length
+    ? `<div class="row" onclick="W_HIST_ALL=true;render()" style="justify-content:center;color:var(--blue);font-weight:700;cursor:pointer">Show all ${done.length} →</div>` : '';
+  return `${pend.length?`<div class="panel"><div class="sectitle">Pending <span class="cnt">· ${pend.length}</span>${flaggedPend?` <span class="pill red">⚠ ${flaggedPend} flagged</span>`:''}</div>${pend.map(card).join('')}</div>`:''}
+    ${done.length?`<div class="panel"><div class="sectitle">History <span class="cnt">· ${done.length}</span></div>${shown.map(card).join('')}${moreBtn}</div>`:''}`;
+}
+let W_HIST_ALL = false, W_HIST_PAGE = 50;
+// Optimistic local patch ng isang redemption — para instant mawala sa Pending nang
+// hindi hinihintay ang buong dashboard reload. Nagbabalik ng undo() para sa rollback.
+function patchRedemptionLocal(id, patch){
+  if(!DASH) return () => {};
+  const list = DASH.redemptions || [];
+  const r = list.find(x => x.id === id);
+  const prev = r ? Object.assign({}, r) : null;
+  if(r) Object.assign(r, patch);
+  const pw = DASH.pendingW || [];
+  const pi = pw.findIndex(x => x.id === id);
+  const pRow = pi >= 0 ? pw[pi] : null;
+  if(pi >= 0) pw.splice(pi, 1);
+  const k = DASH.kpis || {};
+  const prevCount = k.pendingWithdrawals;
+  if(typeof prevCount === 'number') k.pendingWithdrawals = Math.max(0, prevCount - 1);
+  // pati ang bukas na user-detail panel, para pareho silang instant
+  const dr = DETAIL && (DETAIL.withdrawals || []).find(x => x.id === id);
+  const dPrev = dr ? Object.assign({}, dr) : null;
+  if(dr) Object.assign(dr, patch);
+  paintNav(); render();
+  return () => {
+    if(r && prev) Object.assign(r, prev);
+    if(pRow) pw.splice(Math.min(pi, pw.length), 0, pRow);
+    if(typeof prevCount === 'number') k.pendingWithdrawals = prevCount;
+    if(dr && dPrev) Object.assign(dr, dPrev);
+    paintNav(); render();
+  };
+}
+// Background refresh — hindi ina-await para hindi ma-block ang UI.
+function refreshAfterAction(){
+  loadDash({light:true,force:true}).then(ok => {
+    if(!ok) return;
+    paintNav(); if(SELECTED_UID) reloadDetail(); else render();
+  });
 }
 async function fulfill(id){
   const ok = await confirmModal({icon:'◆', tone:'green', title:'Mark as sent?', message:'Confirm only AFTER you topped up their MLBB account.', confirmLabel:'Mark sent'});
   if(!ok) return;
+  const undo = patchRedemptionLocal(id, { status:'fulfilled' });
   const r = await adminApi('fulfill', { id });
-  if(!r.ok){ toast('Failed: '+(r.error||'error'),'warn'); return; }
-  toast('Withdrawal marked as sent.'); await loadDash({light:true,force:true}); paintNav(); if(SELECTED_UID) reloadDetail(); else render();
+  if(!r.ok){ undo(); toast('Failed: '+(r.error||'error'),'warn'); return; }
+  markActed(id, { status:'fulfilled' });
+  toast('Withdrawal marked as sent.');
+  refreshAfterAction();
+}
+// Auto-pay via H2H reseller. DRY (default) only previews — nothing changes until the
+// owner sets config/earn/payoutMode="live" + provider credentials. See payout.js.
+async function autopay(id){
+  const r = await adminApi('payout', { id });
+  if(!r || !r.ok){ toast('Auto-pay: '+((r&&r.error)||'error'),'warn'); return; }
+  if(r.status === 'dry'){ const p=r.preview||{};
+    toast(`DRY-RUN — would send ${p.amount}◆ to Game ID ${p.gameId} (${p.provider})${p.sku?'':' · no SKU mapped'}. Flip payoutMode=live to enable.`, 'warn');
+    return; }
+  if(r.status === 'pending'){ toast('Queued — provider processing. Order '+(r.orderId||'')); refreshAfterAction(); return; }
+  markActed(id, { status:'fulfilled' });
+  patchRedemptionLocal(id, { status:'fulfilled' });
+  toast('Auto-paid — diamonds sent. Order '+(r.orderId||''));
+  refreshAfterAction();
 }
 async function decline(id, uid, cost){
   const out = await declineModal(cost);
   if(out===null) return;
-  const r = await adminApi('decline', { id, uid, cost, refund:out.refund, reason:out.reason, rejectReason:out.rejectReason });
-  if(!r.ok){ toast('Failed: '+(r.error||'error'),'warn'); return; }
+  const undo = patchRedemptionLocal(id, { status:'rejected', refunded: !!out.refund, reason: out.reason, rejectReason: out.rejectReason });
+  const r = await adminApi('decline', { id, uid, cost, refund: out.refund, reason: out.reason, rejectReason: out.rejectReason });
+  if(!r.ok){ undo(); toast('Failed: '+(r.error||'error'),'warn'); return; }
+  markActed(id, { status:'rejected', refunded: !!out.refund, reason: out.reason, rejectReason: out.rejectReason });
   toast(out.refund?`Declined · ${cost}◆ refunded.`:'Declined · no refund.', 'warn');
-  await loadDash({light:true,force:true}); paintNav(); if(SELECTED_UID) reloadDetail(); else render();
+  refreshAfterAction();
 }
 const DECLINE_REASONS=[
   ['multi_account','Multiple accounts / one Game ID (unfair use).'],
@@ -778,8 +971,7 @@ function declineModal(cost){
     window._declRefund=false; window._declReason='multi_account';
     window._declMsg=_declPreset('multi_account');
     const ss='width:100%;box-sizing:border-box;margin-top:6px;padding:9px 10px;border-radius:9px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:inherit;font:inherit';
-    const render = () => {
-      return `<div class="mi red"></div><h3>Decline withdrawal</h3>
+    const render = () => `<div class="mi red"></div><h3>Decline withdrawal</h3>
       <p>Pick a reason, then edit the message the user will see in "See details". Then choose refund.</p>
       <select onchange="_declSetReason(this.value)" style="${ss}">
         ${DECLINE_REASONS.map(([v,l])=>`<option value="${v}" ${window._declReason===v?'selected':''}>${esc(l)}</option>`).join('')}
@@ -794,9 +986,8 @@ function declineModal(cost){
           <div><div class="ot">Refund ${cost}◆</div><div class="od">Give the diamonds back — honest mistake.</div></div></div>
       </div>
       <div class="mbtns"><button class="btn ghost" onclick="closeModal(null)">Cancel</button>
-        <button class="btn danger" onclick="_declSubmit()">Decline</button></div>`; };
+        <button class="btn danger" onclick="_declSubmit()">Decline</button></div>`;
     window._declSetReason = v => { window._declReason=v;
-      // swap the message to the new preset unless the admin already typed a custom one
       if(v!=='other') window._declMsg=_declPreset(v);
       document.getElementById('modal').innerHTML=render(); };
     window._declRef = v => { window._declRefund=v; document.getElementById('modal').innerHTML=render(); };
@@ -839,6 +1030,83 @@ function viewDevices(){
     ${list.length>400?`<div class="row" style="justify-content:center" class="muted">Showing 400 of ${fmtN(list.length)}</div>`:''}</div>`;
 }
 
+// ── ANTI-CHEAT (lazy) ──
+// config/antiCheat sourced via the existing getNode passthrough (same pattern as
+// stats/devices, activity, diag). List comes from the antiCheatList adminApi action.
+const AC_TOGGLES = [
+  ['enabled','Master enable'],
+  ['blockClone','Block clone'],
+  ['blockEmulator','Block emulator'],
+  ['blockTampered','Block tampered'],
+  ['softMultiAccount','Soft multi-account'],
+];
+async function loadAntiCheat(){
+  const [cfg, listR] = await Promise.all([ getNode('config/antiCheat'), adminApi('antiCheatList') ]);
+  HEAVY.anticheat = { cfg: cfg || {}, items: (listR && listR.ok) ? (listR.items || []) : [] };
+}
+async function acRefreshList(){
+  const r = await adminApi('antiCheatList');
+  if(HEAVY.anticheat) HEAVY.anticheat.items = (r && r.ok) ? (r.items || []) : [];
+  render();
+}
+async function acToggle(key, checked){
+  const prev = HEAVY.anticheat ? HEAVY.anticheat.cfg[key] : undefined;
+  if(HEAVY.anticheat) HEAVY.anticheat.cfg[key] = checked;
+  const r = await adminApi('antiCheatConfig', { patch: { [key]: checked } });
+  if(!r || !r.ok){ toast('Failed: '+((r&&r.error)||'error'),'err'); if(HEAVY.anticheat) HEAVY.anticheat.cfg[key] = prev; render(); return; }
+  toast('Saved.');
+}
+async function acAllow(hw){
+  if(!hw){ toast('No hw id on this row.','warn'); return; }
+  const r = await adminApi('antiCheatAllow', { hwid: hw });
+  if(!r || !r.ok){ toast('Failed: '+((r&&r.error)||'error'),'err'); return; }
+  toast('Device allowed.');
+  acRefreshList();
+}
+async function acBlock(uid){
+  const ok = await confirmModal({icon:'!', tone:'red', title:'Block this account?', message:'Blocks earn/withdraw until manually unblocked.', confirmLabel:'Block', danger:true});
+  if(!ok) return;
+  const r = await adminApi('antiCheatBlock', { id: uid });
+  if(!r || !r.ok){ toast('Failed: '+((r&&r.error)||'error'),'err'); return; }
+  toast('Blocked.','warn');
+  acRefreshList();
+}
+async function acUnblock(uid){
+  const r = await adminApi('antiCheatUnblock', { id: uid });
+  if(!r || !r.ok){ toast('Failed: '+((r&&r.error)||'error'),'err'); return; }
+  toast('Unblocked.');
+  acRefreshList();
+}
+function viewAntiCheat(){
+  if(!HEAVY.anticheat) return '<div class="panel"><div class="empty">Loading anti-cheat…</div></div>';
+  const cfg = HEAVY.anticheat.cfg || {};
+  const items = HEAVY.anticheat.items || [];
+  const toggles = AC_TOGGLES.map(([k,label]) => `<label class="chk" style="display:flex;align-items:center;gap:8px;padding:10px 4px;font-size:13.5px">
+      <input type="checkbox" ${cfg[k]?'checked':''} onchange="acToggle('${k}',this.checked)">${label}</label>`).join('');
+  const sigPills = s => { s=s||{}; const out=[];
+    if(s.clone) out.push('<span class="pill red">CLONE</span>');
+    if(s.emu) out.push('<span class="pill red">EMULATOR</span>');
+    if(s.tampered) out.push('<span class="pill red">TAMPERED</span>');
+    if(s.sharedHwCount>1) out.push(`<span class="pill gold">SHARED ×${s.sharedHwCount}</span>`);
+    if(s.gate) out.push(`<span class="pill ${s.gate==='block'?'red':(s.gate==='soft'?'gold':'muted')}">${esc(String(s.gate).toUpperCase())}</span>`);
+    return out.join(' ') || '<span class="pill muted">—</span>'; };
+  const rows = items.length ? items.map(it => { const s = it.signals||{};
+    return `<div class="row">
+      <div class="grow"><div class="name">${esc(it.name||'User')} ${sigPills(s)}</div>
+        <div class="meta">uid <span class="gid">${esc(it.uid||'—')}</span> · hw <span class="gid">${esc((it.hw||'—').slice(0,20))}</span> · ${ago(s.ts)}</div></div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <button class="btn sm ghost" style="width:auto;padding:0 12px" onclick="acAllow('${esc(it.hw||'')}')">Allow</button>
+        <button class="btn sm danger" style="width:auto;padding:0 12px" onclick="acBlock('${esc(it.uid||'')}')">Block</button>
+        <button class="btn sm" style="width:auto;padding:0 12px" onclick="acUnblock('${esc(it.uid||'')}')">Unblock</button>
+      </div></div>`; }).join('') : '<div class="empty">No flagged devices.</div>';
+  return `<div class="panel form">
+    <div class="sechead">Kill-switches</div>
+    <div class="hint" style="margin:0 4px 8px">Master flag is the instant rollback. Flip individual signal blocks on one at a time, watch a window before the next.</div>
+    ${toggles}
+  </div>
+  <div class="panel"><div class="sectitle">Flagged devices <span class="cnt">· ${items.length}</span></div>${rows}</div>`;
+}
+
 // ── ACTIVITY (lazy) ──
 function viewActivity(){
   if(!HEAVY.activity) return '<div class="panel"><div class="empty">Loading activity…</div></div>';
@@ -861,24 +1129,36 @@ function localToTs(v){ return v?new Date(v).getTime():0; }
 function viewTournament(){
   const T = (DASH&&DASH.tournament)||{event:null,entries:{}};
   const e = T.event||{};
-  // Dedupe by TikTok account (keep highest-views) — tugma sa user-facing leaderboard, at
-  // para tama ang Winner pick (hindi mananalo ang alt na doble-doble sa taas).
-  const _seenTt = new Set();
-  const entries = Object.values(T.entries||{}).filter(x=>x&&(!e.id||x.eventId===e.id)).sort((a,b)=>(b.views||0)-(a.views||0))
-    .filter(x=>{ const u=String(x.tiktokUser||'').toLowerCase(); if(!u) return true; if(_seenTt.has(u)) return false; _seenTt.add(u); return true; });
+  const entries = Object.values(T.entries||{})
+    .filter(x=>x && (!e.id || x.eventId===e.id))
+    .sort((a,b)=>((b.totalViews||0)-(a.totalViews||0)) || ((a.firstSubmitTs||0)-(b.firstSubmitTs||0)));
   const rules = Array.isArray(e.rules)?e.rules.join('\n'):'';
   const steps = Array.isArray(e.steps)?e.steps.join('\n'):'';
   const fst='width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;color:var(--text);padding:10px;font:inherit';
   const ta=(id,val,ph,rows)=>`<textarea id="${id}" rows="${rows||3}" placeholder="${ph||''}" style="${fst};resize:vertical">${esc(val||'')}</textarea>`;
   const tin=(id,val,ph)=>`<input id="${id}" value="${esc(val||'')}" placeholder="${ph||''}" style="${fst}">`;
-  const lead = entries.length?entries.map((x,i)=>`<div class="row">
+  const prizes = Array.isArray(e.prizes) && e.prizes.length ? e.prizes
+    : [{rank:1,amount:5000,cur:'mlbb'},{rank:2,amount:1000,cur:'mlbb'},
+       {rank:3,amount:500,cur:'mlbb'},{rank:4,amount:50,cur:'gold'},{rank:5,amount:50,cur:'gold'}];
+  const tierRows = prizes.map((p,i)=>`<div class="row" data-tier="${i}" style="gap:10px">
+    <div class="rank ${i===0?'g':i===1?'s':i===2?'b':''}">${p.rank}</div>
+    <input id="tp_amt_${i}" value="${parseInt(p.amount,10)||0}" style="${fst};flex:1" inputmode="numeric">
+    <select id="tp_cur_${i}" style="${fst};width:110px">
+      <option value="mlbb" ${p.cur!=='gold'?'selected':''}>MLBB ◆</option>
+      <option value="gold" ${p.cur==='gold'?'selected':''}>Gold ◆</option>
+    </select>
+    <button class="btn sm danger" style="width:auto;padding:0 10px" onclick="delTier(${i})">×</button></div>`).join('');
+  const REVIEW_TOP = 20;
+  const lead = entries.length ? entries.slice(0,REVIEW_TOP).map((x,i)=>`<div>
+    <div class="row" onclick="toggleReview('${esc(x.uid)}')" style="cursor:pointer">
       <div class="rank ${i===0?'g':i===1?'s':i===2?'b':''}">${i+1}</div>
       ${x.tiktokAvatar?`<img src="${esc(x.tiktokAvatar)}" class="av">`:avatarBox(x.name||x.tiktokNick)}
-      <div class="grow"><div class="name">${esc(x.name||x.tiktokNick||'Player')}</div>
-        <div class="meta">${fmtN(x.views||0)} views · @${esc(x.tiktokUser||'—')}</div></div>
-      ${x.videoUrl?`<a href="${esc(x.videoUrl)}" target="_blank" class="btn sm ghost" style="width:auto;padding:0 10px">Video</a>`:''}
-      <button class="btn sm" style="width:auto;padding:0 10px" onclick="creditWinner('${esc(x.uid)}','${esc((x.name||x.tiktokNick||'Player').replace(/'/g,''))}')">Winner</button></div>`).join('')
-    :'<div class="empty">No entries yet.</div>';
+      <div class="grow"><div class="name">${esc(x.name||x.tiktokNick||'Player')} ${x.dq?'<span class="pill red">DQ</span>':''}</div>
+        <div class="meta">${fmtN(x.totalViews||0)} views · ${x.videoCount||0} videos${x.rejectedCount?` · <span style="color:var(--red)">${x.rejectedCount} rejected</span>`:''} · @${esc(x.tiktokUser||'—')}</div></div>
+      <button class="btn sm danger" style="width:auto;padding:0 10px"
+        onclick="event.stopPropagation();dqAccount('${esc(x.uid)}','${esc((x.name||'Player').replace(/'/g,''))}')">${x.dq?'Un-DQ':'DQ'}</button></div>
+    <div id="rv_${esc(x.uid)}"></div></div>`).join('')
+    : '<div class="empty">No entries yet.</div>';
   return `<div class="panel form">
     <div class="sechead">Live event <span class="pill ${e.status==='open'?'green':'muted'}" style="margin-left:auto">${e.status||'none'}</span></div>
     <div style="display:grid;gap:12px">
@@ -886,7 +1166,6 @@ function viewTournament(){
       <label class="field"><span style="font-size:12px;color:var(--muted)">Task this week</span>${tin('t_task',e.task,'Inject & showcase the latest skin')}</label>
       <label class="field"><span style="font-size:12px;color:var(--muted)">Short description</span>${ta('t_desc',e.desc,'Shown under title',2)}</label>
       <div style="display:flex;gap:12px">
-        <label class="field" style="flex:1"><span style="font-size:12px;color:var(--muted)">Prize pool ◆</span>${tin('t_prize',e.prizePool||500)}</label>
         <label class="field" style="flex:1"><span style="font-size:12px;color:var(--muted)">Status</span>
           <select id="t_status" style="${fst}"><option value="open" ${e.status==='open'?'selected':''}>open</option><option value="closed" ${e.status==='closed'?'selected':''}>closed</option></select></label>
       </div>
@@ -896,12 +1175,19 @@ function viewTournament(){
       </div>
       <label class="field"><span style="font-size:12px;color:var(--muted)">Rules (one per line)</span>${ta('t_rules',rules,"Must use this week's skin",5)}</label>
       <label class="field"><span style="font-size:12px;color:var(--muted)">Steps (one per line)</span>${ta('t_steps',steps,"Inject this week's skin",6)}</label>
+      <div class="sechead" style="margin-top:6px">Prize tiers</div>
+      <div id="tiers">${tierRows}</div>
+      <button class="btn sm ghost" style="width:auto" onclick="addTier()">+ Add tier</button>
+      <label class="field"><span style="font-size:12px;color:var(--muted)">Sample video URL (TikTok)</span>${tin('t_sample',e.sampleVideoUrl,'https://vt.tiktok.com/...')}</label>
+      <label class="field"><span style="font-size:12px;color:var(--muted)">Max videos per account</span>${tin('t_maxv',e.maxVideos||10)}</label>
+      <label class="field"><span style="font-size:12px;color:var(--muted)">Participation reward (gold, 0 = off)</span>${tin('t_partreward', e.participationReward==null?20:e.participationReward)}</label>
     </div>
     <div class="savebar"><button class="btn sm" style="width:auto;padding:0 20px" onclick="saveTournament()">Save event</button>
-      <button class="btn sm ghost" style="width:auto" onclick="resetTournament()">Reset (new round)</button></div>
+      <button class="btn sm ghost" style="width:auto" onclick="resetTournament()">Reset (new round)</button>
+      <button class="btn sm" style="width:auto;padding:0 20px;background:var(--gold)" onclick="declareWinners()">Declare winners</button></div>
   </div>
-  <div class="panel"><div class="sectitle">Leaderboard <span class="cnt">· ${entries.length} entries</span></div>
-    <p class="hint" style="padding:0 10px">Tap <b>Winner</b> to credit the prize and close the event.</p>${lead}</div>`;
+  <div class="panel"><div class="sectitle">Review queue <span class="cnt">· ${entries.length} entries</span></div>
+    <p class="hint" style="padding:0 10px">Tap a row to expand its videos. Reject a video or DQ the whole account.</p>${lead}</div>`;
 }
 async function saveTournament(){
   const old = (DASH&&DASH.tournament&&DASH.tournament.event)||{};
@@ -909,34 +1195,99 @@ async function saveTournament(){
   const dk=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');return ''+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate());};
   const ev = { id: old.id||('evt-'+dk()), title:document.getElementById('t_title').value.trim()||'TikTok Highlight Cup',
     task:document.getElementById('t_task').value.trim(), desc:document.getElementById('t_desc').value.trim(),
-    prizePool:parseInt(document.getElementById('t_prize').value,10)||0, status:document.getElementById('t_status').value,
+    status:document.getElementById('t_status').value,
     startTs:localToTs(document.getElementById('t_start').value)||old.startTs||Date.now(),
     endTs:localToTs(document.getElementById('t_end').value)||old.endTs||(Date.now()+7*86400000),
-    rules:lines('t_rules'), steps:lines('t_steps') };
+    rules:lines('t_rules'), steps:lines('t_steps'),
+    prizes: currentTiers(),
+    sampleVideoUrl: document.getElementById('t_sample').value.trim(),
+    maxVideos: parseInt(document.getElementById('t_maxv').value,10)||10,
+    participationReward: (function(){ const v=parseInt(document.getElementById('t_partreward').value,10); return isNaN(v)?20:v; })() };
   if(old.winnerUid){ ev.winnerUid=old.winnerUid; ev.winnerName=old.winnerName; ev.winnerPrize=old.winnerPrize; }
-  const r = await adminApi('tournamentSave',{event:ev});
+  const r = await adminApi('tournamentSave',{ event:ev, prevSampleUrl: old.sampleVideoUrl||'' });
   if(!r.ok){ toast('Failed: '+(r.error||'error'),'warn'); return; }
   toast('Event saved — live in the app.'); await loadDash({light:true,force:true}); render();
 }
+let TIER_DRAFT = null;
+function currentTiers(){
+  const out=[]; let i=0;
+  while(document.getElementById('tp_amt_'+i)){
+    out.push({ rank:i+1,
+      amount: parseInt(document.getElementById('tp_amt_'+i).value,10)||0,
+      cur: document.getElementById('tp_cur_'+i).value==='gold'?'gold':'mlbb' });
+    i++;
+  }
+  return out;
+}
+function addTier(){ TIER_DRAFT=currentTiers(); TIER_DRAFT.push({rank:TIER_DRAFT.length+1,amount:50,cur:'gold'});
+  DASH.tournament.event=Object.assign({},DASH.tournament.event,{prizes:TIER_DRAFT}); render(); }
+function delTier(i){ TIER_DRAFT=currentTiers().filter((_,x)=>x!==i).map((t,x)=>Object.assign({},t,{rank:x+1}));
+  DASH.tournament.event=Object.assign({},DASH.tournament.event,{prizes:TIER_DRAFT}); render(); }
 async function resetTournament(){
   const ok = await confirmModal({title:'Reset tournament', message:'Starts a NEW round: clears entries + device locks, opens a fresh 7-day window (keeps task/prize/rules).', confirmLabel:'Reset round'});
   if(!ok) return;
   const old=(DASH&&DASH.tournament&&DASH.tournament.event)||{}; const now=Date.now();
   const dk=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');return ''+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+p(d.getHours())+p(d.getMinutes());};
   const ev={ id:'evt-'+dk(), title:old.title||'TikTok Highlight Cup', task:old.task||'', desc:old.desc||'',
-    prizePool:old.prizePool||500, status:'open', startTs:now, endTs:now+7*86400000, rules:old.rules||[], steps:old.steps||[] };
+    status:'open', startTs:now, endTs:now+7*86400000, rules:old.rules||[], steps:old.steps||[],
+    prizes: old.prizes || [{rank:1,amount:5000,cur:'mlbb'},{rank:2,amount:1000,cur:'mlbb'},{rank:3,amount:500,cur:'mlbb'},{rank:4,amount:50,cur:'gold'},{rank:5,amount:50,cur:'gold'}],
+    sampleVideoUrl: old.sampleVideoUrl || '',
+    maxVideos: old.maxVideos || 10 };
   const r=await adminApi('tournamentReset',{event:ev});
   if(!r.ok){ toast('Failed: '+(r.error||'error'),'warn'); return; }
   toast('New round started — leaderboard cleared.'); await loadDash({light:true,force:true}); render();
 }
-async function creditWinner(uid,name){
-  const e=(DASH&&DASH.tournament&&DASH.tournament.event)||{};
-  const amt=await inputModal({icon:'◆',tone:'gold',title:`Crown ${name}?`, message:'Marks winner & closes event. They get an in-app CLAIM dialog for their MLBB Game ID, then it shows as a pending withdrawal here.', label:'Prize — BLUE MLBB diamonds', value:String(e.prizePool||500), confirmLabel:'Set winner & close'});
-  if(amt===null) return;
-  const prize=parseInt(amt,10); if(!(prize>0)){ toast('Invalid amount','warn'); return; }
-  const r=await adminApi('tournamentWinner',{uid,name,prize});
+async function declareWinners(){
+  const ok=await confirmModal({icon:'◆', tone:'gold', title:'Declare winners & close?',
+    message:'Review the top entries FIRST. Disqualifying after this needs a re-declare, and a prize that was already claimed cannot be taken back.',
+    confirmLabel:'Declare & close'});
+  if(!ok) return;
+  const r=await adminApi('tournamentDeclare',{});
   if(!r.ok){ toast('Failed: '+(r.error||'error'),'warn'); return; }
-  toast(`${name} set as winner — can claim ${prize}◆ in-app.`); await loadDash({light:true,force:true}); render();
+  const lines=(r.winners||[]).map(w=>`#${w.rank} ${w.amount}${w.cur==='gold'?' gold':' MLBB'}`).join(' · ');
+  toast(`Declared — ${lines||'no winners'}`);
+  refreshAfterAction();
+}
+const REVIEW_OPEN = {};
+async function toggleReview(uid){
+  const box=document.getElementById('rv_'+uid); if(!box) return;
+  if(REVIEW_OPEN[uid]){ REVIEW_OPEN[uid]=false; box.innerHTML=''; return; }
+  REVIEW_OPEN[uid]=true; box.innerHTML='<div class="empty">Loading videos…</div>';
+  const r=await fetch(`${FN}/tournamentVideos`,
+    {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid,viewerUid:uid})})
+    .then(x=>x.json()).catch(()=>null);
+  if(!r||!r.ok){ box.innerHTML='<div class="empty">Failed to load videos.</div>'; return; }
+  box.innerHTML=`<div style="padding:0 0 8px 34px">${r.videos.map(v=>`
+    <div class="row" id="vr_${esc(uid)}_${esc(v.videoId)}" style="${v.status==='rejected'?'opacity:.5':''}">
+      <div class="grow"><div class="name" style="font-size:13px">${fmtN(v.views)} views</div>
+        <div class="meta">${esc((v.title||'').slice(0,80))}${v.status==='rejected'?` · <span style="color:var(--red)">rejected: ${esc(v.rejectReason||'')}</span>`:''}</div></div>
+      <a href="${esc(v.videoUrl)}" target="_blank" class="btn sm ghost" style="width:auto;padding:0 10px">Open</a>
+      ${v.status!=='rejected'?`<button class="btn sm danger" style="width:auto;padding:0 10px"
+        onclick="rejectVideo('${esc(uid)}','${esc(v.videoId)}')">Reject</button>`:''}</div>`).join('')}</div>`;
+}
+async function rejectVideo(uid, videoId){
+  const reason = await inputModal({icon:'', tone:'red', title:'Reject this video?',
+    message:'The owner sees this reason in the app. Their total drops immediately.',
+    label:'Reason', value:'Hindi tungkol sa Santoryu Toolkit', confirmLabel:'Reject'});
+  if(reason===null) return;
+  const row=document.getElementById(`vr_${uid}_${videoId}`);
+  if(row) row.style.opacity='.4';                       // instant feedback bago pa ang server
+  const r=await adminApi('tournamentReject',{uid,videoId,reason});
+  if(!r.ok){ if(row) row.style.opacity=''; toast('Failed: '+(r.error||'error'),'warn'); return; }
+  toast(`Rejected — total now ${fmtN(r.totalViews)} views.`,'warn');
+  REVIEW_OPEN[uid]=false;
+  refreshAfterAction();
+}
+async function dqAccount(uid, name){
+  const cur=(DASH.tournament&&DASH.tournament.entries&&DASH.tournament.entries[uid]&&DASH.tournament.entries[uid].dq)||false;
+  const ok=await confirmModal({icon:'', tone:'red', title: cur?`Restore ${name}?`:`Disqualify ${name}?`,
+    message: cur?'They return to the leaderboard.':'Removes the whole account from the leaderboard and from prize ranking.',
+    confirmLabel: cur?'Restore':'Disqualify', danger:!cur});
+  if(!ok) return;
+  const r=await adminApi('tournamentDq',{uid,dq:!cur});
+  if(!r.ok){ toast('Failed: '+(r.error||'error'),'warn'); return; }
+  toast(cur?'Restored.':'Disqualified.','warn');
+  refreshAfterAction();
 }
 
 // ── SETTINGS ──
@@ -1152,6 +1503,149 @@ async function saveCat(){
   try{ const r=await fetch(`${FN}/githubCatalog`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:ADMIN_KEY,action:'write',file:CAT_FILE,content,sha:CAT_SHA})}); const j=await r.json(); btn.textContent='Save to GitHub';
     if(!j.ok){ toast('Save failed: '+(j.error||r.status),'err'); return; } toast('Saved to GitHub ✓'); await loadCat();
   }catch(e){ btn.textContent='Save to GitHub'; toast('Save error: '+e.message,'err'); }
+}
+
+// ── UNLOCK APPS (download-to-unlock gate; config/unlock via adminApi) ──
+let UNLOCK=null, UNLOCK_ENABLED=true, UNLOCK_LOADING=false;
+function viewUnlockApps(){
+  if(UNLOCK===null){ if(!UNLOCK_LOADING){ UNLOCK_LOADING=true; setTimeout(loadUnlock,0); } return `<div class="panel"><div class="empty">Loading unlock apps…</div></div>`; }
+  const rows=UNLOCK.map((a,i)=>unlockAppRow(a,i)).join('');
+  return `<div class="panel form"><div class="sechead">Download-to-unlock apps</div>
+    <div class="muted" style="font-size:13px;margin-bottom:10px">Apps na kailangang i-download bago maka-unlock ang user. Uncheck ang gate para bukas agad lahat kahit walang download.</div>
+    <label class="muted" style="font-size:13px;display:flex;align-items:center;gap:8px;margin-bottom:14px"><input type="checkbox" id="uGate" ${UNLOCK_ENABLED?'checked':''} onchange="UNLOCK_ENABLED=this.checked"> Gate enabled (uncheck = everyone unlocked)</label>
+    ${UNLOCK.length?rows:'<div class="empty">Wala pang app.</div>'}
+    <div class="savebar" style="margin-top:12px"><button class="btn sm ghost" style="width:auto;padding:0 16px" onclick="addUnlockApp()">+ Add app</button>
+      <button class="btn sm" style="width:auto;padding:0 22px" onclick="saveUnlock()" id="unlockSaveBtn">Save</button><span class="ok" id="unlockMsg"></span></div></div>`;
+}
+function unlockAppRow(a,i){
+  const f=(k,label,ph,type)=>`<label class="muted" style="font-size:11px">${label}</label>
+    <input type="${type||'text'}" value="${esc(a[k]==null?'':a[k])}" placeholder="${ph||''}" oninput="setUnlockField(${i},'${k}',this.value)" style="width:100%;height:38px;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:9px;padding:0 10px;box-sizing:border-box;margin-bottom:8px">`;
+  return `<div class="panel" style="background:var(--bg);margin-bottom:12px"><div style="display:flex;gap:12px;flex-wrap:wrap">
+    <div style="flex:1;min-width:100px"><img id="uthumb${i}" src="${esc(a.logo||'')}" style="width:100%;height:100px;object-fit:cover;border-radius:10px;background:var(--line)" onerror="this.style.opacity=.15"></div>
+    <div style="flex:3;min-width:260px">
+      <div style="display:flex;gap:8px"><div style="flex:1">${f('id','ID','gearup')}</div><div style="flex:1">${f('name','Name','GearUp')}</div></div>
+      ${f('logo','Logo URL / data URI','https://…')}
+      ${f('link','Download link','https://…')}
+      <div style="display:flex;gap:8px"><div style="flex:1">${f('package','Package','com.example.app')}</div><div style="flex:1">${f('promo','Promo text','')}</div></div>
+      <div style="display:flex;gap:8px"><div style="flex:1">${f('openSecs','Open seconds','30','number')}</div><div style="flex:1">${f('usageSecs','Usage seconds (0=off)','0','number')}</div><div style="flex:1">${f('reward','Reward','50','number')}</div></div>
+      <div class="savebar"><label class="muted" style="font-size:12px"><input type="checkbox" ${a.enabled!==false?'checked':''} onchange="setUnlockField(${i},'enabled',this.checked)"> Enabled</label>
+        <span style="flex:1"></span><button class="btn sm danger" style="width:auto" onclick="removeUnlockApp(${i})">Remove</button></div>
+    </div></div></div>`;
+}
+async function loadUnlock(){
+  try{ const r=await adminApi('unlockGet',{});
+    if(!r||!r.ok){ toast('Load failed: '+(r&&r.error||'error'),'err'); UNLOCK=[]; UNLOCK_ENABLED=true; }
+    else { UNLOCK=Array.isArray(r.apps)?r.apps:[]; UNLOCK_ENABLED=r.enabled!==false; }
+  }catch(e){ toast('Load error: '+e.message,'err'); UNLOCK=[]; UNLOCK_ENABLED=true; }
+  UNLOCK_LOADING=false; if(CUR==='unlock') render();
+}
+function setUnlockField(i,k,v){ if(!UNLOCK[i]) return; if(k==='openSecs'||k==='usageSecs'||k==='reward') v=Number(v)||0; UNLOCK[i][k]=v;
+  if(k==='logo'){ const t=document.getElementById('uthumb'+i); if(t){ t.src=v; t.style.opacity=1; } } }
+function addUnlockApp(){ UNLOCK.push({id:'',name:'',logo:'',link:'',package:'',promo:'',openSecs:30,usageSecs:0,reward:50,enabled:true}); render(); }
+function removeUnlockApp(i){ UNLOCK.splice(i,1); render(); }
+async function saveUnlock(){
+  const btn=document.getElementById('unlockSaveBtn'); if(btn) btn.textContent='Saving…';
+  const apps=UNLOCK.map(a=>({ id:a.id||'', name:a.name||'', logo:a.logo||'', link:a.link||'', package:a.package||'',
+    promo:a.promo||'', openSecs:Number(a.openSecs)||0, usageSecs:Number(a.usageSecs)||0, reward:Number(a.reward)||0, enabled:a.enabled!==false }));
+  try{ const r=await adminApi('unlockSet',{ enabled:UNLOCK_ENABLED, apps }); if(btn) btn.textContent='Save';
+    if(!r||!r.ok){ toast('Save failed: '+(r&&r.error||'error'),'err'); return; }
+    toast('Unlock apps saved ✓'); await loadUnlock();
+  }catch(e){ if(btn) btn.textContent='Save'; toast('Save error: '+e.message,'err'); }
+}
+
+// ── COMMUNITY SUBMISSIONS ──
+// name/desc/author/heroName/category dito ay galing sa anonymous submitter (filtered for bad
+// words pero HINDI escaped). Kaya lahat ng field na 'yan ay itinatakda sa DOM gamit ang
+// textContent lang — kailanman hindi HTML string / innerHTML — para hindi ma-stored-XSS ang
+// admin console na may hawak na admin key. image/script URL ay server-validated na kappa.lol
+// hosts pero itinatakda pa rin via property (img.src / a.href), hindi string concat.
+let COMMUNITY=null, COMMUNITY_LOADING=false;
+function viewCommunity(){
+  if(COMMUNITY===null){
+    if(!COMMUNITY_LOADING){ COMMUNITY_LOADING=true; setTimeout(loadCommunity,0); }
+    return `<div class="panel"><div class="empty">Loading submissions…</div></div>`;
+  }
+  setTimeout(populateCommunity,0);   // container di pa nakalagay sa DOM habang ginagawa ang string na ito
+  return `<div class="panel"><div class="sectitle">Pending submissions <span class="cnt">· ${COMMUNITY.length}</span></div>
+    <div id="communityList"></div></div>`;
+}
+async function loadCommunity(){
+  const r = await adminApi('communityList', {});
+  if(!r.ok){ toast('Load failed: '+(r.error||'error'),'err'); COMMUNITY=[]; }
+  else { COMMUNITY = r.items||[]; }
+  COMMUNITY_LOADING=false; if(CUR==='community') render();
+}
+function populateCommunity(){
+  const el = document.getElementById('communityList');
+  if(!el) return;
+  el.textContent='';
+  if(!COMMUNITY.length){ const empty=document.createElement('div'); empty.className='empty';
+    empty.textContent='Walang pending na submission.'; el.appendChild(empty); return; }
+  COMMUNITY.forEach(it => {
+    const row = document.createElement('div'); row.className='row'; row.style.alignItems='flex-start';
+
+    const img = document.createElement('img');
+    img.src = it.image;   // kappa.lol host, validated server-side — property assign, not string-built
+    img.alt = 'Preview';
+    img.style.cssText = 'width:96px;height:64px;object-fit:cover;border-radius:9px;background:var(--line);flex:none';
+    row.appendChild(img);
+
+    const grow = document.createElement('div'); grow.className='grow';
+
+    const nameDiv = document.createElement('div'); nameDiv.className='name';
+    nameDiv.textContent = (it.name||'') + ' (' + (it.heroName||'') + ')';   // submitter-supplied → textContent
+    grow.appendChild(nameDiv);
+
+    const when = it.ts ? new Date(it.ts).toLocaleString() : '—';
+    const mb = ((it.size||0)/1e6).toFixed(2);
+    const metaDiv = document.createElement('div'); metaDiv.className='meta';
+    metaDiv.textContent = (it.category||'—') + ' · by ' + (it.author||'User') + ' · ' + when + ' · ' + mb + ' MB';   // submitter-supplied → textContent
+    grow.appendChild(metaDiv);
+
+    if(it.desc){ const descDiv = document.createElement('div'); descDiv.className='meta';
+      descDiv.textContent = it.desc;   // submitter-supplied → textContent
+      grow.appendChild(descDiv); }
+
+    const link = document.createElement('a'); link.target='_blank'; link.rel='noopener';
+    link.className='btn sm ghost'; link.style.cssText='width:auto;padding:0 10px;margin-top:6px;display:inline-flex';
+    link.href = it.script;   // kappa.lol host, validated server-side — property assign, not string-built
+    link.textContent = 'Download zip';   // static, not submitted
+    grow.appendChild(link);
+
+    row.appendChild(grow);
+
+    const actions = document.createElement('div'); actions.style.cssText='display:flex;flex-direction:column;gap:6px';
+
+    const okBtn = document.createElement('button'); okBtn.className='btn sm'; okBtn.textContent='Approve';
+    okBtn.onclick = async () => {
+      const ok = await confirmModal({icon:'✓', tone:'green', title:'Approve this submission?',
+        message:'Ipa-publish agad ito sa catalog at babayaran ang contributor.', confirmLabel:'Approve'});
+      if(!ok) return;
+      const r = await adminApi('communityApprove', { id: it.id });
+      if(!r.ok){ toast('Failed: '+(r.error||'error'),'warn'); return; }
+      if(r.resumed) toast('Na-resume — na-publish na pala ito dati sa isang naputol na approval.','warn');
+      else if(r.payNote==='banned') toast('Approved — pero banned ang contributor kaya walang bayad.','warn');
+      else if(r.payNote==='disabled') toast('Approved — naka-off ang reward, walang binayad.','warn');
+      else toast('Approved · ' + (r.paid||0) + '◆ ibinigay sa contributor.');
+      COMMUNITY=null; render();
+    };
+    actions.appendChild(okBtn);
+
+    const noBtn = document.createElement('button'); noBtn.className='btn sm danger'; noBtn.textContent='Reject';
+    noBtn.onclick = async () => {
+      const reason = await inputModal({icon:'✕', tone:'red', title:'I-reject ang submission?',
+        message:'May makikita ang contributor na dahilan.', label:'Dahilan', placeholder:'Hal. sirang script, mali ang preview…', confirmLabel:'Reject'});
+      if(reason===null) return;
+      const r = await adminApi('communityReject', { id: it.id, reason });
+      if(!r.ok){ toast('Failed: '+(r.error||'error'),'warn'); return; }
+      toast('Rejected.','warn');
+      COMMUNITY=null; render();
+    };
+    actions.appendChild(noBtn);
+
+    row.appendChild(actions);
+    el.appendChild(row);
+  });
 }
 
 // ── DIAGNOSTICS (lazy) ──
