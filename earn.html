@@ -3050,7 +3050,10 @@ async function uploadShotStep(id,step,btn){
     if(nx&&nx.status==='locked'){ if(nc&&nc.gate==='approved') nx.waitReview=true; else nx.status='open'; }
     toast('Screenshot sent for review','good'); shotOfferRefresh(id); return; }
   let res; try{ res=await call('tongitsSubmitShot'); }catch(e){ res=null; }
-  if(res&&res.ok){ toast('Screenshot sent for review','good'); loadShotOffer(id,true); return; }
+  if(res&&res.ok){
+    if(res.status==='approved'){ const amt=+res.credited||0; if(amt) gainFx(amt,'gold'); toast('Approved! +'+amt,'good'); requestState(); }
+    else toast('Screenshot sent for review','good');
+    loadShotOffer(id,true); return; }
   reset(); if(res&&res.error==='cancelled') return;
   toast(SHOT_ERR[res&&res.error]||'Upload failed. Try again.','bad');
 }
