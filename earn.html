@@ -3018,6 +3018,13 @@ function renderShotOffer(body,id){
     b.disabled=true; b.textContent='Checking…';
     let r; try{ r=await call('claimInstallTask', tk.id, +tk.reward||0); }catch(e){ r=null; }
     if(r&&r.ok){ gainFx(tk.reward,'gold'); toast('Verified! +'+tk.reward,'good'); requestState(); loadShotOffer(id,true); return; }
+    // Kapag naputol ang sagot (hal. cold start) pero naitala na ng server, "already claimed" ang
+    // makikita ng app sa ulit — kaya i-check muna ang server bago magpakita ng error.
+    if(!(r&&r.error==='not_installed')){
+      const st=await fetch(CLIP_BASE+'/offerState',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid:STATE.uid,offer:id})}).then(x=>x.json()).catch(()=>null);
+      const v=st&&st.ok&&(st.steps||[]).find(x=>x.auto&&x.status==='approved');
+      if(v){ gainFx(tk.reward,'gold'); toast('Verified! +'+tk.reward,'good'); requestState(); loadShotOffer(id,true); return; }
+    }
     b.disabled=false; b.textContent='Claim +'+tk.reward;
     toast(r&&r.error==='not_installed'?('Install '+c.name+' first'):'Could not verify — try again','bad');
     if(r&&r.error==='not_installed'){ delete OF_INST[tk.verifyPkg]; renderShotOffer(body,id); }
