@@ -3676,7 +3676,7 @@ function wireMlbb(idEl,srvEl,outEl){
 }
 // (openWithdraw modal removed — withdraw is now the full paintWithdraw page with the
 // 3-method selector inline.)
-function wdErr(e){return({insufficient:'Not enough diamonds yet.',bad_tier:'This amount is unavailable.',bad_amount:'This amount is unavailable.',below_min:'Below the minimum for this method.',above_max:'Above the maximum for this method.',no_gameid:'Enter your destination.',first_used:'You already used your one-time first withdrawal.',banned:'Earning is disabled on this account.',network:'Network error — try again.'})[e]||'Withdrawal failed. Try again.';}
+function wdErr(e){return({insufficient:'Not enough diamonds yet.',bad_tier:'This amount is unavailable.',bad_amount:'This amount is unavailable.',below_min:'Below the minimum for this method.',above_max:'Above the maximum for this method.',no_gameid:'Enter your destination.',first_used:'You already used your one-time first withdrawal.',pending_exists:'You already have a pending withdrawal. Wait for it to finish first.',banned:'Earning is disabled on this account.',network:'Network error — try again.'})[e]||'Withdrawal failed. Try again.';}
 function refErr(e){return({already:'You already used a code.',self:"That's your own code.",mutual:"You can't both refer each other.",invalid:'Invalid code.',
   clone:'This device already has an earning account. Only one account per device can earn.',
   emulator:'Earning is not available on emulators or virtual devices.',
